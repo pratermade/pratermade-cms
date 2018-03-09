@@ -18,8 +18,10 @@ from django.urls import path
 from website.views import IndexView, GenericView, ElementsView
 
 
+# Add this back to re-enable the admin side.
+# path('admin/', admin.site.urls),
+
 urlpatterns = [
-    path('admin/', admin.site.urls),
     path(r'', IndexView.as_view(), name="index"),
     path(r'generic/', GenericView.as_view(), name="generic"),
     path(r'elements/', ElementsView.as_view(), name="elements"),

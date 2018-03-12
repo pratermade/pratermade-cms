@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
+# from custom_storages import MediaStorage
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -25,7 +26,7 @@ SECRET_KEY = '+))6f0j%@nj25c8l)c*ipcbt^-0#-m+!lkopm4@*h9h2tgm=$y'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1','1gfqyu9vu7.execute-api.us-east-1.amazonaws.com', 'www2.thoughtraptor.com']
+ALLOWED_HOSTS = ['127.0.0.1','1gfqyu9vu7.execute-api.us-east-1.amazonaws.com', 'www2.thoughtraptor.com', 'localhost', '172.22.8.126']
 
 
 # Application definition
@@ -39,13 +40,21 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'website.apps.WebsiteConfig',
     'storages',
+    'zappa_django_utils',
 ]
 
 
+
 AWS_STORAGE_BUCKET_NAME = 'pratermade-static'
+AWS_MEDIA_BUCKET_NAME = 'pratermade-media'
+AWS_S3_MEDIA_DOMAIN = 's3.amazonaws.com/%s' % AWS_MEDIA_BUCKET_NAME
 AWS_S3_CUSTOM_DOMAIN = 's3.amazonaws.com/%s' % AWS_STORAGE_BUCKET_NAME
+STATICFILES_LOCATION = 'static'
 STATIC_URL = "https://%s" % AWS_S3_CUSTOM_DOMAIN
-STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+DEFAULT_FILE_STORAGE = 'custom_storages.MediaStorage'
+MEDIA_LOCATION = "https://%s" % AWS_S3_MEDIA_DOMAIN
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -86,10 +95,11 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'pratermade',
-        'PASSWORD': 'omcaKF52xSBGBOnPFOXjW',
-        'HOST':'localhost',
+        'USER': 'pratermad_root',
+        'PASSWORD': 'Cz8nKZMI8Gtjkxu1X2gtR',
+        'HOST': 'pratermad-db-micro-us-east-1.curaifsxzcip.us-east-1.rds.amazonaws.com',
         'PORT': '3306',
-        'USER': 'websiteadmin',
+
     }
 }
 
@@ -131,3 +141,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 STATICFILES_DIRS = (BASE_DIR + "/static/",)
 STATIC_URL = '/static/'
+
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

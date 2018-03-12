@@ -15,15 +15,25 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.conf.urls import url
 from website.views import IndexView, GenericView, ElementsView
+from django.conf.urls.static import static
+from django.conf import settings
 
 
 # Add this back to re-enable the admin side.
 # path('admin/', admin.site.urls),
+from website.views import ArticleView
+
 
 urlpatterns = [
+    path('admin/', admin.site.urls),
     path(r'', IndexView.as_view(), name="index"),
     path(r'generic/', GenericView.as_view(), name="generic"),
     path(r'elements/', ElementsView.as_view(), name="elements"),
+    url(r'article/(?P<slug>[a-zA-Z0-9]+)/$', ArticleView.as_view(), name="article"),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

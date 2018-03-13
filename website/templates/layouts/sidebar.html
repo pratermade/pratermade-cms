@@ -39,8 +39,22 @@
 												{% endif %}
 											{% endif %}
 										{% endfor %}
-<br />
-<br />
+                                    </ul>
+                                </nav>
+
+{%  if is_editor %}
+    <nav id="menu">
+                                    <header class="major">
+										<h2>Administration</h2>
+									</header>
+
+                                        <ul>
+                                            <li><a href="/admin/">Admin Page</a></li>
+                                            {% if can_edit %}<li><a href="{% url 'edit_article' slug %}">Edit Article</a></li>{% endif %}
+                                            <li><a href="#">New Article</a></li>
+                                        </ul>
+    </nav>
+{% endif %}
 <!--
 										<li><a href="/generic">About Me</a></li>
 										<li>
@@ -62,8 +76,8 @@
 											</ul>
 										</li>
 -->
-									</ul>
-								</nav>
+
+
 
 							<!-- Section -->
 								<section>

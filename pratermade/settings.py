@@ -24,9 +24,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '+))6f0j%@nj25c8l)c*ipcbt^-0#-m+!lkopm4@*h9h2tgm=$y'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1','1gfqyu9vu7.execute-api.us-east-1.amazonaws.com', 'www2.thoughtraptor.com', 'localhost', '172.22.8.126']
+ALLOWED_HOSTS = ['127.0.0.1','1gfqyu9vu7.execute-api.us-east-1.amazonaws.com', 'www2.thoughtraptor.com', 'localhost', '172.22.8.126', 'yciagency.com']
 
 
 # Application definition

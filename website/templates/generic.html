@@ -10,15 +10,24 @@
 							<!-- Content -->
 								<section>
 									<header class="main">
+									 <div id="editor">
 										<h1>{{ article.title }}</h1>
+									</div>
 									</header>
 
 									<img src="{{ article.header_image.url }}">
 
-									{% autoescape off %}{{ article.content }}{% endautoescape %}
+									{% autoescape off %}
+									<div id="mainContentEditor">	
+										{{ article.content }}
+									</div>
+									{% endautoescape %}
 
 								</section>
 
 						</div>
 					</div>
+
+<script> 
+</script>
 {% endblock %}

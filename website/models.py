@@ -20,7 +20,7 @@ class Article(models.Model):
     header_image = models.ImageField(null=True, blank=True)
     slug = models.CharField(max_length=32)
     group = models.ForeignKey(Group, on_delete=models.CASCADE, null=True, blank=True)
-    Owner = models.ForeignKey(User, null=True, on_delete=models.CASCADE, blank=True)
+    owner = models.ForeignKey(User, null=True, on_delete=models.CASCADE, blank=True)
     category = models.ForeignKey(Category, null=True, on_delete=models.CASCADE, blank=True)
 
     def __str__(self):

@@ -1,0 +1,12 @@
+{
+    "dev": {
+        "aws_region": "us-east-1",
+        "django_settings": "pratermade.settings",
+        "profile_name": "default",
+        "project_name": "pratermade",
+        "runtime": "python3.6",
+        "s3_bucket": "bucket-name",
+        "certificate_arn": "arn:certificate",
+        "domain": "www.domain.com"
+    }
+}

@@ -6,8 +6,21 @@ It uses AWS Lambda, AWS RDS, and AWS S3 to do all the hosting. It is hoped that 
 **This is a very early build, though functional, but way buggy**
 ## Installation
 
-Instructions on its way.
-
+1. Requires python3.6
+2. Create a virtualenv with python3.6
+3. pip install -r requirements.txt
+4. Create S3 Bucket for 'static' that is publicly readable
+5. Create 'or use' an RDS instance for the database. Tested with MariaDB
+6. cp pratermade/settings.py.example pratermade/settings.py
+7. Setup your ALLOWED_HOSTS = ['your.domain.com']
+8. Update the AWS_STORAGE_BUCKET_NAME = [the bucket you created]
+9. Update the database information
+10. ./manage.py migrate
+11. ./manage.py createsuperuser
+12. zappa init 
+13. zappa deploy
+14. ./manage.py collectstatic --noinput
+ 
 ## Features
 
 - User/Group permissions per page.

@@ -29,7 +29,7 @@ class MyTemplateView(TemplateView):
                 self.request.user.groups.filter(id=page_group.id).exists():
                     context['can_edit'] = True
                     context['slug'] = kwargs['slug']
-        debugPrint(context['menu'])
+        # debugPrint(context['menu'])
         return context
 
 

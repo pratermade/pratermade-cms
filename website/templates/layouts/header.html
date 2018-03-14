@@ -6,5 +6,9 @@
 										<li><a href="#" class="icon fa-linkedin"><span class="label">Linked-In</span></a></li>
 										<li><a href="#" class="icon fa-google-plus"><span class="label">Google+</span></a></li>
                                         <li><a href="#" class="icon fa-youtube"><span class="label">Google+</span></a></li>
+                                        <li><a href="#" class="icon fa-github"><span class="label">GetHub</span></a></li>
 									</ul>
                                 </header>
+{% for breadcrumb in breadcrumbs %}
+    <a href="{{ breadcrumb.slug }}">{{ breadcrumb.name }}</a>&nbsp;>&nbsp;
+{% endfor %}

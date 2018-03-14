@@ -18,8 +18,10 @@ class MyTemplateView(TemplateView):
         context = super(MyTemplateView, self).get_context_data(**kwargs)
         context['menu'] = get_menu()
         page_group = None
+        breadcrumbs = []
         if 'slug' in kwargs:
             page_group = get_object_or_404(Article, slug=kwargs['slug']).group
+            context['breadcrumbs'] = get_breadcrumbs(kwargs['slug'])
         if self.request.user.is_superuser or self.request.user.groups.filter(name='editor').exists():
             context['is_editor'] = True
         if page_group is None:
@@ -29,7 +31,6 @@ class MyTemplateView(TemplateView):
                 self.request.user.groups.filter(id=page_group.id).exists():
                     context['can_edit'] = True
                     context['slug'] = kwargs['slug']
-        # debugPrint(context['menu'])
         return context
 
 
@@ -91,6 +92,22 @@ def get_menu():
         menu.append(item_info)
     return menu
 
+def get_breadcrumbs(slug):
+    breadcrumbs = []
+    current, slug = Article.objects.get(slug=slug).category.name, Article.objects.get(slug=slug).category.slug
+
+    while current is not None:
+        breadcrumbs.append({'name': current, 'slug': slug})
+        if Category.objects.get(name=current).parent is not None:
+            current = Category.objects.get(name=current).parent.name
+            if Category.objects.get(name=current).parent is not None:
+                slug = Category.objects.get(name=current).parent.slug
+            else:
+                slug = '#'
+        else:
+            current = None
+    breadcrumbs.append({'name': 'Home', 'slug': '/'})
+    return breadcrumbs[::-1]
 
 def debugPrint(info):
     if Settings.DEBUG:

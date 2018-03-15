@@ -22,20 +22,20 @@
 										{% for item in menu %}
 											{% if item.sub_menu %}
 												<li>
-												<span class="opener">{{ item.name }}</span>
+												<span class="opener">{{ item.title }}</span>
 												<ul>
 												{% for sub_item in item.sub_menu %}
 													{% if sub_item.slug %}
-														<li><a href="{% url "article" sub_item.slug %}">{{ sub_item.name }}</a></li>
+														<li><a href="{% url "article" sub_item.slug %}">{{ sub_item.title }}</a></li>
 													{% else %}
-														<li><a href="#">{{ sub_item.name }}</a></li>
+														<li><a href="#">{{ sub_item.title }}</a></li>
 													{% endif %}
 												{% endfor %}
 												</ul>
 												</li>
 											{% else %}
-												{% if item.name %}
- 													 <li><a href="/">{{ item.name }}</a></li>
+												{% if item.title %}
+ 													 <li><a href="/">{{ item.title }}</a></li>
 												{% endif %}
 											{% endif %}
 										{% endfor %}

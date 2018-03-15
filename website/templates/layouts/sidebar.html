@@ -37,7 +37,13 @@
 												</li>
 											{% else %}
 												{% if item.title %}
- 													 <li><a href="/">{{ item.title }}</a></li>
+                                                    {% if item.slug %}
+ 													    <li><a href="{% url 'article' item.slug %}">{{ item.title }}</a></li>
+                                                    {% elif item.link %}
+                                                        <li><a href="{{ item.link }}">{{ item.title }}</a></li>
+                                                    {% else %}
+                                                        <li><a href="/">{{ item.title }}</a></li>
+                                                    {% endif %}
 												{% endif %}
 											{% endif %}
 										{% endfor %}

@@ -10,5 +10,5 @@
 									</ul>
                                 </header>
 {% for breadcrumb in breadcrumbs %}
-    <a href="{% if breadcrumb.slug %}{% url 'article' breadcrumb.slug %}{% else %}{% url 'index' %}{% endif %}" class="breadcrumbs">{{ breadcrumb.title }}</a>&nbsp;<span>></span>&nbsp;
+    <a href="{% url 'page' breadcrumb.slug %}" class="breadcrumbs">{{ breadcrumb.title }}</a>&nbsp;<span>></span>&nbsp;
 {% endfor %}

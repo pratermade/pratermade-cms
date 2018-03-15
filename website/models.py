@@ -5,16 +5,20 @@ from django.db import models
 
 from django.contrib.auth.models import Group, User
 
+PAGETYPES = (
+    ('link', 'Link'),
+    ('article', 'Article'),
+    ('table_of_contents', 'Table Of Contents')
+)
+
 class Article(models.Model):
-    stub = models.BooleanField(default=False, help_text="Select if the Article is a table of contents. "
-                                                        "TOC is automatically generated for page. The content field is "
-                                                        "optional.")
+    page_type = models.CharField(choices=PAGETYPES, max_length=32, default='article')
     title = models.CharField(max_length=1024)
     content = models.TextField(null=True, blank=True)
     header_image = models.ImageField(null=True, blank=True)
-    slug = models.CharField(max_length=32, null=True, blank=True, help_text="Must be one lowercase word. You must "
-                                                                            "populate either slug or link for proper "
-                                                                            "functionality.")
+    slug = models.CharField(max_length=32, unique=True,
+                            help_text="Must be one lowercase word. You must "
+                                "populate either slug or link for proper functionality.")
     group = models.ForeignKey(Group, on_delete=models.CASCADE, null=True, blank=True, help_text="Anyone is this group "
                                                                                                 "can edit.")
     owner = models.ForeignKey(User, null=True, on_delete=models.CASCADE, blank=True, help_text="The owner can edit.")

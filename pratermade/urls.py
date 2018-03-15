@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.conf.urls import url
-from website.views import IndexView, GenericView, ElementsView, ArticleView, ArticleEditView, TocView
+from website.views import IndexView, GenericView, ElementsView, ArticleView, ArticleEditView, TocView, PageView
 from django.conf.urls.static import static
 from django.conf import settings
 
@@ -33,6 +33,7 @@ urlpatterns = [
     url(r'article/(?P<slug>[a-zA-Z0-9\-_]+)/$', ArticleView.as_view(), name="article"),
     url(r'editArticle/(?P<slug>[a-zA-Z0-9\-_]+)/$', ArticleEditView.as_view(), name="edit_article"),
     url(r'toc/(?P<slug>[a-zA-Z0-9\-_]+)/$', TocView.as_view(), name="toc"),
+    url(r'page/(?P<slug>[a-zA-Z0-9\-_]+)/$', PageView.as_view(), name="page"),
 ]
 
 if settings.DEBUG:

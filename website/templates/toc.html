@@ -29,7 +29,11 @@
                                             <thead>Table of Contents</thead>
                                             {%  for child in children %}
                                                 <tr>
+                                                {% if child.slug %}
                                                     <td><a href="{% url 'article' child.slug %}">{{ child.title }}</a></td>
+                                                {% elif child.link %}
+                                                    <td><a href="{{ child.link }}">{{ child.title }}</a></td>
+                                                {% endif %}
                                                 </tr>
                                             {% endfor %}
                                             <tr></tr>

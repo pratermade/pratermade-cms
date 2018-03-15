@@ -5,23 +5,26 @@ from django.db import models
 
 from django.contrib.auth.models import Group, User
 
-class Category(models.Model):
-    name = models.CharField(max_length=32)
-    parent = models.ForeignKey('self', null=True, on_delete=models.CASCADE, blank=True)
-    slug = models.CharField(max_length=32, null=True, blank=True)
-    order = models.IntegerField(default=0)
-
-    def __str__(self):
-        return self.name
-
 class Article(models.Model):
+    stub = models.BooleanField(default=False, help_text="Select if the Article is a table of contents. "
+                                                        "TOC is automatically generated for page. The content field is "
+                                                        "optional.")
     title = models.CharField(max_length=1024)
-    content = models.TextField()
+    content = models.TextField(null=True, blank=True)
     header_image = models.ImageField(null=True, blank=True)
-    slug = models.CharField(max_length=32)
-    group = models.ForeignKey(Group, on_delete=models.CASCADE, null=True, blank=True)
-    owner = models.ForeignKey(User, null=True, on_delete=models.CASCADE, blank=True)
-    category = models.ForeignKey(Category, null=True, on_delete=models.CASCADE, blank=True)
+    slug = models.CharField(max_length=32, null=True, blank=True, help_text="Must be one lowercase word. You must "
+                                                                            "populate either slug or link for proper "
+                                                                            "functionality.")
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, null=True, blank=True, help_text="Anyone is this group "
+                                                                                                "can edit.")
+    owner = models.ForeignKey(User, null=True, on_delete=models.CASCADE, blank=True, help_text="The owner can edit.")
+    link = models.URLField(null=True, blank=True, help_text="Use to link to external sites. If used, the field 'slug' "
+                                                            "is ignored.")
+    parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE,
+                               help_text="Optional. Used for menu or breadcrumb trail. Empty indicates top level.")
+    order = models.IntegerField(default=0, help_text="For menu order. It is recommended that you use increments of 10 "
+                                                     "as to allow for easy re-ordering of menu items. A value of 0 "
+                                                     "indicates that it is not a menu item.")
 
     def __str__(self):
         return self.title

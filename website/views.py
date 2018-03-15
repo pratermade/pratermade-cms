@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.views.generic import TemplateView
-from .models import Article, Category
-from django.shortcuts import get_object_or_404
+from .models import Article
+from django.shortcuts import get_object_or_404, redirect
 from braces.views import UserPassesTestMixin
 import pprint, pratermade.settings as Settings
 from django.contrib.auth.models import User
@@ -20,8 +20,9 @@ class MyTemplateView(TemplateView):
         page_group = None
         breadcrumbs = []
         if 'slug' in kwargs:
-            page_group = get_object_or_404(Article, slug=kwargs['slug']).group
-            context['breadcrumbs'] = get_breadcrumbs(kwargs['slug'])
+            page = get_object_or_404(Article, slug=kwargs['slug'])
+            page_group = page.group
+            context['breadcrumbs'] = get_breadcrumbs(page.id)
         if self.request.user.is_superuser or self.request.user.groups.filter(name='editor').exists():
             context['is_editor'] = True
         if page_group is None:
@@ -51,6 +52,13 @@ class ElementsView(MyTemplateView):
 class ArticleView(MyTemplateView):
     template_name = "generic.html"
 
+    def dispatch(self, request, *args, **kwargs):
+        article = get_object_or_404(Article, slug=kwargs['slug'])
+        if article.stub:
+            return redirect('toc', slug=kwargs['slug'])
+        return super(ArticleView, self).dispatch(request, *args, **kwargs)
+
+
     def get_context_data(self, **kwargs):
         context = super(ArticleView, self).get_context_data(**kwargs)
         context['article'] = get_object_or_404(Article, slug=self.kwargs['slug'])
@@ -75,40 +83,56 @@ class ArticleEditView(UserPassesTestMixin, MyTemplateView):
         return context
 
 
+class TocView(MyTemplateView):
+    template_name = 'toc.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(TocView, self).get_context_data(**kwargs)
+        parent = get_object_or_404(Article, slug=kwargs['slug'])
+        if Article.objects.filter(parent=parent).exists():
+            children = Article.objects.filter(parent=parent)
+        else:
+            children = None
+        context['children'] = children
+        context['article'] = parent
+        return context
+
+
+
 def get_menu():
-    menu_items = Category.objects.filter(parent__isnull=True, order__gt=0).order_by('order')
+    menu_items = Article.objects.filter(parent__isnull=True, order__gt=0).order_by('order')
     menu = []
     for i, menu_item in enumerate(menu_items):
         item_info = {}
-        item_info['name'] = menu_item.name
+        item_info['title'] = menu_item.title
         if menu_item.slug is not None: item_info['slug'] = menu_item.slug
-        if Category.objects.filter(parent=menu_item, order__gt=0).exists():
-            sub_items = Category.objects.filter(parent=menu_item, order__gt=0).order_by('order')
+        if Article.objects.filter(parent=menu_item, order__gt=0).exists():
+            sub_items = Article.objects.filter(parent=menu_item, order__gt=0).order_by('order')
             sub_menu = []
             for sub_item in sub_items:
                 sub_item_info = {}
-                sub_item_info['name'] = sub_item.name
+                sub_item_info['title'] = sub_item.title
                 if sub_item.slug is not None: sub_item_info['slug'] = sub_item.slug
                 sub_menu.append(sub_item_info)
             item_info['sub_menu'] = sub_menu
         menu.append(item_info)
     return menu
 
-def get_breadcrumbs(slug):
+def get_breadcrumbs(id):
     breadcrumbs = []
-    current, slug = Article.objects.get(slug=slug).category.name, Article.objects.get(slug=slug).category.slug
+    current = Article.objects.get(id=id)
 
     while current is not None:
-        breadcrumbs.append({'name': current, 'slug': slug})
-        if Category.objects.get(name=current).parent is not None:
-            current = Category.objects.get(name=current).parent.name
-            if Category.objects.get(name=current).parent is not None:
-                slug = Category.objects.get(name=current).parent.slug
+        breadcrumbs.append({'title': current.title, 'slug': current.slug, 'url':current.link})
+        if current.parent is not None:
+            current = Article.objects.get(id=current.parent.id)
+            if current.parent is not None:
+                current = Article.objects.get(title=current).parent
             else:
-                slug = '#'
+                slug = ''
         else:
             current = None
-    breadcrumbs.append({'name': 'Home', 'slug': '/'})
+    breadcrumbs.append({'title': 'Home', 'slug': None, 'url': '/'})
     return breadcrumbs[::-1]
 
 def debugPrint(info):

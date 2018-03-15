@@ -22,6 +22,19 @@
 									<div id="mainContentEditor">	
 										{{ article.content }}
 									</div>
+                                        <br />
+                                        <div id="toc" class="box">
+
+                                        <table>
+                                            <thead>Table of Contents</thead>
+                                            {%  for child in children %}
+                                                <tr>
+                                                    <td><a href="{% url 'article' child.slug %}">{{ child.title }}</a></td>
+                                                </tr>
+                                            {% endfor %}
+                                            <tr></tr>
+                                        </table>
+                                        </div>
 									{% endautoescape %}
 
 								</section>

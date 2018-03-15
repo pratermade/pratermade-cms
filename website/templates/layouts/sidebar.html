@@ -25,26 +25,12 @@
 												<span class="opener">{{ item.title }}</span>
 												<ul>
 												{% for sub_item in item.sub_menu %}
-													{% if sub_item.slug %}
-														<li><a href="{% url "article" sub_item.slug %}">{{ sub_item.title }}</a></li>
-                                                    {% elif sub_item.link %}
-                                                        <li><a href="{{ sub_item.link }}">{{ sub_item.title }}</a></li>
-													{% else %}
-														<li><a href="#">{{ sub_item.title }}</a></li>
-													{% endif %}
+                                                    <li><a href="{% url "page" sub_item.slug %}">{{ sub_item.title }}</a></li>
 												{% endfor %}
 												</ul>
 												</li>
 											{% else %}
-												{% if item.title %}
-                                                    {% if item.slug %}
- 													    <li><a href="{% url 'article' item.slug %}">{{ item.title }}</a></li>
-                                                    {% elif item.link %}
-                                                        <li><a href="{{ item.link }}">{{ item.title }}</a></li>
-                                                    {% else %}
-                                                        <li><a href="/">{{ item.title }}</a></li>
-                                                    {% endif %}
-												{% endif %}
+                                                    <li><a href="{% url 'page' item.slug %}">{{ item.title }}</a></li>
 											{% endif %}
 										{% endfor %}
                                     </ul>

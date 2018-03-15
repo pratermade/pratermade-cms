@@ -61,6 +61,7 @@ class PageView(RedirectView):
             self.url = Article.objects.get(slug=kwargs['slug']).link
         return super(PageView, self).get_redirect_url(*args, **kwargs)
 
+
 class ArticleView(MyTemplateView):
     template_name = "generic.html"
 
@@ -103,7 +104,6 @@ class TocView(MyTemplateView):
         return context
 
 
-
 def get_menu():
     menu_items = Article.objects.filter(parent__isnull=True, order__gt=0).order_by('order')
     menu = []
@@ -123,6 +123,7 @@ def get_menu():
         menu.append(item_info)
     return menu
 
+
 def get_breadcrumbs(id):
     breadcrumbs = []
     current = Article.objects.get(id=id)
@@ -140,7 +141,8 @@ def get_breadcrumbs(id):
     breadcrumbs.append({'title': 'Home', 'slug': 'index'})
     return breadcrumbs[::-1]
 
-def debugPrint(info):
+
+def debug_print(info):
     if Settings.DEBUG:
         pp = pprint.PrettyPrinter(indent=4)
         pp.pprint(info)

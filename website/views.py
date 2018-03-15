@@ -1,5 +1,6 @@
 from django.shortcuts import render
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, RedirectView
+from django.urls import reverse
 from .models import Article
 from django.shortcuts import get_object_or_404, redirect
 from braces.views import UserPassesTestMixin
@@ -47,15 +48,21 @@ class ElementsView(MyTemplateView):
     template_name = "elements.html"
 
 
+class PageView(RedirectView):
+    permanent = False
+
+    def get_redirect_url(self, *args, **kwargs):
+        article = get_object_or_404(Article, slug=kwargs['slug'])
+        if article.page_type == 'table_of_contents':
+            self.url = reverse('toc', kwargs={'slug': kwargs['slug']})
+        if article.page_type == 'article':
+            self.url = reverse('article', kwargs={'slug':kwargs['slug']})
+        if article.page_type == 'link':
+            self.url = Article.objects.get(slug=kwargs['slug']).link
+        return super(PageView, self).get_redirect_url(*args, **kwargs)
+
 class ArticleView(MyTemplateView):
     template_name = "generic.html"
-
-    def dispatch(self, request, *args, **kwargs):
-        article = get_object_or_404(Article, slug=kwargs['slug'])
-        if article.stub:
-            return redirect('toc', slug=kwargs['slug'])
-        return super(ArticleView, self).dispatch(request, *args, **kwargs)
-
 
     def get_context_data(self, **kwargs):
         context = super(ArticleView, self).get_context_data(**kwargs)
@@ -121,7 +128,7 @@ def get_breadcrumbs(id):
     current = Article.objects.get(id=id)
 
     while current is not None:
-        breadcrumbs.append({'title': current.title, 'slug': current.slug, 'url':current.link})
+        breadcrumbs.append({'title': current.title, 'slug': current.slug })
         if current.parent is not None:
             current = Article.objects.get(id=current.parent.id)
             if current.parent is not None:
@@ -130,7 +137,7 @@ def get_breadcrumbs(id):
                 slug = ''
         else:
             current = None
-    breadcrumbs.append({'title': 'Home', 'slug': None, 'url': '/'})
+    breadcrumbs.append({'title': 'Home', 'slug': 'index'})
     return breadcrumbs[::-1]
 
 def debugPrint(info):

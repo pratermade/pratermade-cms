@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.views.generic import TemplateView, RedirectView
 from django.urls import reverse
-from .models import Article
+from .models import Article, Settings as SiteSettings
 from django.shortcuts import get_object_or_404, redirect
 from braces.views import UserPassesTestMixin
 import pprint, pratermade.settings as Settings
@@ -33,6 +33,7 @@ class MyTemplateView(TemplateView):
                 self.request.user.groups.filter(id=page_group.id).exists():
                     context['can_edit'] = True
                     context['slug'] = kwargs['slug']
+        context['site_settings'] = SiteSettings.objects.all()[0]
         return context
 
 
@@ -138,7 +139,6 @@ def get_breadcrumbs(id):
                 slug = ''
         else:
             current = None
-    breadcrumbs.append({'title': 'Home', 'slug': 'index'})
     return breadcrumbs[::-1]
 
 

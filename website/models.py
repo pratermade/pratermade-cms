@@ -32,3 +32,17 @@ class Article(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Settings(models.Model):
+
+    site_name = models.CharField(max_length=32, blank=True, null=True)
+    site_tag_line = models.CharField(max_length=1024, blank=True, null=True)
+    www_root = models.URLField(max_length=1024, help_text="This is the location where your site is located."
+                                                          "http://www.example.com")
+
+    class Meta:
+        verbose_name_plural = "Settings"
+
+    def __str__(self):
+        return "Settings"

@@ -1,0 +1,34 @@
+{% extends "layouts/homepage.html" %}
+{% load staticfiles %}
+{% block main %}
+					<div id="main">
+						<div class="inner">
+
+							<!-- Header -->
+								{% include "layouts/header.html" %}
+
+							<!-- Content -->
+								<section>
+									<header class="main">
+									 <div id="editor">
+										<h1>{{ article.title }}</h1>
+									</div>
+									</header>
+                                    {% if article.header_image %}
+									<img src="{{ article.header_image.url }}">
+                                {% endif %}
+
+									{% autoescape off %}
+									<div id="mainContentEditor">	
+										{{ article.content }}
+									</div>
+									{% endautoescape %}
+
+								</section>
+
+						</div>
+					</div>
+
+<script> 
+</script>
+{% endblock %}

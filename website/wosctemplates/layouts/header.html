@@ -1,0 +1,14 @@
+
+                                <header id="header">
+									<a href="/" class="logo"><strong>WOSC</strong> - {% if not article %}Western Oklahoma State College, a smart start!{% else %}{{ article.title }}{% endif %}</a>
+									<ul class="icons">
+										<li><a href="#" class="icon fa-twitter"><span class="label">Twitter</span></a></li>
+										<li><a href="#" class="icon fa-linkedin"><span class="label">Linked-In</span></a></li>
+										<li><a href="#" class="icon fa-google-plus"><span class="label">Google+</span></a></li>
+                                        <li><a href="#" class="icon fa-youtube"><span class="label">Google+</span></a></li>
+                                        <li><a href="#" class="icon fa-github"><span class="label">GetHub</span></a></li>
+									</ul>
+                                </header>
+                                {% for breadcrumb in breadcrumbs %}
+                                    <a href="{% url 'page' breadcrumb.slug %}" class="breadcrumbs">{{ breadcrumb.title }}</a>&nbsp;<span>></span>&nbsp;
+                                {% endfor %}

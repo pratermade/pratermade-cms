@@ -21,16 +21,23 @@
 
 										{% for item in menu %}
 											{% if item.sub_menu %}
-												<li>
-												<span class="opener">{{ item.title }}</span>
+                                                {% for sub_item in item.sub_menu %}
+												<li class="li_opener">
+												    <span class="opener {% if sub_item.slug in request.path or item.slug in request.path %}active{% endif %}">{{ item.title }}</span>
 												<ul>
-												{% for sub_item in item.sub_menu %}
+
 													{% if sub_item.slug %}
-														<li><a href="{% url "article" sub_item.slug %}">{{ sub_item.title }}</a></li>
+														<li class="{% if sub_item.slug in request.path %}active{% endif %}">
+                                                            <a href="{% url 'article' sub_item.slug %}">{{ sub_item.title }}</a>
+                                                        </li>
                                                     {% elif sub_item.link %}
-                                                        <li><a href="{{ sub_item.link }}">{{ sub_item.title }}</a></li>
+                                                        <li>
+                                                            <a href="{{ sub_item.link }}">{{ sub_item.title }}</a>
+                                                        </li>
 													{% else %}
-														<li><a href="#">{{ sub_item.title }}</a></li>
+														<li>
+                                                            <a href="#">{{ sub_item.title }}</a>
+                                                        </li>
 													{% endif %}
 												{% endfor %}
 												</ul>
@@ -44,19 +51,20 @@
                                     </ul>
                                 </nav>
 
-{%  if is_editor %}
-    <nav id="menu">
+                            {%  if is_editor %}
+                                <nav id="menu">
                                     <header class="major">
 										<h2>Administration</h2>
 									</header>
-
-                                        <ul>
-                                            <li><a href="/admin/">Admin Page</a></li>
-                                            {% if can_edit %}<li><a href="{% url 'edit_article' slug %}">Edit Article</a></li>{% endif %}
-                                            <li><a href="/admin/website/article/add/">New Article</a></li>
-                                        </ul>
-    </nav>
-{% endif %}
+                                    <ul>
+                                        <li>
+                                            <a href="/admin/website/article/">Admin Page</a>
+                                        </li>
+                                        {% if can_edit %}<li><a href="{% url 'edit_article' slug %}">Edit Article</a></li>{% endif %}
+                                        <li><a href="/admin/website/article/add/">New Article</a></li>
+                                    </ul>
+                                </nav>
+                            {% endif %}
 <!--
 										<li><a href="/generic">About Me</a></li>
 										<li>

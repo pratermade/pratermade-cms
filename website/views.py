@@ -18,6 +18,8 @@ class MyTemplateView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(MyTemplateView, self).get_context_data(**kwargs)
         context['menu'] = get_menu()
+        context['is_editor'] = False
+        context['can_edit'] = False
         page_group = None
         breadcrumbs = []
         if 'slug' in kwargs:

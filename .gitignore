@@ -6,3 +6,6 @@ zappa_settings.json
 pratermade/settings.py
 
 
+/static/img/
+/website/wosctemplates/
+/static/wosc-assets/

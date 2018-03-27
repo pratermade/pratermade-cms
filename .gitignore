@@ -9,3 +9,5 @@ pratermade/settings.py
 /static/img/
 /website/wosctemplates/
 /static/wosc-assets/
+/activate.sh
+

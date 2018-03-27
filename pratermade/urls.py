@@ -19,7 +19,7 @@ from django.conf.urls import url
 from website.views import IndexView, GenericView, ElementsView, ArticleView, ArticleEditView, TocView, PageView
 from django.conf.urls.static import static
 from django.conf import settings
-
+from django.contrib.auth import views as auth_views
 
 # Add this back to re-enable the admin side.
 # path('admin/', admin.site.urls),
@@ -27,6 +27,11 @@ from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('accounts/login/', auth_views.login, name='login'),
+    path('accounts/logout/', auth_views.logout, name='logout'),
+    url(r'accounts/resetpw/',auth_views.password_reset,
+        {'post_reset_redirect' : '/accounts/resetpwdone/'},
+        name="password_reset"),
     path(r'', IndexView.as_view(), name="index"),
     path(r'generic/', GenericView.as_view(), name="generic"),
     path(r'elements/', ElementsView.as_view(), name="elements"),

@@ -1,8 +1,18 @@
 /* WOSC CSS by Nicholas Hood */
 
-#menu > ul > li > ul > li.active a {
-    color: #1b6daa !important
-}
+/* ### GLOBAL ### */
+img { border-radius:9px }
+
+/* ### HEADER ### */
+
+/* ### MENU ### */
+#menu > ul > li > ul > li.active a {  color: #1b6daa !important }
+.sub-menu, .content-side-menu { border-bottom: solid 2px rgb(245, 106, 106) !important;  margin: -10px 5px 25px 25px !important;  padding: 12px 25px 12px !important; background-color: aliceblue; }
+.content-side-menu { float:right }
+.editor-menu { background: lightcoral; padding:10px !important; border-radius:10px }
+.sub-menu { display:none }
+
+/* ### CONTENT ### */
 .google-maps {
     position: relative;
     padding-bottom: 56%; // This is the aspect ratio
@@ -16,20 +26,20 @@
     width: 100% !important;
     height: 100% !important;
 }
-img { border-radius:9px }
-
-.sub-menu, .content-side-menu { border-bottom: solid 2px rgb(245, 106, 106) !important; margin: -46px -20px 25px !important; padding: 12px 25px 12px !important; background-color: aliceblue; }
-.content-side-menu { float:right }
-.editor-menu { background: lightcoral; padding:10px !important; border-radius:10px }
-.sub-menu { display:none }
 
 
-/*@media only screen and (min-width: 1281px) {*/
-/*.content-side-menu { display:none }*/
-/*.sub-menu { display: block }*/
-/*}*/
+/* ### MEDIA QUERIES ### */
+@media screen and (max-width: 1680px) {
+    #main > .inner > section {
+        padding: 2em 0 3em 0 !important;
+    }
+}
 
 @media only screen and (max-width:768px) {
 .content-side-menu { display: none }
 .sub-menu { display: block }
 }
+/*@media only screen and (min-width: 1281px) {*/
+/*.content-side-menu { display:none }*/
+/*.sub-menu { display: block }*/
+/*}*/

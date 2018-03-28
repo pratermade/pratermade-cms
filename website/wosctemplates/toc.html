@@ -20,6 +20,23 @@
 
 									{% autoescape off %}
 									<div id="mainContentEditor">	
+                                        <!-- SUB_Menu -->
+                                            <nav id="menu" class="content-side-menu">
+                                                <header class="major">
+                                                    <h3>{{ article.title }}</h3>
+                                                </header>
+                                                <ul id="toc" class="box2">
+                                                        {% for child in children %}
+                                                            <li>
+                                                            {% if child.slug %}
+                                                                <a href="{% url 'article' child.slug %}">{{ child.title }}</a>
+                                                            {% elif child.link %}
+                                                                <a href="{{ child.link }}">{{ child.title }}</a>
+                                                            {% endif %}
+                                                            </li>
+                                                        {% endfor %}
+                                                </ul>
+                                            </nav>
 										{{ article.content }}
 									</div>
                                         <br />

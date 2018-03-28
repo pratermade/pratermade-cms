@@ -1,10 +1,6 @@
 
                                 <header id="header">
-<<<<<<< Updated upstream
-									<a hef="{{ site_settings.www_root }}" class="logo"><strong>Pratermade</strong> doing my geek thing and having fun.</a>
-=======
-									<a href="/" class="logo"><strong>{{ article.title }}</strong></a>
->>>>>>> Stashed changes
+									<a href="/" class="logo"><strong>WOSC</strong> - {% if not article %}Western Oklahoma State College, a smart start!{% else %}{{ article.title }}{% endif %}</a>
 									<ul class="icons">
 										<li><a href="#" class="icon fa-twitter"><span class="label">Twitter</span></a></li>
 										<li><a href="#" class="icon fa-linkedin"><span class="label">Linked-In</span></a></li>
@@ -13,13 +9,6 @@
                                         <li><a href="#" class="icon fa-github"><span class="label">GetHub</span></a></li>
 									</ul>
                                 </header>
-<<<<<<< Updated upstream
-<a href="{{ site_settings.www_root }}" class="breadcrumbs">{{ site_settings.site_name }}</a>
-{% for breadcrumb in breadcrumbs %}
-&nbsp;<span>></span>&nbsp;<a href="{% url 'page' breadcrumb.slug %}" class="breadcrumbs">{{ breadcrumb.title }}</a>
-{% endfor %}
-=======
                                 {% for breadcrumb in breadcrumbs %}
                                     <a href="{% url 'page' breadcrumb.slug %}" class="breadcrumbs">{{ breadcrumb.title }}</a>&nbsp;<span>></span>&nbsp;
                                 {% endfor %}
->>>>>>> Stashed changes

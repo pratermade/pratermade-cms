@@ -29,15 +29,30 @@ img { border-radius:9px }
 
 
 /* ### MEDIA QUERIES ### */
-@media screen and (max-width: 1680px) {
+@media screen and (min-width:1281px) and (max-width: 1680px) {
     #main > .inner > section {
         padding: 2em 0 3em 0 !important;
+    }
+    #header {
+    padding-top: 2em;
+    }
+}
+
+@media screen and (max-width: 1281px) {
+    #header {
+    padding-top: 3em;
     }
 }
 
 @media only screen and (max-width:768px) {
 .content-side-menu { display: none }
 .sub-menu { display: block }
+}
+
+@media screen and (max-width: 736px) {
+    #header {
+    padding-top: 3em; padding-left:
+    }
 }
 /*@media only screen and (min-width: 1281px) {*/
 /*.content-side-menu { display:none }*/

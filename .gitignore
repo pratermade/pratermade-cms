@@ -5,3 +5,8 @@
 zappa_settings.json
 pratermade/settings.py
 /activate.sh
+
+
+/static/img
+/static/wosc-assets
+/static/wosctemplates

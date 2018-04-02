@@ -4072,6 +4072,11 @@
 
 /* CUSTOM */
 .mce-tinymce button {
+<<<<<<< HEAD
 	box-shadow: inherit !important;
     color: inherit !important;
+=======
+box-shadow: inherit !important;
+color: inherit !important;
+>>>>>>> e8e6ea598c33ace56c7ff100b0a326e4f3792db4
 }

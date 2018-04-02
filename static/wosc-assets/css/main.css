@@ -8,7 +8,6 @@
 */
 
 
-
 /* Reset */
 
 	html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
@@ -2109,13 +2108,13 @@
 		-ms-transition: color 0.2s ease-in-out, border-bottom-color 0.2s ease-in-out;
 		transition: color 0.2s ease-in-out, border-bottom-color 0.2s ease-in-out;
 		border-bottom: dotted 1px;
-		color: #f56a6a;
+		color: var(--green);
 		text-decoration: none;
 	}
 
 		a:hover {
-			border-bottom-color: #f56a6a;
-			color: #f56a6a !important;
+			border-bottom-color: var(--blue);
+			color: var(--blue) !important;
 		}
 
 			a:hover strong {
@@ -2284,7 +2283,7 @@
 	}
 
 	header.major > :last-child {
-		border-bottom: solid 3px #f56a6a;
+		border-bottom: solid 3px var(--green);
 		display: inline-block;
 		margin: 0 0 2em 0;
 		padding: 0 0.75em 0.5em 0;
@@ -2351,8 +2350,8 @@
 		input[type="url"]:focus,
 		select:focus,
 		textarea:focus {
-			border-color: #f56a6a;
-			box-shadow: 0 0 0 1px #f56a6a;
+			border-color: var(--green);
+			box-shadow: 0 0 0 1px var(--green);
 		}
 
 	.select-wrapper {
@@ -2465,8 +2464,8 @@
 
 		input[type="checkbox"]:focus + label:before,
 		input[type="radio"]:focus + label:before {
-			border-color: #f56a6a;
-			box-shadow: 0 0 0 1px #f56a6a;
+			border-color: var(--green);
+			box-shadow: 0 0 0 1px var(--green);
 		}
 
 	input[type="checkbox"] + label:before {
@@ -2699,7 +2698,7 @@
 				}
 
 				ul.contact li:before {
-					color: #f56a6a;
+					color: var(--green);
 					display: inline-block;
 					font-size: 1.5em;
 					height: 1.125em;
@@ -2823,7 +2822,7 @@
 				}
 
 					ul.pagination li > .page.active {
-						background-color: #f56a6a;
+						background-color: var(--green);
 						color: #ffffff !important;
 					}
 
@@ -2955,8 +2954,8 @@
 		background-color: transparent;
 		border-radius: 0.375em;
 		border: 0;
-		box-shadow: inset 0 0 0 2px #f56a6a;
-		color: #f56a6a !important;
+		box-shadow: inset 0 0 0 2px var(--green);
+		color: var(--green) !important;
 		cursor: pointer;
 		display: inline-block;
 		font-family: "Roboto Slab", serif;
@@ -2977,7 +2976,7 @@
 		input[type="button"]:hover,
 		button:hover,
 		.button:hover {
-			background-color: rgba(245, 106, 106, 0.05);
+			background-color: var(--greenaccent);
 		}
 
 		input[type="submit"]:active,
@@ -2985,7 +2984,7 @@
 		input[type="button"]:active,
 		button:active,
 		.button:active {
-			background-color: rgba(245, 106, 106, 0.15);
+			background-color: var(--greenactive);
 		}
 
 		input[type="submit"].icon:before,
@@ -3029,7 +3028,7 @@
 		input[type="button"].special,
 		button.special,
 		.button.special {
-			background-color: #f56a6a;
+			background-color: var(--green);
 			box-shadow: none;
 			color: #ffffff !important;
 		}
@@ -3149,7 +3148,7 @@
 			}
 
 				.features article .icon:before {
-					color: #f56a6a;
+					color: var(--green);
 					font-size: 2.75rem;
 					position: relative;
 					top: 0.05em;
@@ -3794,7 +3793,7 @@
 		display: -webkit-flex;
 		display: -ms-flex;
 		display: flex;
-		border-bottom: solid 5px #f56a6a;
+		border-bottom: solid 5px var(--green);
 		padding: 2.5em 0 1em 0;
 		position: relative;
 	}
@@ -3989,7 +3988,7 @@
 		}
 
 			#menu ul a:hover, #menu ul span:hover {
-				color: #f56a6a;
+				color: var(--green);
 			}
 
 			#menu ul a.opener, #menu ul span.opener {
@@ -4023,7 +4022,7 @@
 				}
 
 				#menu ul a.opener:hover:before, #menu ul span.opener:hover:before {
-					color: #f56a6a;
+					color: var(--green);
 				}
 
 				#menu ul a.opener.active + ul, #menu ul span.opener.active + ul {

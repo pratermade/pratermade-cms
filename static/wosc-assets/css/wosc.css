@@ -1,15 +1,44 @@
 /* WOSC CSS by Nicholas Hood */
 
+/*@import url("https://use.typekit.net/bvq1qwl.css");*/
+@import url("https://p.typekit.net/p.css?s=1&k=bvq1qwl&ht=tk&f=13407&a=12649032&app=typekit&e=css");
+
+@font-face {
+font-family:"bebas-neue";
+src:url("https://use.typekit.net/af/7d9ee3/00000000000000003b9b12e6/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3") format("woff2"),url("https://use.typekit.net/af/7d9ee3/00000000000000003b9b12e6/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3") format("woff"),url("https://use.typekit.net/af/7d9ee3/00000000000000003b9b12e6/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3") format("opentype");
+font-style:normal;font-weight:400;
+}
+.tk-bebas-neue { font-family: "bebas-neue",sans-serif; }
+
+/*@font-face {*/
+  /*font-family: 'bebas';*/
+  /*src: url('/static/wosc-assets/fonts/BebasNeue Regular.otf');*/
+/*}*/
+
 /* ### GLOBAL ### */
+:root {
+	--green: #006000;
+    --greenactive: rgba(106, 245, 121, 0.15);
+    --greenaccent: rgba(106, 245, 134, 0.05);
+    --blue: darkblue;
+	--gold: gold;
+}
 img { border-radius:9px }
+.accessibility{position:absolute;left:-99999px;height:1px;width:1px}#skip{position:absolute;right:0;top:0;width:100%;margin-left:0;text-align:center;list-style:outside none}#skip li{list-style-type:none}#skip a{position:absolute;left:-99999px;top:20px;filter:alpha(opacity=95);opacity:.95}#skip a:active,#skip a:focus{position:relative;left:0;z-index:9999;width:75%;height:auto;margin:0 auto;padding:20px 35px;text-align:center;text-decoration:none;letter-spacing:-4px!important;font:700 40px Verdana,Freesans,sans-serif!important;color:#000;background:#add8e6;border:1px dotted #ffb4db}
+#breadcrumbs span:first-child { display:none }
 
 /* ### HEADER ### */
+a.logo { max-width: 16em; }
+.logo img { width:100%; max-width: 60px; vertical-align:middle }
+.logo .western { display: inline-block; font-family: "bebas-neue",sans-serif; }
+.logo .western div:nth-child(1) { font-size: 41px; margin: -15px 0 -17px; }
+.logo .western div:nth-child(n+2) { font-size: 14px; display: table-cell; padding: 0 1px }
 
 /* ### MENU ### */
 #menu > ul > li > ul > li.active a {  color: #1b6daa !important }
-.sub-menu, .content-side-menu { border-bottom: solid 2px rgb(245, 106, 106) !important;  margin: -10px 5px 25px 25px !important;  padding: 12px 25px 12px !important; background-color: aliceblue; }
+.sub-menu, .content-side-menu { border-bottom: var(--green) !important;  margin: -10px 5px 25px 25px !important;  padding: 12px 25px 12px !important; background-color: aliceblue; }
 .content-side-menu { float:right }
-.editor-menu { background: lightcoral; padding:10px !important; border-radius:10px }
+.editor-menu { background: var(--gold); padding:10px !important; border-radius:10px }
 .sub-menu { display:none }
 
 /* ### CONTENT ### */
@@ -29,18 +58,21 @@ img { border-radius:9px }
 
 
 /* ### MEDIA QUERIES ### */
+@media screen and (min-width:1681px){
+    #header { padding-top: 1.6em; }
+}
 @media screen and (min-width:1281px) and (max-width: 1680px) {
     #main > .inner > section {
         padding: 2em 0 3em 0 !important;
     }
     #header {
-    padding-top: 2em;
+        padding-top: 1em;
     }
 }
 
 @media screen and (max-width: 1281px) {
     #header {
-    padding-top: 3em;
+        padding-top: .6em;
     }
 }
 
@@ -51,8 +83,16 @@ img { border-radius:9px }
 
 @media screen and (max-width: 736px) {
     #header {
-    padding-top: 3em; padding-left:
+        padding-top: .3em;
+        padding-left: 4em;
     }
+    #header ul.icons {
+        line-height:7em;
+    }
+}
+
+@media screen and (max-width: 490px) {
+    .logo .western { display:none }
 }
 /*@media only screen and (min-width: 1281px) {*/
 /*.content-side-menu { display:none }*/

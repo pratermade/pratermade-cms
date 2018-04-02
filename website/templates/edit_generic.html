@@ -10,7 +10,7 @@
 							<!-- Content -->
 								<section>
 									<header class="main">
-									 <div id="editor">
+									 <div id="editor" class="editable">
 										<h1>{{ article.title }}</h1>
 									</div>
 									</header>
@@ -19,7 +19,7 @@
                                 {% endif %}
 
 									{% autoescape off %}
-									<div id="mainContentEditor">	
+									<div id="mainContentEditor" class="editable">
 										{{ article.content }}
 									</div>
 									{% endautoescape %}
@@ -29,15 +29,24 @@
 						</div>
 					</div>
 
-<script> 
-console.log("Running...");
-ClassicEditor.create(document.querySelector('#mainContentEditor'))
-	.catch( error=> {
-		console.error(error);
-	});
-ClassicEditor.create(document.querySelector('#editor'))
-        .catch( error=> {
-                console.error(error);
-        });
-</script>
+<script>
+  tinymce.init({
+    selector: 'div.editable',
+    branding: false
+  });
+  </script>
+
+{#<script> #}
+{#    #}
+{#    #}
+{#console.log("Running...");#}
+{#ClassicEditor.create(document.querySelector('#mainContentEditor'))#}
+{#	.catch( error=> {#}
+{#		console.error(error);#}
+{#	});#}
+{#ClassicEditor.create(document.querySelector('#editor'))#}
+{#        .catch( error=> {#}
+{#                console.error(error);#}
+{#        });#}
+{#</script>#}
 {% endblock %}

@@ -150,7 +150,6 @@ class ImageUpload(View):
             resized = im.resize((width, height))
             resized.save(resized_fp, im.format)
         resized_fp.close()
-        #resized_fp.open("rb+")
         filepath = "{}/images/{}/{}".format(self.kwargs['slug'], str(width), self.request.FILES['file'].name)
         s3.upload_fileobj(resized_fp, Settings.AWS_MEDIA_BUCKET_NAME, filepath, ExtraArgs={"ACL": "public-read"})
         dest.close()

@@ -1,13 +1,15 @@
 from django.shortcuts import render
-from django.views.generic import TemplateView, RedirectView
+from django.views.generic import TemplateView, RedirectView, View
 from django.urls import reverse
 from .models import Article, Settings as SiteSettings
 from django.shortcuts import get_object_or_404, redirect
 from braces.views import UserPassesTestMixin
 import pprint, pratermade.settings as Settings
-from django.contrib.auth.models import User
-
-
+import boto3
+from django.http import JsonResponse
+from PIL import Image
+from storages.backends.s3boto3 import S3Boto3Storage, SpooledTemporaryFile
+import os
 # Create your views here.
 
 
@@ -25,6 +27,7 @@ class MyTemplateView(TemplateView):
         if 'slug' in kwargs:
             page = get_object_or_404(Article, slug=kwargs['slug'])
             page_group = page.group
+            context['slug'] = kwargs['slug']
             context['breadcrumbs'] = get_breadcrumbs(page.id)
         if self.request.user.is_superuser or self.request.user.groups.filter(name='editor').exists():
             context['is_editor'] = True
@@ -37,7 +40,6 @@ class MyTemplateView(TemplateView):
                     context['slug'] = kwargs['slug']
         context['site_settings'] = SiteSettings.objects.all()[0]
         return context
-
 
 class IndexView(MyTemplateView):
     template_name = "index.html"
@@ -79,11 +81,7 @@ class ArticleEditView(UserPassesTestMixin, MyTemplateView):
     raise_exeption = True
 
     def test_func(self, user):
-        article = get_object_or_404(Article, slug=self.kwargs['slug'])
-        if user.groups.filter(id=article.group.id).exists() or user == article.owner or user.is_superuser:
-            return True
-        else:
-            return False
+        return has_edit_permission(user, self.kwargs['slug'])
 
     def get_context_data(self, **kwargs):
         context = super(ArticleEditView, self).get_context_data(**kwargs)
@@ -107,6 +105,57 @@ class TocView(MyTemplateView):
         return context
 
 
+class ImageUpload(View):
+
+    def test_func(self, user):
+        return has_edit_permission(user, self.kwargs['slug'])
+
+    def post(self, *args, **kwargs):
+
+        s3 = boto3.client('s3', aws_access_key_id='AKIAIQ4V6DUWUHXJBTCQ', aws_secret_access_key='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')
+        #
+        # Upload original copy
+        #
+
+        file = self.request.FILES['file']
+        filepath = "{}/images/original/{}".format(self.kwargs['slug'], self.request.FILES['file'].name)
+        res = {'location': 'https://{}/{}/images/original/{}'.format(Settings.AWS_S3_MEDIA_DOMAIN, self.kwargs['slug'], self.request.FILES['file'].name)}
+        self.resize_upload(1024, self.request.FILES['file'])
+        self.resize_upload(768, self.request.FILES['file'])
+        self.resize_upload(300, self.request.FILES['file'])
+        self.resize_upload(150, self.request.FILES['file'])
+        s3.upload_fileobj(file, Settings.AWS_MEDIA_BUCKET_NAME, filepath, ExtraArgs={"ACL": "public-read"})
+        return JsonResponse(res)
+
+    def resize_upload(self, width, image):
+        s3 = boto3.client('s3', aws_access_key_id='AKIAIQ4V6DUWUHXJBTCQ',
+                          aws_secret_access_key='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')
+        fp = open(image.name, 'wb+')
+
+        """ Have to use a workaround to get this to work. Otherwise Boto3 closes the file
+            add we cannot reopen it.
+        """
+        # Seek to the beginning of the file.
+        image.seek(0, os.SEEK_SET)
+        dest = SpooledTemporaryFile()
+
+        for chunk in image.chunks():
+            dest.write(chunk)
+        im = Image.open(dest)
+        resized_fp = SpooledTemporaryFile()
+
+        if im.width > width:
+            ratio = width / im.width
+            height = int(im.height * ratio)
+            resized = im.resize((width, height))
+            resized.save(resized_fp, im.format)
+        resized_fp.close()
+        #resized_fp.open("rb+")
+        filepath = "{}/images/{}/{}".format(self.kwargs['slug'], str(width), self.request.FILES['file'].name)
+        s3.upload_fileobj(resized_fp, Settings.AWS_MEDIA_BUCKET_NAME, filepath, ExtraArgs={"ACL": "public-read"})
+        dest.close()
+        resized_fp.close()
+
 def get_menu():
     menu_items = Article.objects.filter(parent__isnull=True, order__gt=0).order_by('order')
     menu = []
@@ -125,6 +174,8 @@ def get_menu():
             item_info['sub_menu'] = sub_menu
         menu.append(item_info)
     return menu
+
+
 
 
 def get_breadcrumbs(id):
@@ -148,3 +199,10 @@ def debug_print(info):
     if Settings.DEBUG:
         pp = pprint.PrettyPrinter(indent=4)
         pp.pprint(info)
+
+def has_edit_permission(user, slug):
+    article = get_object_or_404(Article, slug=slug)
+    if user.groups.filter(id=article.group.id).exists() or user == article.owner or user.is_superuser:
+        return True
+    else:
+        return False

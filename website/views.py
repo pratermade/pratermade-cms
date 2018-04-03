@@ -123,6 +123,10 @@ class TocView(MyTemplateMixin, TemplateView):
         return context
 
 
+class ImageBrowserView(MyTemplateMixin,TemplateView):
+    template_name = "image_browser.html"
+
+
 class ImageUpload(View):
 
     def test_func(self, user):
@@ -172,11 +176,11 @@ class ImageUpload(View):
         s3.upload_file('/tmp/resized_'+image.name, Settings.AWS_MEDIA_BUCKET_NAME, filepath, ExtraArgs={"ACL": "public-read"})
         dest.close()
         resized_fp.close()
-
         if os.path.isfile('/tmp/'+image.name):
             os.remove('/tmp/'+image.name)
         if os.path.isfile('/tmp/resized_'+image.name):
             os.remove('/tmp/resized_'+image.name)
+
 
 def get_menu():
     menu_items = Article.objects.filter(parent__isnull=True, order__gt=0).order_by('order')

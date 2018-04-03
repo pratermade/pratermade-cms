@@ -1,0 +1,177 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Image Browser</title>
+
+    <link rel="shortcut icon" href="{% static 'assets/jquery.fileTree/images/favicon.png' %}">
+    <script src="{% static 'assets/jquery.fileTree/jquery.js' %}" type="text/javascript"></script>
+    <script src="{% static 'assets/jquery.fileTree/jquery.easing.js' %}" type="text/javascript"></script>
+    <script src="{% static 'assets/jquery.fileTree/jqueryFileTree.js' %}" type="text/javascript"></script>
+    <link href="{% static 'assets/jquery.fileTree/jqueryFileTree.css' %}" rel="stylesheet" type="text/css" media="screen" />
+
+    <link rel="shortcut icon" href="/static/assets/jquery.fileTree/images/favicon.png">
+    <script src="/static/assets/jquery.fileTree/jquery.js" type="text/javascript"></script>
+    <script src="/static/assets/jquery.fileTree/jquery.easing.js" type="text/javascript"></script>
+    <script src="/static/assets/jquery.fileTree/jqueryFileTree.js" type="text/javascript"></script>
+    <link href="/static/assets/jquery.fileTree/jqueryFileTree.css" rel="stylesheet" type="text/css" media="screen" />
+
+    <script type="text/javascript">
+
+        $(document).ready( function() {
+
+            $('#fileTreeDemo_2').fileTree({ root: '../../demo/', script: 'connectors/jqueryFileTree.php', folderEvent: 'click', expandSpeed: 750, collapseSpeed: 750, multiFolder: false }, function(file) {
+                alert(file);
+            });
+
+        });
+    </script>
+</head>
+<body>
+
+<div class="example">
+    <h2>multiFolder = false</h2>
+    <div id="fileTreeDemo_2" class="demo">
+        <ul class="jqueryFileTree" style="">
+            <li class="directory collapsed" style="position: static;"><a href="#" rel="../../demo/connectors/">connectors</a>
+                <ul class="jqueryFileTree" style="display: none;">
+                    <li class="file ext_asp"><a href="#" rel="../../demo/connectors/jqueryFileTree.asp">jqueryFileTree.asp</a>
+                    </li>
+                    <li class="file ext_aspx"><a href="#" rel="../../demo/connectors/jqueryFileTree.aspx">jqueryFileTree.aspx</a>
+                    </li>
+                    <li class="file ext_cf"><a href="#"
+                                               rel="../../demo/connectors/jqueryFileTree.cf">jqueryFileTree.cf</a></li>
+                    <li class="file ext_js"><a href="#"
+                                               rel="../../demo/connectors/jqueryFileTree.js">jqueryFileTree.js</a></li>
+                    <li class="file ext_jsp"><a href="#" rel="../../demo/connectors/jqueryFileTree.jsp">jqueryFileTree.jsp</a>
+                    </li>
+                    <li class="file ext_php"><a href="#" rel="../../demo/connectors/jqueryFileTree.php">jqueryFileTree.php</a>
+                    </li>
+                    <li class="file ext_pl"><a href="#"
+                                               rel="../../demo/connectors/jqueryFileTree.pl">jqueryFileTree.pl</a></li>
+                    <li class="file ext_py"><a href="#"
+                                               rel="../../demo/connectors/jqueryFileTree.py">jqueryFileTree.py</a></li>
+                    <li class="file ext_rb"><a href="#"
+                                               rel="../../demo/connectors/jqueryFileTree.rb">jqueryFileTree.rb</a></li>
+                    <li class="file ext_lasso"><a href="#" rel="../../demo/connectors/jqueryFileTree_huck.lasso">jqueryFileTree_huck.lasso</a>
+                    </li>
+                    <li class="file ext_lasso"><a href="#" rel="../../demo/connectors/jqueryFileTree_sabourdin.lasso">jqueryFileTree_sabourdin.lasso</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="directory expanded" style="position: static;"><a href="#" rel="../../demo/demo/">demo</a>
+                <ul class="jqueryFileTree" style="display: block;">
+                    <li class="directory collapsed"><a href="#" rel="../../demo/demo/documents/">documents</a></li>
+                    <li class="directory expanded" style="position: static;"><a href="#" rel="../../demo/demo/images/">images</a>
+                        <ul class="jqueryFileTree" style="display: block;">
+                            <li class="directory expanded" style="position: static;"><a href="#"
+                                                                                        rel="../../demo/demo/images/photos/">photos</a>
+                                <ul class="jqueryFileTree" style="display: block;">
+                                    <li class="directory collapsed"><a href="#"
+                                                                       rel="../../demo/demo/images/photos/family/">family</a>
+                                    </li>
+                                    <li class="directory expanded" style="position: static;"><a href="#"
+                                                                                                rel="../../demo/demo/images/photos/friends/">friends</a>
+                                        <ul class="jqueryFileTree" style="display: block;">
+                                            <li class="file ext_jpg"><a href="#"
+                                                                        rel="../../demo/demo/images/photos/friends/becky.jpg">becky.jpg</a>
+                                            </li>
+                                            <li class="file ext_jpg"><a href="#"
+                                                                        rel="../../demo/demo/images/photos/friends/dan.jpg">dan.jpg</a>
+                                            </li>
+                                            <li class="file ext_jpg"><a href="#"
+                                                                        rel="../../demo/demo/images/photos/friends/eddie.jpg">eddie.jpg</a>
+                                            </li>
+                                            <li class="file ext_jpg"><a href="#"
+                                                                        rel="../../demo/demo/images/photos/friends/elliot.jpg">elliot.jpg</a>
+                                            </li>
+                                            <li class="file ext_jpg"><a href="#"
+                                                                        rel="../../demo/demo/images/photos/friends/fenway.jpg">fenway.jpg</a>
+                                            </li>
+                                            <li class="file ext_jpg"><a href="#"
+                                                                        rel="../../demo/demo/images/photos/friends/gus.jpg">gus.jpg</a>
+                                            </li>
+                                            <li class="file ext_jpg"><a href="#"
+                                                                        rel="../../demo/demo/images/photos/friends/jessica.jpg">jessica.jpg</a>
+                                            </li>
+                                            <li class="file ext_jpg"><a href="#"
+                                                                        rel="../../demo/demo/images/photos/friends/rebecca.jpg">rebecca.jpg</a>
+                                            </li>
+                                            <li class="file ext_jpg"><a href="#"
+                                                                        rel="../../demo/demo/images/photos/friends/robbie.jpg">robbie.jpg</a>
+                                            </li>
+                                            <li class="file ext_jpg"><a href="#"
+                                                                        rel="../../demo/demo/images/photos/friends/sven.jpg">sven.jpg</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="file ext_gif"><a href="#" rel="../../demo/demo/images/battletoads.gif">battletoads.gif</a>
+                            </li>
+                            <li class="file ext_png"><a href="#" rel="../../demo/demo/images/box.png">box.png</a></li>
+                            <li class="file ext_png"><a href="#" rel="../../demo/demo/images/drop-shadow.png">drop-shadow.png</a>
+                            </li>
+                            <li class="file ext_gif"><a href="#" rel="../../demo/demo/images/left_arrow.gif">left_arrow.gif</a>
+                            </li>
+                            <li class="file ext_png"><a href="#"
+                                                        rel="../../demo/demo/images/my_image.png">my_image.png</a></li>
+                            <li class="file ext_gif"><a href="#" rel="../../demo/demo/images/right_arrow.gif">right_arrow.gif</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+            <li class="directory collapsed" style="position: static;"><a href="#" rel="../../demo/images/">images</a>
+                <ul class="jqueryFileTree" style="display: none;">
+                    <li class="file ext_png"><a href="#" rel="../../demo/images/application.png">application.png</a>
+                    </li>
+                    <li class="file ext_png"><a href="#" rel="../../demo/images/code.png">code.png</a></li>
+                    <li class="file ext_png"><a href="#" rel="../../demo/images/css.png">css.png</a></li>
+                    <li class="file ext_png"><a href="#" rel="../../demo/images/db.png">db.png</a></li>
+                    <li class="file ext_png"><a href="#" rel="../../demo/images/directory.png">directory.png</a></li>
+                    <li class="file ext_png"><a href="#" rel="../../demo/images/doc.png">doc.png</a></li>
+                    <li class="file ext_png"><a href="#" rel="../../demo/images/file.png">file.png</a></li>
+                    <li class="file ext_png"><a href="#" rel="../../demo/images/film.png">film.png</a></li>
+                    <li class="file ext_png"><a href="#" rel="../../demo/images/flash.png">flash.png</a></li>
+                    <li class="file ext_png"><a href="#" rel="../../demo/images/folder_open.png">folder_open.png</a>
+                    </li>
+                    <li class="file ext_png"><a href="#" rel="../../demo/images/html.png">html.png</a></li>
+                    <li class="file ext_png"><a href="#" rel="../../demo/images/java.png">java.png</a></li>
+                    <li class="file ext_png"><a href="#" rel="../../demo/images/linux.png">linux.png</a></li>
+                    <li class="file ext_png"><a href="#" rel="../../demo/images/music.png">music.png</a></li>
+                    <li class="file ext_png"><a href="#" rel="../../demo/images/pdf.png">pdf.png</a></li>
+                    <li class="file ext_png"><a href="#" rel="../../demo/images/php.png">php.png</a></li>
+                    <li class="file ext_png"><a href="#" rel="../../demo/images/picture.png">picture.png</a></li>
+                    <li class="file ext_png"><a href="#" rel="../../demo/images/ppt.png">ppt.png</a></li>
+                    <li class="file ext_png"><a href="#" rel="../../demo/images/psd.png">psd.png</a></li>
+                    <li class="file ext_png"><a href="#" rel="../../demo/images/ruby.png">ruby.png</a></li>
+                    <li class="file ext_png"><a href="#" rel="../../demo/images/script.png">script.png</a></li>
+                    <li class="file ext_gif"><a href="#" rel="../../demo/images/spinner.gif">spinner.gif</a></li>
+                    <li class="file ext_png"><a href="#" rel="../../demo/images/txt.png">txt.png</a></li>
+                    <li class="file ext_png"><a href="#" rel="../../demo/images/xls.png">xls.png</a></li>
+                    <li class="file ext_png"><a href="#" rel="../../demo/images/zip.png">zip.png</a></li>
+                </ul>
+            </li>
+            <li class="file ext_html"><a href="#" rel="../../demo/index.html">index.html</a></li>
+            <li class="file ext_js"><a href="#" rel="../../demo/jquery.easing.js">jquery.easing.js</a></li>
+            <li class="file ext_js"><a href="#" rel="../../demo/jquery.js">jquery.js</a></li>
+            <li class="file ext_css"><a href="#" rel="../../demo/jqueryFileTree.css">jqueryFileTree.css</a></li>
+            <li class="file ext_js"><a href="#" rel="../../demo/jqueryFileTree.js">jqueryFileTree.js</a></li>
+        </ul>
+    </div>
+</div>
+{#{% for item in contents %}#}
+{#    {{ item.name }}#}
+{#    {{ item.url }}#}
+{##}
+{#    {% if item.thumbnail %}#}
+{#        {{ item.thumbnail }}#}
+{#    {% else %}#}
+{#        <img src="{% static 'img' %}/folder.png">#}
+{#    {% endif %}#}
+{#{% endfor %}#}
+
+</body>
+</html>

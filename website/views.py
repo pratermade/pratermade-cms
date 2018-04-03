@@ -1,7 +1,8 @@
 from django.shortcuts import render
-from django.views.generic import TemplateView, RedirectView, View
+from django.views.generic import TemplateView, RedirectView, View, FormView
 from django.urls import reverse
 from .models import Article, Settings as SiteSettings
+from .forms import ArticleForm
 from django.shortcuts import get_object_or_404, redirect
 from braces.views import UserPassesTestMixin
 import pprint, pratermade.settings as Settings
@@ -14,21 +15,21 @@ import os
 # Create your views here.
 
 
-class MyTemplateView(TemplateView):
+class MyTemplateMixin(object):
     #
     # Parent Class Only
     #
-    def get_context_data(self, **kwargs):
-        context = super(MyTemplateView, self).get_context_data(**kwargs)
+    def get_context_data(self, *args, **kwargs):
+        context = super(MyTemplateMixin, self).get_context_data(*args, **kwargs)
         context['menu'] = get_menu()
         context['is_editor'] = False
         context['can_edit'] = False
+        print(self.kwargs)
         page_group = None
-        breadcrumbs = []
-        if 'slug' in kwargs:
-            page = get_object_or_404(Article, slug=kwargs['slug'])
+        if 'slug' in self.kwargs:
+            page = get_object_or_404(Article, slug=self.kwargs['slug'])
             page_group = page.group
-            context['slug'] = kwargs['slug']
+            context['slug'] = self.kwargs['slug']
             context['breadcrumbs'] = get_breadcrumbs(page.id)
         if self.request.user.is_superuser or self.request.user.groups.filter(name='editor').exists():
             context['is_editor'] = True
@@ -38,19 +39,20 @@ class MyTemplateView(TemplateView):
                 self.request.user == Article.objects.get(slug=kwargs['slug']).owner or \
                 self.request.user.groups.filter(id=page_group.id).exists():
                     context['can_edit'] = True
-                    context['slug'] = kwargs['slug']
+                    context['slug'] = self.kwargs['slug']
         context['site_settings'] = SiteSettings.objects.all()[0]
         return context
 
-class IndexView(MyTemplateView):
+
+class IndexView(MyTemplateMixin, TemplateView):
     template_name = "index.html"
 
 
-class GenericView(MyTemplateView):
+class GenericView(MyTemplateMixin, TemplateView):
     template_name = "generic.html"
 
 
-class ElementsView(MyTemplateView):
+class ElementsView(MyTemplateMixin, TemplateView):
     template_name = "elements.html"
 
 
@@ -68,7 +70,7 @@ class PageView(RedirectView):
         return super(PageView, self).get_redirect_url(*args, **kwargs)
 
 
-class ArticleView(MyTemplateView):
+class ArticleView(MyTemplateMixin, TemplateView):
     template_name = "generic.html"
 
     def get_context_data(self, **kwargs):
@@ -77,21 +79,36 @@ class ArticleView(MyTemplateView):
         return context
 
 
-class ArticleEditView(UserPassesTestMixin, MyTemplateView):
+class ArticleEditView(UserPassesTestMixin, MyTemplateMixin, FormView):
     template_name = "edit_generic.html"
     raise_exeption = True
+    form_class = ArticleForm
 
     def test_func(self, user):
         return has_edit_permission(user, self.kwargs['slug'])
+    
+    def get_context_data(self, *args, **kwargs):
+        return super(ArticleEditView, self).get_context_data(*args, **kwargs)
 
-    def get_context_data(self, **kwargs):
-        context = super(ArticleEditView, self).get_context_data(**kwargs)
-        get_menu()
-        context['article'] = get_object_or_404(Article, slug=self.kwargs['slug'])
-        return context
+    def get_initial(self):
+        article = Article.objects.get(slug=self.kwargs['slug'])
+        initial = {
+            "page_type": article.page_type,
+            "title": article.title,
+            "content": article.content,
+            "header_image": article.header_image,
+            "slug": article.slug,
+            "group": article.group,
+            "owner": article.owner,
+            "link": article.link,
+            "parent": article.parent,
+            "order": article.order
+        }
+        return initial
+    #     return get_object_or_404(Article, slug=self.kwargs['slug'])
 
 
-class TocView(MyTemplateView):
+class TocView(MyTemplateMixin, TemplateView):
     template_name = 'toc.html'
 
     def get_context_data(self, **kwargs):

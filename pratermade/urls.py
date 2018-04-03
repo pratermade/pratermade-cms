@@ -42,6 +42,7 @@ urlpatterns = [
     url(r'toc/(?P<slug>[a-zA-Z0-9\-_]+)/$', TocView.as_view(), name="toc"),
     url(r'page/(?P<slug>[a-zA-Z0-9\-_]+)/$', PageView.as_view(), name="page"),
     url(r'imageupload/(?P<slug>[a-zA-Z0-9\-_]+)/$', ImageUpload.as_view(), name="imageupload"),
+    url(r'fileupload/(?P<slug>[a-zA-Z0-9\-_]+)/$', ImageUpload.as_view(), name="fileupload"),
 ]
 
 if settings.DEBUG:

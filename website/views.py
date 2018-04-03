@@ -1,33 +1,35 @@
 from django.shortcuts import render
-from django.views.generic import TemplateView, RedirectView, View
+from django.views.generic import TemplateView, RedirectView, View, FormView
 from django.urls import reverse
 from .models import Article, Settings as SiteSettings
+from .forms import ArticleForm
 from django.shortcuts import get_object_or_404, redirect
 from braces.views import UserPassesTestMixin
 import pprint, pratermade.settings as Settings
 import boto3
 from django.http import JsonResponse
 from PIL import Image
-from storages.backends.s3boto3 import S3Boto3Storage, SpooledTemporaryFile
+from storages.backends.s3boto3 import S3Boto3Storage
+import tempfile
 import os
 # Create your views here.
 
 
-class MyTemplateView(TemplateView):
+class MyTemplateMixin(object):
     #
     # Parent Class Only
     #
-    def get_context_data(self, **kwargs):
-        context = super(MyTemplateView, self).get_context_data(**kwargs)
+    def get_context_data(self, *args, **kwargs):
+        context = super(MyTemplateMixin, self).get_context_data(*args, **kwargs)
         context['menu'] = get_menu()
         context['is_editor'] = False
         context['can_edit'] = False
+        print(self.kwargs)
         page_group = None
-        breadcrumbs = []
-        if 'slug' in kwargs:
-            page = get_object_or_404(Article, slug=kwargs['slug'])
+        if 'slug' in self.kwargs:
+            page = get_object_or_404(Article, slug=self.kwargs['slug'])
             page_group = page.group
-            context['slug'] = kwargs['slug']
+            context['slug'] = self.kwargs['slug']
             context['breadcrumbs'] = get_breadcrumbs(page.id)
         if self.request.user.is_superuser or self.request.user.groups.filter(name='editor').exists():
             context['is_editor'] = True
@@ -37,19 +39,20 @@ class MyTemplateView(TemplateView):
                 self.request.user == Article.objects.get(slug=kwargs['slug']).owner or \
                 self.request.user.groups.filter(id=page_group.id).exists():
                     context['can_edit'] = True
-                    context['slug'] = kwargs['slug']
+                    context['slug'] = self.kwargs['slug']
         context['site_settings'] = SiteSettings.objects.all()[0]
         return context
 
-class IndexView(MyTemplateView):
+
+class IndexView(MyTemplateMixin, TemplateView):
     template_name = "index.html"
 
 
-class GenericView(MyTemplateView):
+class GenericView(MyTemplateMixin, TemplateView):
     template_name = "generic.html"
 
 
-class ElementsView(MyTemplateView):
+class ElementsView(MyTemplateMixin, TemplateView):
     template_name = "elements.html"
 
 
@@ -67,7 +70,7 @@ class PageView(RedirectView):
         return super(PageView, self).get_redirect_url(*args, **kwargs)
 
 
-class ArticleView(MyTemplateView):
+class ArticleView(MyTemplateMixin, TemplateView):
     template_name = "generic.html"
 
     def get_context_data(self, **kwargs):
@@ -76,21 +79,36 @@ class ArticleView(MyTemplateView):
         return context
 
 
-class ArticleEditView(UserPassesTestMixin, MyTemplateView):
+class ArticleEditView(UserPassesTestMixin, MyTemplateMixin, FormView):
     template_name = "edit_generic.html"
     raise_exeption = True
+    form_class = ArticleForm
 
     def test_func(self, user):
         return has_edit_permission(user, self.kwargs['slug'])
+    
+    def get_context_data(self, *args, **kwargs):
+        return super(ArticleEditView, self).get_context_data(*args, **kwargs)
 
-    def get_context_data(self, **kwargs):
-        context = super(ArticleEditView, self).get_context_data(**kwargs)
-        get_menu()
-        context['article'] = get_object_or_404(Article, slug=self.kwargs['slug'])
-        return context
+    def get_initial(self):
+        article = Article.objects.get(slug=self.kwargs['slug'])
+        initial = {
+            "page_type": article.page_type,
+            "title": article.title,
+            "content": article.content,
+            "header_image": article.header_image,
+            "slug": article.slug,
+            "group": article.group,
+            "owner": article.owner,
+            "link": article.link,
+            "parent": article.parent,
+            "order": article.order
+        }
+        return initial
+    #     return get_object_or_404(Article, slug=self.kwargs['slug'])
 
 
-class TocView(MyTemplateView):
+class TocView(MyTemplateMixin, TemplateView):
     template_name = 'toc.html'
 
     def get_context_data(self, **kwargs):
@@ -105,6 +123,10 @@ class TocView(MyTemplateView):
         return context
 
 
+class ImageBrowserView(MyTemplateMixin,TemplateView):
+    template_name = "image_browser.html"
+
+
 class ImageUpload(View):
 
     def test_func(self, user):
@@ -112,7 +134,7 @@ class ImageUpload(View):
 
     def post(self, *args, **kwargs):
 
-        s3 = boto3.client('s3', aws_access_key_id='AKIAIQ4V6DUWUHXJBTCQ', aws_secret_access_key='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')
+        s3 = boto3.client('s3')
         #
         # Upload original copy
         #
@@ -120,44 +142,44 @@ class ImageUpload(View):
         file = self.request.FILES['file']
         filepath = "{}/images/original/{}".format(self.kwargs['slug'], self.request.FILES['file'].name)
         res = {'location': 'https://{}/{}/images/original/{}'.format(Settings.AWS_S3_MEDIA_DOMAIN, self.kwargs['slug'], self.request.FILES['file'].name)}
-        self.resize_upload(1024, self.request.FILES['file'])
-        self.resize_upload(768, self.request.FILES['file'])
-        self.resize_upload(300, self.request.FILES['file'])
-        self.resize_upload(150, self.request.FILES['file'])
+        self.resize_upload(1024, file)
+        self.resize_upload(768, file)
+        self.resize_upload(300, file)
+        self.resize_upload(150, file)
+        file.seek(0, os.SEEK_SET)
         s3.upload_fileobj(file, Settings.AWS_MEDIA_BUCKET_NAME, filepath, ExtraArgs={"ACL": "public-read"})
         return JsonResponse(res)
 
     def resize_upload(self, width, image):
-        s3 = boto3.client('s3', aws_access_key_id='AKIAIQ4V6DUWUHXJBTCQ',
-                          aws_secret_access_key='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')
-        fp = open(image.name, 'wb+')
+        s3 = boto3.client('s3')
 
         """ Have to use a workaround to get this to work. Otherwise Boto3 closes the file
             add we cannot reopen it.
         """
         # Seek to the beginning of the file.
         image.seek(0, os.SEEK_SET)
-        dest = SpooledTemporaryFile()
+        dest = open('/tmp/'+image.name, 'w+b')
 
         for chunk in image.chunks():
             dest.write(chunk)
         im = Image.open(dest)
-        resized_fp = SpooledTemporaryFile()
+        resized = Image.open(dest)
+        resized_fp = open('/tmp/resized_'+image.name, 'w+b')
 
         if im.width > width:
             ratio = width / im.width
             height = int(im.height * ratio)
             resized = im.resize((width, height))
-            resized.save(resized_fp, im.format)
+        resized.save(resized_fp, im.format)
         resized_fp.close()
-        filepath = "{}/images/{}/{}".format(self.kwargs['slug'], str(width), self.request.FILES['file'].name)
-        s3.upload_fileobj(resized_fp, Settings.AWS_MEDIA_BUCKET_NAME, filepath, ExtraArgs={"ACL": "public-read"})
+        filepath = "{}/images/{}/{}".format(self.kwargs['slug'], str(width), image.name)
+        s3.upload_file('/tmp/resized_'+image.name, Settings.AWS_MEDIA_BUCKET_NAME, filepath, ExtraArgs={"ACL": "public-read"})
         dest.close()
         resized_fp.close()
-
-
-class ImageBrowserView(MyTemplateView):
-    template_name = "image_browser.html"
+        if os.path.isfile('/tmp/'+image.name):
+            os.remove('/tmp/'+image.name)
+        if os.path.isfile('/tmp/resized_'+image.name):
+            os.remove('/tmp/resized_'+image.name)
 
 
 def get_menu():

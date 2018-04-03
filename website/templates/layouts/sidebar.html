@@ -12,23 +12,21 @@
 								</section>
 
 							<!-- Menu -->
-								<nav id="menu">
+								<nav id="menu" style="border-bottom: solid 2px rgb(245, 106, 106);">
 									<header class="major">
 										<h2>Menu</h2>
 									</header>
 									<ul>
-
-
 										{% for item in menu %}
 											{% if item.sub_menu %}
-												<li>
-												<span class="opener">{{ item.title }}</span>
-												<ul>
-												{% for sub_item in item.sub_menu %}
-                                                    <li><a href="{% url "page" sub_item.slug %}">{{ sub_item.title }}</a></li>
-												{% endfor %}
-												</ul>
-												</li>
+                                                    <li>
+                                                    <span class="opener {% for sub_item in item.sub_menu %}{% if sub_item.slug in request.path or item.slug in request.path %}active{% endif %}{% endfor %}">{{ item.title }}</span>
+                                                    <ul>
+                                                    {% for sub_item in item.sub_menu %}
+                                                        <li class="{% if sub_item.slug in request.path %}active{% endif %}"><a href="{% url "page" sub_item.slug %}">{{ sub_item.title }}</a></li>
+                                                    {% endfor %}
+                                                    </ul>
+                                                    </li>
 											{% else %}
                                                     <li><a href="{% url 'page' item.slug %}">{{ item.title }}</a></li>
 											{% endif %}
@@ -36,42 +34,40 @@
                                     </ul>
                                 </nav>
 
-{%  if is_editor %}
-    <nav id="menu">
+                            {% if "/toc/" in request.path %}
+							<!-- SUB_Menu -->
+								<nav id="menu" style="border-bottom: solid 2px rgb(245, 106, 106); margin: -46px -20px 25px; padding: 12px 25px 12px; background-color: aliceblue;">
+									<header class="major">
+										<h3>{{ article.title }}</h3>
+									</header>
+									<ul id="toc" class="box2">
+                                            {% for child in children %}
+                                                <li>
+                                                {% if child.slug %}
+                                                    <a href="{% url 'article' child.slug %}">{{ child.title }}</a>
+                                                {% elif child.link %}
+                                                    <a href="{{ child.link }}">{{ child.title }}</a>
+                                                {% endif %}
+                                                </li>
+                                            {% endfor %}
+                                    </ul>
+                                </nav>
+                            {% endif %}
+
+                            {%  if is_editor %}
+                                <nav id="menu" style="background: lightcoral; padding:10px; border-radius:10px">
                                     <header class="major">
 										<h2>Administration</h2>
 									</header>
-
-                                        <ul>
-                                            <li><a href="/admin/">Admin Page</a></li>
-                                            {% if can_edit %}<li><a href="{% url 'edit_article' slug %}">Edit Article</a></li>{% endif %}
-                                            <li><a href="/admin/website/article/add/">New Article</a></li>
-                                        </ul>
-    </nav>
-{% endif %}
-<!--
-										<li><a href="/generic">About Me</a></li>
-										<li>
-											<span class="opener">How-to's</span>
-											<ul>
-												<li><a href="#">Lorem Dolor</a></li>
-												<li><a href="#">Ipsum Adipiscing</a></li>
-												<li><a href="#">Tempus Magna</a></li>
-												<li><a href="#">Feugiat Veroeros</a></li>
-											</ul>
-										</li>
-										<li>
-											<span class="opener">Projects</span>
-											<ul>
-												<li><a href="#">Lorem Dolor</a></li>
-												<li><a href="#">Ipsum Adipiscing</a></li>
-												<li><a href="#">Tempus Magna</a></li>
-												<li><a href="#">Feugiat Veroeros</a></li>
-											</ul>
-										</li>
--->
-
-
+                                    <ul>
+                                        <li>
+                                            <a href="/admin/website/article/">Admin Page</a>
+                                        </li>
+                                        {% if can_edit %}<li><a href="{% url 'edit_article' slug %}">Edit Article</a></li>{% endif %}
+                                        <li><a href="/admin/website/article/add/">New Article</a></li>
+                                    </ul>
+                                </nav>
+                            {% endif %}
 
 							<!-- Section -->
 								<section>
@@ -88,10 +84,6 @@
 											Stuff and things!
 											<p></p>
 										</article>
-{#										<article>#}
-{#											<a href="#" class="image"><img src={% static "images/pic09.jpg" %} alt="" /></a>#}
-{#											<p>Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore aliquam.</p>#}
-{#										</article>#}
 									</div>
 									<ul class="actions">
 										<li><a href="#" class="button">More</a></li>
@@ -110,7 +102,8 @@
 								</section>
                             <!-- Footer -->
 								<footer id="footer">
-									<p class="copyright">&copy; Pratermade. All rights reserved. Design: <a href="https://html5up.net">HTML5 UP</a>.</p>
+                                    <p class="copyright"><a href="#top">Back to Top</a></p>
+									<p class="copyright">&copy; Western Oklahoma State College. All rights reserved. </p>
 								</footer>
 
 						</div>

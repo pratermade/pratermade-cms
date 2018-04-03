@@ -1,0 +1,53 @@
+{% load staticfiles %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" xml:lang="en" class=" js flexbox canvas canvastext postmessage no-websqldatabase indexeddb hashchange history draganddrop websockets rgba hsla multiplebgs backgroundsize borderimage borderradius boxshadow textshadow opacity cssanimations csscolumns cssgradients no-cssreflections csstransforms csstransforms3d csstransitions fontface generatedcontent video audio localstorage sessionstorage webworkers applicationcache" style="" lang="en">
+<!--
+                        ( o o )
+   .---------------.oooO--(_)--Oooo.---------------.
+ /       _       __          __                      \
+|       | |     / /__  _____/ /____  _________        |
+|       | | /| / / _ \/ ___/ __/ _ \/ ___/ __ \       |
+|       | |/ |/ /  __(__  ) /_/  __/ /  / / / /       |
+|       |__/|__/\___/____/\__/\___/_/  /_/ /_/        |
+|                                                     |
+|                    .oooO                            |
+ \                   (   )   Oooo.                   /
+   `------------------\ (----(   )-----------------`
+                       \_)    ) /
+                             (_/
+ -->
+	<head>
+		<title>{% if not article %}Home{% else %}{{ article.title }}{% endif %} -- Western Oklahoma State College, Altus, OK 73521</title>
+        <link rel="icon" href="https://www.wosc.edu/img/icons/W_green.png">
+{#		{%  if is_editor %}<script src="https://cdn.ckeditor.com/ckeditor5/1.0.0-alpha.2/classic/ckeditor.js"></script>{% endif %}#}
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<!--[if lte IE 8]><script src={% static "assets/js/ie/html5shiv.js" %}></script><![endif]-->
+{#		<link rel="stylesheet" href={% static "assets/css/main.css" %} />#}
+        <link rel="stylesheet" href="http://www2.wosc.edu/static/wosc-assets/css/main.css" />
+        <link rel="stylesheet" href="http://www2.wosc.edu/static/wosc-assets/css/wosc.css" />
+		<!--[if lte IE 9]><link rel="stylesheet" href={% static "assets/css/ie9.css" %}/><![endif]-->
+                    <!--[if lte IE 8]><link rel="stylesheet" href={% static "assets/css/ie8.css" %}/><![endif]-->
+	</head>
+<body>
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+				<!-- Main -->
+                {% block main %}
+				{% endblock %}
+
+            {% include "layouts/sidebar.html" %}
+
+
+            </div>
+
+		<!-- Scripts -->
+			<script src={% static "assets/js/jquery.min.js" %}></script>
+			<script src={% static "assets/js/skel.min.js" %}></script>
+			<script src={% static "assets/js/util.js" %}></script>
+			<!--[if lte IE 8]><script src="assets/js/ie/respond.min.js" %}></script><![endif]-->
+			<script src="http://www2.wosc.edu/static/wosc-assets/js/main.js"></script>
+
+	</body>
+</html>

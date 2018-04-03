@@ -26,7 +26,7 @@
                                         <div id="toc" class="box">
 
                                         <table>
-                                            <thead>Table of Contents</thead>
+                                            <thead>{{ article.title }}: <i>Table of Contents</i></thead>
                                             {%  for child in children %}
                                                 <tr>
                                                 {% if child.slug %}

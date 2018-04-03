@@ -21,7 +21,7 @@
 
         $(document).ready( function() {
 
-            $('#fileTreeDemo_2').fileTree({ root: '../../demo/', script: 'connectors/jqueryFileTree.php', folderEvent: 'click', expandSpeed: 750, collapseSpeed: 750, multiFolder: false }, function(file) {
+            $('#fileTreeDemo_2').fileTree({ root: '../../demo/', script: '/static/jquery.fileTree/connectors/jqueryFileTree.php', folderEvent: 'click', expandSpeed: 750, collapseSpeed: 750, multiFolder: false }, function(file) {
                 alert(file);
             });
 

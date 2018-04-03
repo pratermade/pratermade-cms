@@ -23,13 +23,13 @@
                     <p class="transparent2"><a href="https://www2.wosc.edu/">HOME</a> &#8596; <a href="https://www.wosc.edu/index.php?page=Student-Services#">---CURRENT STUDENTS---</a>  &#8596;  <span  class="breadcrumbs-currentpage">Student Services</span></p>
                     </div><!--/breadcrumbs-->
 
-                        {% if article.header_image %}
-                            <img src="{{ article.header_image.url }}">
-                        {% endif %}
+{#                        {% if article.header_image %}#}
+{#                            <img src="{{ article.header_image.url }}">#}
+{#                        {% endif %}#}
 
-                    <h2 id="title" class="editable">
+                    <h2 id="title" class="editable2">
                         <span>
-                            {{ article.title }}
+{#                            {{ article.title }}#}
                         </span>
                     </h2>
                     <!-- ### BootStrap ### -->
@@ -40,10 +40,11 @@
 
 
 
-                    <div id="content" tabindex="-1" class="editable">
+                    <div id="content" tabindex="-1" class="editable2">
                         <span class="maincontents">
                             {% autoescape off %}
-                                {{ article.content }}
+{#                                {{ article.content }}#}
+                                {{ form.as_p }}
                             {% endautoescape %}
                         </span>
                     </div><!--/end Content -->

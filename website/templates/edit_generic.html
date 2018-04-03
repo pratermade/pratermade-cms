@@ -9,19 +9,9 @@
 
 							<!-- Content -->
 								<section>
-									<header class="main">
-									 <div id="editor" class="editable">
-										<h1>{{ article.title }}</h1>
-									</div>
-									</header>
-{% if article.header_image %}
-									<img src="{{ article.header_image.url }}">
-                                {% endif %}
 
 									{% autoescape off %}
-									<div id="mainContentEditor" class="editable">
-										{{ article.content }}
-									</div>
+									{{ form.as_p }}
 									{% endautoescape %}
 
 								</section>
@@ -31,11 +21,10 @@
 
 <script>
   tinymce.init({
-      selector: 'div#editor',
+      selector: '.editable',
       branding: false,
-      plugins: 'image preview code link',
-      toolbar: 'undo redo | link image | preview code',
-      // images_upload_url: '{% url 'imageupload' slug %}',
+      plugins: 'image preview code link fullscreen',
+      toolbar: 'undo redo | link image file | preview code fullscreen',
       images_upload_handler: function (blobInfo, success, failure) {
           var xhr, formData;
           xhr = new XMLHttpRequest();
@@ -60,7 +49,7 @@
       formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
       xhr.send(formData);
   },
-    file_browser_callback: myFileBrowser
+  file_browser_callback: myFileBrowser
 });
 
 function myFileBrowser (field_name, url, type, win) {
@@ -86,9 +75,6 @@ function myFileBrowser (field_name, url, type, win) {
     });
     return false;
 }
-
-
-
 
   </script>
 

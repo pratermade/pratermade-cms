@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path
 from django.conf.urls import url
 from website.views import IndexView, GenericView, ElementsView, ArticleView, ArticleEditView, TocView, PageView, \
-    ImageUpload
+    ImageUpload, ImageBrowserView
 from django.conf.urls.static import static
 from django.conf import settings
 from django.contrib.auth import views as auth_views
@@ -35,6 +35,7 @@ urlpatterns = [
         name="password_reset"),
     path(r'', IndexView.as_view(), name="index"),
     path(r'generic/', GenericView.as_view(), name="generic"),
+    path(r'imagebrowser/', ImageBrowserView.as_view(), name="imagebrowser"),
     path(r'elements/', ElementsView.as_view(), name="elements"),
     url(r'article/(?P<slug>[a-zA-Z0-9\-_]+)/$', ArticleView.as_view(), name="article"),
     url(r'editArticle/(?P<slug>[a-zA-Z0-9\-_]+)/$', ArticleEditView.as_view(), name="edit_article"),

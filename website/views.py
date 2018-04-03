@@ -155,6 +155,11 @@ class ImageUpload(View):
         dest.close()
         resized_fp.close()
 
+
+class ImageBrowserView(MyTemplateView):
+    template_name = "image_browser.html"
+
+
 def get_menu():
     menu_items = Article.objects.filter(parent__isnull=True, order__gt=0).order_by('order')
     menu = []

@@ -22,6 +22,7 @@ from django.conf.urls.static import static
 from django.conf import settings
 from django.contrib.auth import views as auth_views
 
+
 # Add this back to re-enable the admin side.
 # path('admin/', admin.site.urls),
 
@@ -43,6 +44,7 @@ urlpatterns = [
     url(r'page/(?P<slug>[a-zA-Z0-9\-_]+)/$', PageView.as_view(), name="page"),
     url(r'imageupload/(?P<slug>[a-zA-Z0-9\-_]+)/$', ImageUpload.as_view(), name="imageupload"),
     url(r'fileupload/(?P<slug>[a-zA-Z0-9\-_]+)/$', ImageUpload.as_view(), name="fileupload"),
+    url(r'browseimages/$', ImageBrowserView.as_view(), name="browseimages"),
 ]
 
 if settings.DEBUG:

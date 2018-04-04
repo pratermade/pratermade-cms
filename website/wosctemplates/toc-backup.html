@@ -1,0 +1,68 @@
+{% extends "layouts/2012-container.html" %}
+{% load staticfiles %}
+{% block main %}
+					<div id="main">
+						<div class="inner">
+
+							<!-- Header -->
+								{% include "layouts/2012-header.html" %}
+
+							<!-- Content -->
+								<section>
+									<header class="main">
+									 <div id="editor">
+										<h1>{{ article.title }}</h1>
+									</div>
+									</header>
+                                    {% if article.header_image %}
+									<img src="{{ article.header_image.url }}">
+                                {% endif %}
+
+									{% autoescape off %}
+									<div id="mainContentEditor">	
+                                        <!-- SUB_Menu -->
+                                            <nav id="menu" class="content-side-menu">
+                                                <header class="major">
+                                                    <h3>{{ article.title }}</h3>
+                                                </header>
+                                                <ul id="toc" class="box2">
+                                                        {% for child in children %}
+                                                            <li>
+                                                            {% if child.slug %}
+                                                                <a href="{% url 'article' child.slug %}">{{ child.title }}</a>
+                                                            {% elif child.link %}
+                                                                <a href="{{ child.link }}">{{ child.title }}</a>
+                                                            {% endif %}
+                                                            </li>
+                                                        {% endfor %}
+                                                </ul>
+                                            </nav>
+										{{ article.content }}
+									</div>
+                                        <br />
+                                        <div id="toc" class="box">
+
+                                        <table>
+                                            <thead>{{ article.title }}: <i>Table of Contents</i></thead>
+                                            {%  for child in children %}
+                                                <tr>
+                                                {% if child.slug %}
+                                                    <td><a href="{% url 'article' child.slug %}">{{ child.title }}</a></td>
+                                                {% elif child.link %}
+                                                    <td><a href="{{ child.link }}">{{ child.title }}</a></td>
+                                                {% endif %}
+                                                </tr>
+                                            {% endfor %}
+                                            <tr></tr>
+                                        </table>
+                                        </div>
+									{% endautoescape %}
+
+								</section>
+
+						</div>
+					</div>
+
+<script> 
+</script>
+{% endblock %}

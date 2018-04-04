@@ -11,7 +11,7 @@
 								<section>
 
 									{% autoescape off %}
-									{{ form.as_p }}
+									    {{ form.as_p }}
 									{% endautoescape %}
 
 								</section>
@@ -91,4 +91,19 @@ function myFileBrowser (field_name, url, type, win) {
 {#                console.error(error);#}
 {#        });#}
 {#</script>#}
+
+<style>
+/* ### Edit Page Changes ### */
+    #id_content_ifr {
+        min-height: 500px;
+    }
+    .mce-content-body img {
+        max-width: 100%;
+    }
+    section p:nth-child(n+3) {
+        width: 48%;
+        display: inline-block;
+        padding: 0 30px;
+    }
+</style>
 {% endblock %}

@@ -1,0 +1,19 @@
+/* WOSC CSS by Nicholas Hood */
+
+#menu > ul > li > ul > li.active a {
+    color: #1b6daa !important
+}
+.google-maps {
+    position: relative;
+    padding-bottom: 56%; // This is the aspect ratio
+    height: 0;
+    overflow: hidden;
+}
+.google-maps iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100% !important;
+    height: 100% !important;
+}
+img { border-radius:9px }

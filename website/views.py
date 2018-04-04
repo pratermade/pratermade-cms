@@ -1,13 +1,15 @@
 from django.shortcuts import render
 from django.views.generic import TemplateView, RedirectView, View, FormView
+from django.db.models import Q
 from django.urls import reverse
 from .models import Article, Settings as SiteSettings
 from .forms import ArticleForm
 from django.shortcuts import get_object_or_404, redirect
-from braces.views import UserPassesTestMixin
+from braces.views import UserPassesTestMixin, LoginRequiredMixin
+from django.contrib.auth.models import Group, User
 import pprint, pratermade.settings as Settings
 import boto3
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from PIL import Image
 from storages.backends.s3boto3 import S3Boto3Storage
 import tempfile
@@ -123,9 +125,29 @@ class TocView(MyTemplateMixin, TemplateView):
         return context
 
 
-class ImageBrowserView(MyTemplateMixin,TemplateView):
-    template_name = "image_browser.html"
+class ImageBrowserView(LoginRequiredMixin, View):
 
+    def get(self, user):
+        """
+        This view returns the directory structure for everything under the 'dir' specified in the post request
+        :return: HTML for the AJAX request
+        """
+
+        if self.request.GET['dir'] == '/':
+            """
+            This is a root request. First find all the views that they have access to and return them as folders.
+            """
+            groups = self.request.user.groups.all()
+            response = '<ul class="jqueryFileTree" style="display: float;">'
+            articles = Article.objects.filter(Q(owner=self.request.user) | Q(group__in=groups))
+            for article in articles:
+                response += '<li class="directory collapsed"><a href="#" rel="/{}/">{}</a></li>'.format(article.slug,article.slug)
+            response += "</ul>"
+            return HttpResponse(response)
+
+'''
+<li class="file ext_gif"><a href="#" rel="../../demo/demo/images/battletoads.gif">battletoads.gif</a></li><li class="file ext_png"><a href="#" rel="../../demo/demo/images/box.png">box.png</a></li><li class="file ext_png"><a href="#" rel="../../demo/demo/images/drop-shadow.png">drop-shadow.png</a></li><li class="file ext_gif"><a href="#" rel="../../demo/demo/images/left_arrow.gif">left_arrow.gif</a></li><li class="file ext_png"><a href="#" rel="../../demo/demo/images/my_image.png">my_image.png</a></li><li class="file ext_gif"><a href="#" rel="../../demo/demo/images/right_arrow.gif">right_arrow.gif</a></li></ul>
+'''
 
 class ImageUpload(View):
 

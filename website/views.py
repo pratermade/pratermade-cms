@@ -8,7 +8,7 @@ from django.shortcuts import get_object_or_404, redirect
 from braces.views import UserPassesTestMixin, LoginRequiredMixin
 from django.contrib.auth.models import Group, User
 import pprint, pratermade.settings as Settings
-import boto3
+import boto3, re
 from django.http import JsonResponse, HttpResponse
 from PIL import Image
 from storages.backends.s3boto3 import S3Boto3Storage
@@ -146,7 +146,7 @@ class ListImagesView(LoginRequiredMixin, View):
             response = '<ul class="jqueryFileTree" style="display: float;">'
             articles = Article.objects.filter(Q(owner=self.request.user) | Q(group__in=groups))
             for article in articles:
-                response += '<li class="directory collapsed"><a href="#" rel="/{}/">{}</a></li>'.format(article.slug,article.slug)
+                response += '<li class="directory collapsed"><a href="#" rel="{}/">{}</a></li>'.format(article.slug,article.slug)
             response += "</ul>"
             return HttpResponse(response)
         else:
@@ -157,12 +157,21 @@ class ListImagesView(LoginRequiredMixin, View):
             response = '<ul class="jqueryFileTree" style="display: float;">'
             articles = Article.objects.filter(Q(owner=self.request.user) | Q(group__in=groups))
             path = self.request.POST['dir'].split('/')
-            for article in articles:
-                response += '<li class="directory collapsed"><a href="#" rel="/{}/">{}</a></li>'.format(article.slug,
-                                                                                                        article.slug)
+            prefix = "{}/images/original/".format(path[0])
+            if path[1] != '':
+                for directory in path[1:]:
+                    prefix += directory + "/"
+            print(prefix)
+            s3 = boto3.resource("s3")
+            my_bucket = s3.Bucket(Settings.AWS_MEDIA_BUCKET_NAME)
+            for obj in my_bucket.objects.filter(Prefix=prefix):
+                # remove prefix from key
+                m = re.search(prefix, obj.key)
+                filename = obj.key[m.end():]
+                response += '<li class="file ext_gif"><a href="#" rel="{}/">{}</a></li>'.format(obj.key, filename)
             response += "</ul>"
 
-            return HttpResponse(path)
+            return HttpResponse(response)
 
 '''
 <li class="file ext_gif"><a href="#" rel="../../demo/demo/images/battletoads.gif">battletoads.gif</a></li><li class="file ext_png"><a href="#" rel="../../demo/demo/images/box.png">box.png</a></li><li class="file ext_png"><a href="#" rel="../../demo/demo/images/drop-shadow.png">drop-shadow.png</a></li><li class="file ext_gif"><a href="#" rel="../../demo/demo/images/left_arrow.gif">left_arrow.gif</a></li><li class="file ext_png"><a href="#" rel="../../demo/demo/images/my_image.png">my_image.png</a></li><li class="file ext_gif"><a href="#" rel="../../demo/demo/images/right_arrow.gif">right_arrow.gif</a></li></ul>

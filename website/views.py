@@ -11,6 +11,7 @@ import pprint, pratermade.settings as Settings
 import boto3, re
 from django.http import JsonResponse, HttpResponse
 from PIL import Image
+import tempfile
 from storages.backends.s3boto3 import S3Boto3Storage
 import tempfile
 import os
@@ -211,13 +212,14 @@ class ImageUpload(View):
         """
         # Seek to the beginning of the file.
         image.seek(0, os.SEEK_SET)
-        dest = open('/tmp/'+image.name, 'w+b')
+        tempdir = tempfile.gettempdir()
+        dest = open(tempdir +'/'+image.name, 'w+b')
 
         for chunk in image.chunks():
             dest.write(chunk)
         im = Image.open(dest)
         resized = Image.open(dest)
-        resized_fp = open('/tmp/resized_'+image.name, 'w+b')
+        resized_fp = open(tempdir +'/resized_'+image.name, 'w+b')
 
         if im.width > width:
             ratio = width / im.width
@@ -226,13 +228,13 @@ class ImageUpload(View):
         resized.save(resized_fp, im.format)
         resized_fp.close()
         filepath = "{}/images/{}/{}".format(self.kwargs['slug'], str(width), image.name)
-        s3.upload_file('/tmp/resized_'+image.name, Settings.AWS_MEDIA_BUCKET_NAME, filepath, ExtraArgs={"ACL": "public-read"})
+        s3.upload_file(tempdir +'/resized_'+image.name, Settings.AWS_MEDIA_BUCKET_NAME, filepath, ExtraArgs={"ACL": "public-read"})
         dest.close()
         resized_fp.close()
-        if os.path.isfile('/tmp/'+image.name):
-            os.remove('/tmp/'+image.name)
-        if os.path.isfile('/tmp/resized_'+image.name):
-            os.remove('/tmp/resized_'+image.name)
+        if os.path.isfile(tempdir +'/'+image.name):
+            os.remove(tempdir +'/'+image.name)
+        if os.path.isfile(tempdir +'/resized_'+image.name):
+            os.remove(tempdir + '/resized_'+image.name)
 
 
 def get_menu():

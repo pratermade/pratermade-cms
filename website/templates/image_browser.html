@@ -32,7 +32,6 @@
 <body>
 
 <div class="example">
-    <h2>multiFolder = false</h2>
     <div id="fileTreeDemo_2" class="demo">
 {#        <ul class="jqueryFileTree" style="">#}
 {#            <li class="directory collapsed" style="position: static;"><a href="#" rel="../../demo/connectors/">connectors</a>#}
@@ -163,16 +162,37 @@
 {#        </ul>#}
     </div>
 </div>
-{#{% for item in contents %}#}
-{#    {{ item.name }}#}
-{#    {{ item.url }}#}
-{##}
-{#    {% if item.thumbnail %}#}
-{#        {{ item.thumbnail }}#}
-{#    {% else %}#}
-{#        <img src="{% static 'img' %}/folder.png">#}
-{#    {% endif %}#}
-{#{% endfor %}#}
+
+<style>
+    .jqueryFileTree ul li {
+        padding-left: 0px !important;
+    }
+    .image_thumbnail img {
+        float:left;
+        position:relative;
+        width: 14px;
+        margin-right: 3px;
+    }
+    .image_thumbnail:hover {
+        padding-left: 19px;
+        background: #BDF url(/static/assets/jquery.fileTree/images/picture.png) left top no-repeat !important;
+    }
+    .image_thumbnail:hover img {
+        position: relative;
+        float: right;
+        top: -35px;
+        right: -5px;
+        z-index: 999;
+        padding: 4px;
+        background: rgba(187, 221, 255, 0.80);
+        border-radius: 5px;
+        display: block;
+        max-width: 150px;
+        max-height: 110px;
+        width: auto;
+        height: auto;
+    }
+</style>
 
 </body>
 </html>

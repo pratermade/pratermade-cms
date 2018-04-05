@@ -39,7 +39,7 @@ class MyTemplateMixin(object):
         if page_group is None:
             return context
         if self.request.user.is_superuser or \
-                self.request.user == Article.objects.get(slug=kwargs['slug']).owner or \
+                self.request.user == Article.objects.get(slug=self.kwargs['slug']).owner or \
                 self.request.user.groups.filter(id=page_group.id).exists():
                     context['can_edit'] = True
                     context['slug'] = self.kwargs['slug']

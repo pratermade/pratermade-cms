@@ -149,6 +149,20 @@ class ListImagesView(LoginRequiredMixin, View):
                 response += '<li class="directory collapsed"><a href="#" rel="/{}/">{}</a></li>'.format(article.slug,article.slug)
             response += "</ul>"
             return HttpResponse(response)
+        else:
+            """
+            This is a folder request. Lest list the contents of this directory
+            """
+            groups = self.request.user.groups.all()
+            response = '<ul class="jqueryFileTree" style="display: float;">'
+            articles = Article.objects.filter(Q(owner=self.request.user) | Q(group__in=groups))
+            path = self.request.POST['dir'].split('/')
+            for article in articles:
+                response += '<li class="directory collapsed"><a href="#" rel="/{}/">{}</a></li>'.format(article.slug,
+                                                                                                        article.slug)
+            response += "</ul>"
+
+            return HttpResponse(path)
 
 '''
 <li class="file ext_gif"><a href="#" rel="../../demo/demo/images/battletoads.gif">battletoads.gif</a></li><li class="file ext_png"><a href="#" rel="../../demo/demo/images/box.png">box.png</a></li><li class="file ext_png"><a href="#" rel="../../demo/demo/images/drop-shadow.png">drop-shadow.png</a></li><li class="file ext_gif"><a href="#" rel="../../demo/demo/images/left_arrow.gif">left_arrow.gif</a></li><li class="file ext_png"><a href="#" rel="../../demo/demo/images/my_image.png">my_image.png</a></li><li class="file ext_gif"><a href="#" rel="../../demo/demo/images/right_arrow.gif">right_arrow.gif</a></li></ul>

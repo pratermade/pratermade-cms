@@ -133,6 +133,20 @@ class ImageBrowserView(MyTemplateMixin, TemplateView):
 
 class ListImagesView(LoginRequiredMixin, View):
 
+    def get(self, user):
+        """
+        This is a root request. First find all the views that they have access to and return them as folders.
+        """
+        groups = self.request.user.groups.all()
+        response = '<ul class="jqueryFileTree" style="display: float;">'
+        articles = Article.objects.filter(Q(owner=self.request.user) | Q(group__in=groups))
+        for article in articles:
+            response += '<li class="directory collapsed"><a href="#" rel="{}/">{}</a></li>'.format(article.slug,
+                                                                                                   article.slug)
+        response += "</ul>"
+        return HttpResponse(response)
+
+
     def post(self, user):
         """
         This view returns the directory structure for everything under the 'dir' specified in the post request
@@ -170,7 +184,8 @@ class ListImagesView(LoginRequiredMixin, View):
                 m = re.search(prefix, obj.key)
                 filename = obj.key[m.end():]
                 thumbnail_url = "https://s3.amazonaws.com/{}/{}".format(Settings.AWS_MEDIA_BUCKET_NAME,obj.key)
-                response += '<li class="file ext_gif"><a href="#" thumbnail="{}" rel="{}/">{}</a></li>'.format(thumbnail_url, obj.key, filename)
+                thumbnail_url = thumbnail_url.replace('original','150')
+                response += '<li class="file2 ext_gif2"><a href="#" thumbnail="{}" rel="{}/" class="image_thumbnail"><img src="{}">{}</a></li>'.format(thumbnail_url, obj.key, thumbnail_url, filename)
             response += "</ul>"
 
             return HttpResponse(response)

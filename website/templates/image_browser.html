@@ -21,7 +21,7 @@
 
         $(document).ready( function() {
 
-            $('#fileTreeDemo_2').fileTree({csrftoken: {{ csrf_token }}, folderEvent: 'click', expandSpeed: 750, collapseSpeed: 750, multiFolder: false }, function(file) {
+            $('#fileTreeDemo_2').fileTree({csrftoken: "{{ csrf_token }}", folderEvent: 'click', expandSpeed: 750, collapseSpeed: 750, multiFolder: false }, function(file) {
                 alert(file);
             });
 

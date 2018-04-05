@@ -168,7 +168,8 @@ class ListImagesView(LoginRequiredMixin, View):
                 # remove prefix from key
                 m = re.search(prefix, obj.key)
                 filename = obj.key[m.end():]
-                response += '<li class="file ext_gif"><a href="#" rel="{}/">{}</a></li>'.format(obj.key, filename)
+                thumbnail_url = "https://s3.amazonaws.com/{}/{}".format(Settings.AWS_MEDIA_BUCKET_NAME,obj.key)
+                response += '<li class="file ext_gif"><a href="#" thumbnail="{}" rel="{}/">{}</a></li>'.format(thumbnail_url, obj.key, filename)
             response += "</ul>"
 
             return HttpResponse(response)

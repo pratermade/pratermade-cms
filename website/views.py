@@ -125,15 +125,20 @@ class TocView(MyTemplateMixin, TemplateView):
         return context
 
 
-class ImageBrowserView(LoginRequiredMixin, View):
+class ImageBrowserView(MyTemplateMixin, TemplateView):
+    template_name = "image_browser.html"
 
-    def get(self, user):
+
+
+class ListImagesView(LoginRequiredMixin, View):
+
+    def post(self, user):
         """
         This view returns the directory structure for everything under the 'dir' specified in the post request
         :return: HTML for the AJAX request
         """
 
-        if self.request.GET['dir'] == '/':
+        if self.request.POST['dir'] == '/':
             """
             This is a root request. First find all the views that they have access to and return them as folders.
             """
@@ -144,10 +149,26 @@ class ImageBrowserView(LoginRequiredMixin, View):
                 response += '<li class="directory collapsed"><a href="#" rel="/{}/">{}</a></li>'.format(article.slug,article.slug)
             response += "</ul>"
             return HttpResponse(response)
+        else:
+            """
+            This is a folder request. Lest list the contents of this directory
+            """
+            groups = self.request.user.groups.all()
+            response = '<ul class="jqueryFileTree" style="display: float;">'
+            articles = Article.objects.filter(Q(owner=self.request.user) | Q(group__in=groups))
+            path = self.request.POST['dir'].split('/')
+            for article in articles:
+                response += '<li class="directory collapsed"><a href="#" rel="/{}/">{}</a></li>'.format(article.slug,
+                                                                                                        article.slug)
+            response += "</ul>"
+
+            return HttpResponse(path)
 
 '''
 <li class="file ext_gif"><a href="#" rel="../../demo/demo/images/battletoads.gif">battletoads.gif</a></li><li class="file ext_png"><a href="#" rel="../../demo/demo/images/box.png">box.png</a></li><li class="file ext_png"><a href="#" rel="../../demo/demo/images/drop-shadow.png">drop-shadow.png</a></li><li class="file ext_gif"><a href="#" rel="../../demo/demo/images/left_arrow.gif">left_arrow.gif</a></li><li class="file ext_png"><a href="#" rel="../../demo/demo/images/my_image.png">my_image.png</a></li><li class="file ext_gif"><a href="#" rel="../../demo/demo/images/right_arrow.gif">right_arrow.gif</a></li></ul>
 '''
+
+
 
 class ImageUpload(View):
 

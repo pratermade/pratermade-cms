@@ -17,16 +17,23 @@
     <script src="/static/assets/jquery.fileTree/jqueryFileTree.js" type="text/javascript"></script>
     <link href="/static/assets/jquery.fileTree/jqueryFileTree.css" rel="stylesheet" type="text/css" media="screen" />
 
+
     <script type="text/javascript">
 
         $(document).ready( function() {
 
             $('#fileTreeDemo_2').fileTree({csrftoken: "{{ csrf_token }}", folderEvent: 'click', expandSpeed: 750, collapseSpeed: 750, multiFolder: false }, function(file) {
-                alert(file);
+                mySubmit(file);
             });
 
 
         });
+
+
+        function mySubmit(url){
+            top.tinymce.activeEditor.windowManager.getParams().oninsert(url);
+            top.tinymce.activeEditor.windowManager.close();
+        }
     </script>
 </head>
 <body>

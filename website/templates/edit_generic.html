@@ -12,16 +12,19 @@
 
 							<!-- Content -->
 								<section>
-
+                                <form action="." method="post">
+                                    {% csrf_token %}
 									{% autoescape off %}
 									{{ form.as_p }}
-									{% endautoescape %}
-
+									{% endautoescape %}<br />
+                                    <button id="submit" type="submit">Update</button>
+                                </form>
 								</section>
+
 
 						</div>
 					</div>
-
+<script src="{% static "assets/js/tinymce/tinymce.min.js" %}" ></script>
 <script>
   tinymce.init({
       selector: '.editable',
@@ -52,11 +55,27 @@
       formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
       xhr.send(formData);
   },
-  file_browser_callback: myFileBrowser
+  //file_browser_callback: myFileBrowser
+  file_picker_callback: function(callback, value, meta){
+          myFilePicker(callback, value, meta);
+  }
 });
 
-function myFileBrowser (field_name, url, type, win) {
+function myFilePicker(callback, value, meta) {
+    tinymce.activeEditor.windowManager.open({
+        title: 'File Manager',
+        url: {% url 'imagebrowser' %},
+        width: 650,
+        height: 550,
+    }, {
+        oninsert: function (url) {
+            console.log(url);
+            callback(url);
+        }
+    });
+}
 
+function myFileBrowser (field_name, url, type, win) {
    //alert("Field_Name: " + field_name + "nURL: " + url + "nType: " + type + "nWin: " + win); // debug/testing
 
     var cmsURL = {% url 'imagebrowser' %};
@@ -105,10 +124,14 @@ function myFileBrowser (field_name, url, type, win) {
     .mce-content-body img {
         max-width: 100%;
     }
-    section p:nth-child(n+3) {
+    section p:nth-child(n+4) {
         width: 48%;
         display: inline-block;
         padding: 0 30px;
+    }
+
+    #submit {
+        float:right;
     }
 
 </style>

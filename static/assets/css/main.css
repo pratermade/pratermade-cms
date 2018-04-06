@@ -7,11 +7,6 @@
 	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
 */
 
-/* WOSC Theme Variables */
-:root {
-	--green: #005000;
-	--gold: #gold;
-}
 
 
 /* Reset */
@@ -2114,13 +2109,13 @@
 		-ms-transition: color 0.2s ease-in-out, border-bottom-color 0.2s ease-in-out;
 		transition: color 0.2s ease-in-out, border-bottom-color 0.2s ease-in-out;
 		border-bottom: dotted 1px;
-		color: var(--green);
+		color: #f56a6a;
 		text-decoration: none;
 	}
 
 		a:hover {
-			border-bottom-color: var(--green);
-			color: var(--green) !important;
+			border-bottom-color: #f56a6a;
+			color: #f56a6a !important;
 		}
 
 			a:hover strong {
@@ -2289,7 +2284,7 @@
 	}
 
 	header.major > :last-child {
-		border-bottom: solid 3px var(--green);
+		border-bottom: solid 3px #f56a6a;
 		display: inline-block;
 		margin: 0 0 2em 0;
 		padding: 0 0.75em 0.5em 0;
@@ -2356,8 +2351,8 @@
 		input[type="url"]:focus,
 		select:focus,
 		textarea:focus {
-			border-color: var(--green);
-			box-shadow: 0 0 0 1px var(--green);
+			border-color: #f56a6a;
+			box-shadow: 0 0 0 1px #f56a6a;
 		}
 
 	.select-wrapper {
@@ -2470,8 +2465,8 @@
 
 		input[type="checkbox"]:focus + label:before,
 		input[type="radio"]:focus + label:before {
-			border-color: var(--green);
-			box-shadow: 0 0 0 1px var(--green);
+			border-color: #f56a6a;
+			box-shadow: 0 0 0 1px #f56a6a;
 		}
 
 	input[type="checkbox"] + label:before {
@@ -2704,7 +2699,7 @@
 				}
 
 				ul.contact li:before {
-					color: var(--green);
+					color: #f56a6a;
 					display: inline-block;
 					font-size: 1.5em;
 					height: 1.125em;
@@ -2828,7 +2823,7 @@
 				}
 
 					ul.pagination li > .page.active {
-						background-color: var(--green);
+						background-color: #f56a6a;
 						color: #ffffff !important;
 					}
 
@@ -2960,8 +2955,8 @@
 		background-color: transparent;
 		border-radius: 0.375em;
 		border: 0;
-		box-shadow: inset 0 0 0 2px var(--green);
-		color: var(--green) !important;
+		box-shadow: inset 0 0 0 2px #f56a6a;
+		color: #f56a6a !important;
 		cursor: pointer;
 		display: inline-block;
 		font-family: "Roboto Slab", serif;
@@ -3034,7 +3029,7 @@
 		input[type="button"].special,
 		button.special,
 		.button.special {
-			background-color: var(--green);
+			background-color: #f56a6a;
 			box-shadow: none;
 			color: #ffffff !important;
 		}
@@ -3154,7 +3149,7 @@
 			}
 
 				.features article .icon:before {
-					color: var(--green);
+					color: #f56a6a;
 					font-size: 2.75rem;
 					position: relative;
 					top: 0.05em;
@@ -3799,7 +3794,7 @@
 		display: -webkit-flex;
 		display: -ms-flex;
 		display: flex;
-		border-bottom: solid 5px var(--green);
+		border-bottom: solid 5px #f56a6a;
 		padding: 2.5em 0 1em 0;
 		position: relative;
 	}
@@ -3994,7 +3989,7 @@
 		}
 
 			#menu ul a:hover, #menu ul span:hover {
-				color: var(--green);
+				color: #f56a6a;
 			}
 
 			#menu ul a.opener, #menu ul span.opener {
@@ -4028,7 +4023,7 @@
 				}
 
 				#menu ul a.opener:hover:before, #menu ul span.opener:hover:before {
-					color: var(--green);
+					color: #f56a6a;
 				}
 
 				#menu ul a.opener.active + ul, #menu ul span.opener.active + ul {
@@ -4072,11 +4067,6 @@
 
 /* CUSTOM */
 .mce-tinymce button {
-<<<<<<< HEAD
 	box-shadow: inherit !important;
     color: inherit !important;
-=======
-box-shadow: inherit !important;
-color: inherit !important;
->>>>>>> e8e6ea598c33ace56c7ff100b0a326e4f3792db4
 }

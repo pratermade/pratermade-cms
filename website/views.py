@@ -93,7 +93,23 @@ class ArticleEditView(UserPassesTestMixin, MyTemplateMixin, FormView):
     def get_context_data(self, *args, **kwargs):
         return super(ArticleEditView, self).get_context_data(*args, **kwargs)
 
+    def form_invalid(self, form):
+        print(form.errors)
+        return super(ArticleEditView, self).form_invalid(form)
+
+    def form_valid(self, form):
+        article = Article.objects.get(slug=self.kwargs['slug'])
+        article.title = form['title'].value()
+        article.content = form['content'].value()
+        article.page_type = form['page_type'].value()
+        article.group_id = form['group'].value()
+        article.parent_id = form['parent'].value()
+        article.order = form['order'].value()
+        article.save()
+        return super(ArticleEditView, self).form_valid(form)
+
     def get_initial(self):
+        self.success_url = reverse('page', kwargs={'slug':self.kwargs['slug']})
         article = Article.objects.get(slug=self.kwargs['slug'])
         initial = {
             "page_type": article.page_type,
@@ -176,16 +192,15 @@ class ListImagesView(LoginRequiredMixin, View):
             if path[1] != '':
                 for directory in path[1:]:
                     prefix += directory + "/"
-            print(prefix)
             s3 = boto3.resource("s3")
             my_bucket = s3.Bucket(Settings.AWS_MEDIA_BUCKET_NAME)
             for obj in my_bucket.objects.filter(Prefix=prefix):
                 # remove prefix from key
                 m = re.search(prefix, obj.key)
                 filename = obj.key[m.end():]
-                thumbnail_url = "https://s3.amazonaws.com/{}/{}".format(Settings.AWS_MEDIA_BUCKET_NAME,obj.key)
-                thumbnail_url = thumbnail_url.replace('original','150')
-                response += '<li class="file2 ext_gif2"><a href="#" thumbnail="{}" rel="{}/" class="image_thumbnail"><img src="{}">{}</a></li>'.format(thumbnail_url, obj.key, thumbnail_url, filename)
+                original_url = "https://s3.amazonaws.com/{}/{}".format(Settings.AWS_MEDIA_BUCKET_NAME,obj.key)
+                thumbnail_url = original_url.replace('original','150')
+                response += '<li class="file2 ext_gif2"><a href="#" thumbnail="{}" rel="{}" class="image_thumbnail"><img src="{}">{}</a></li>'.format(thumbnail_url, original_url, thumbnail_url, filename)
             response += "</ul>"
 
             return HttpResponse(response)

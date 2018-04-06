@@ -36,6 +36,7 @@ class MyTemplateMixin(object):
             context['breadcrumbs'] = get_breadcrumbs(page.id)
         if self.request.user.is_superuser or self.request.user.groups.filter(name='editor').exists():
             context['is_editor'] = True
+            context['can_edit'] = True
         if page_group is None:
             return context
         if self.request.user.is_superuser or \

@@ -1,4 +1,5 @@
-# Pratermade Serverless CMS
+# SS-CMS
+## (Simple Serverless CMS)
 
 https://github.com/pratermade/pratermade-cms/issues
 

@@ -44,9 +44,7 @@
                                   class="form-signin" role="form">
                                 {% csrf_token %}
                                 <input type="hidden" id="oneTime" name="oneTime" value="1">
-                                {% if next %}
-                                    <input type="hidden" name="next" value="{{ next }}" />
-                                {% endif %}
+                                    <input type="hidden" name="next" value="{% if next %}{{ next }}{% else %}/{% endif %}" />
                                 <input type="text" id="username" name="username" class="form-control" placeholder="username" required autofocus />
                                 <input type="password" id="password" name="password" class="form-control" placeholder="password" required />
                                 <button class="btn btn-lg btn-default" style="color:black!important" type="submit"><span
@@ -66,7 +64,7 @@
 
                 <a class="need-help collapsed" data-toggle="collapse" href="#collapseListGroup1" aria-expanded="false"
                    aria-controls="collapseListGroup1"><span class="caret"></span> Account help?</a>
-                <input type="hidden" id="samlreturnto" name="ReturnTo" value=""/>
+                <input type="hidden" id="samlreturnto" name="ReturnTo" value="/"/>
                 </form>
 
             </div>

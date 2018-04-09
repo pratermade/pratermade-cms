@@ -3,6 +3,6 @@
 .idea/
 *__pycache__/
 zappa_settings.json
-pratermade/settings.py
 
 *.swp
+/ss_cms/settings.py

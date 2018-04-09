@@ -2,7 +2,8 @@ from django.shortcuts import render
 from django.views.generic import TemplateView, RedirectView, View, FormView
 from django.db.models import Q
 from django.urls import reverse
-from .models import Article, Settings as SiteSettings
+from .models import Article, GlobalContent, Settings as SiteSettings
+
 from .forms import ArticleForm
 from django.shortcuts import get_object_or_404, redirect
 from braces.views import UserPassesTestMixin, LoginRequiredMixin
@@ -44,6 +45,11 @@ class MyTemplateMixin(object):
                 self.request.user.groups.filter(id=page_group.id).exists():
                     context['can_edit'] = True
                     context['slug'] = self.kwargs['slug']
+        global_content = {}
+        contents = GlobalContent.objects.all()
+        for content in contents:
+            global_content[content.name] = content.content
+        context['global_content'] = global_content
         context['site_settings'] = SiteSettings.objects.all()[0]
         return context
 
@@ -147,6 +153,9 @@ class ImageBrowserView(MyTemplateMixin, TemplateView):
     template_name = "image_browser.html"
 
 
+class FileBrowserView(MyTemplateMixin, TemplateView):
+    template_name = "file_browser.html"
+
 
 class ListImagesView(LoginRequiredMixin, View):
 
@@ -206,9 +215,64 @@ class ListImagesView(LoginRequiredMixin, View):
 
             return HttpResponse(response)
 
-'''
-<li class="file ext_gif"><a href="#" rel="../../demo/demo/images/battletoads.gif">battletoads.gif</a></li><li class="file ext_png"><a href="#" rel="../../demo/demo/images/box.png">box.png</a></li><li class="file ext_png"><a href="#" rel="../../demo/demo/images/drop-shadow.png">drop-shadow.png</a></li><li class="file ext_gif"><a href="#" rel="../../demo/demo/images/left_arrow.gif">left_arrow.gif</a></li><li class="file ext_png"><a href="#" rel="../../demo/demo/images/my_image.png">my_image.png</a></li><li class="file ext_gif"><a href="#" rel="../../demo/demo/images/right_arrow.gif">right_arrow.gif</a></li></ul>
-'''
+class ListFilesView(LoginRequiredMixin, View):
+
+    def get(self, user):
+        """
+        This is a root request. First find all the views that they have access to and return them as folders.
+        """
+        groups = self.request.user.groups.all()
+        response = '<ul class="jqueryFileTree" style="display: float;">'
+        articles = Article.objects.filter(Q(owner=self.request.user) | Q(group__in=groups))
+        for article in articles:
+            response += '<li class="directory collapsed"><a href="#" rel="{}/">{}</a></li>'.format(article.slug,
+                                                                                                   article.slug)
+        response += "</ul>"
+        return HttpResponse(response)
+
+
+    def post(self, user):
+        """
+        This view returns the directory structure for everything under the 'dir' specified in the post request
+        :return: HTML for the AJAX request
+        """
+
+        if self.request.POST['dir'] == '/':
+            """
+            This is a root request. First find all the views that they have access to and return them as folders.
+            """
+            groups = self.request.user.groups.all()
+            response = '<ul class="jqueryFileTree" style="display: float;">'
+            articles = Article.objects.filter(Q(owner=self.request.user) | Q(group__in=groups))
+            for article in articles:
+                response += '<li class="directory collapsed"><a href="#" rel="{}/">{}</a></li>'.format(article.slug,article.slug)
+            response += "</ul>"
+            return HttpResponse(response)
+        else:
+            """
+            This is a folder request. Lest list the contents of this directory
+            """
+            groups = self.request.user.groups.all()
+            response = '<ul class="jqueryFileTree" style="display: float;">'
+            articles = Article.objects.filter(Q(owner=self.request.user) | Q(group__in=groups))
+            path = self.request.POST['dir'].split('/')
+            prefix = "{}/images/original/".format(path[0])
+            if path[1] != '':
+                for directory in path[1:]:
+                    prefix += directory + "/"
+            s3 = boto3.resource("s3")
+            my_bucket = s3.Bucket(Settings.AWS_MEDIA_BUCKET_NAME)
+            for obj in my_bucket.objects.filter(Prefix=prefix):
+                # remove prefix from key
+                m = re.search(prefix, obj.key)
+                filename = obj.key[m.end():]
+                original_url = "https://s3.amazonaws.com/{}/{}".format(Settings.AWS_MEDIA_BUCKET_NAME,obj.key)
+                thumbnail_url = original_url.replace('original','150')
+                response += '<li class="file2 ext_gif2"><a href="#" thumbnail="{}" rel="{}" class="image_thumbnail"><img src="{}">{}</a></li>'.format(thumbnail_url, original_url, thumbnail_url, filename)
+            response += "</ul>"
+
+            return HttpResponse(response)
+
 
 
 

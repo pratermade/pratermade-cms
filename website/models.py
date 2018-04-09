@@ -36,6 +36,15 @@ class Article(models.Model):
         return self.title
 
 
+class GlobalContent(models.Model):
+    name = models.CharField(max_length=32)
+    content = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return self.name
+
+
+
 class Image(models.Model):
     image_name = models.CharField(max_length=32)
     image_locaton = models.CharField(max_length=1024)

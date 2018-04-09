@@ -31,7 +31,49 @@
       branding: false,
       plugins: 'image preview code link fullscreen',
       toolbar: 'undo redo | link image file | preview code fullscreen',
-      images_upload_handler: function (blobInfo, success, failure) {
+      image_dimensions: false,
+      file_picker_types: 'file image media',
+      {#image_class_list: [#}
+      {#    {title: 'sizable', value: 'sizable'},#}
+      {#    {title: 'fixed-size', value: 'fixed'}#}
+      {#],#}
+      images_upload_handler: function(blobInfo, success, failure) {
+          imageUploadHandler(blobInfo, success, failure);
+      },
+      file_upload_handler: function(blobInfo, success, failure) {
+          imageUploadHandler(blobInfo, success, failure);
+      },
+      file_picker_callback: function(callback, value, meta){
+              myFilePicker(callback, value, meta);
+  }
+});
+
+function myFilePicker(callback, value, meta) {
+    console.log(meta);
+
+    if (meta.filetype == "image"){
+        var url = {% url 'imagebrowser' %};
+        var title = "Image Browser";
+    }
+    else{
+        var url = {% url 'filebrowser' %};
+        var title = "File Browser";
+    }
+    tinymce.activeEditor.windowManager.open({
+        title: title,
+        url: url,
+        width: 650,
+        height: 550,
+    }, {
+        oninsert: function (url) {
+            console.log(url);
+            callback(url);
+        }
+    });
+}
+
+function imageUploadHandler (blobInfo, success, failure) {
+          console.log("Something went here");
           var xhr, formData;
           xhr = new XMLHttpRequest();
           xhr.withCredentials = false;
@@ -54,68 +96,10 @@
       formData.append('file', blobInfo.blob(), blobInfo.filename());
       formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
       xhr.send(formData);
-  },
-  //file_browser_callback: myFileBrowser
-  file_picker_callback: function(callback, value, meta){
-          myFilePicker(callback, value, meta);
-  }
-});
-
-function myFilePicker(callback, value, meta) {
-    tinymce.activeEditor.windowManager.open({
-        title: 'File Manager',
-        url: {% url 'imagebrowser' %},
-        width: 650,
-        height: 550,
-    }, {
-        oninsert: function (url) {
-            console.log(url);
-            callback(url);
-        }
-    });
 }
+</script>
 
-function myFileBrowser (field_name, url, type, win) {
-   //alert("Field_Name: " + field_name + "nURL: " + url + "nType: " + type + "nWin: " + win); // debug/testing
-
-    var cmsURL = {% url 'imagebrowser' %};
-    var searchString = window.location.search;
-    if(searchString.length < 1) {
-        searchString = "?";
-    }
-    tinyMCE.activeEditor.windowManager.open({
-        file : cmsURL,
-        title : 'Image Browser',
-        width : 420,  // Your dimensions may differ - toy around with them!
-        height : 400,
-        resizable : "yes",
-        inline : "yes",  // This parameter only has an effect if you use the inlinepopups plugin!
-        close_previous : "no"
-    }, {
-        window : win,
-        input : field_name
-    });
-    return false;
-}
-
-  </script>
-
-{#<script> #}
-{#    #}
-{#    #}
-{#console.log("Running...");#}
-{#ClassicEditor.create(document.querySelector('#mainContentEditor'))#}
-{#	.catch( error=> {#}
-{#		console.error(error);#}
-{#	});#}
-{#ClassicEditor.create(document.querySelector('#editor'))#}
-{#        .catch( error=> {#}
-{#                console.error(error);#}
-{#        });#}
-{#</script>#}
-
-
-<style>
+    <style>
 
 /* ### Edit Page Changes ### */
     #id_content_ifr {

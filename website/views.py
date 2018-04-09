@@ -26,7 +26,6 @@ class MyTemplateMixin(object):
     def get_context_data(self, *args, **kwargs):
         context = super(MyTemplateMixin, self).get_context_data(*args, **kwargs)
         context['menu'] = get_menu()
-        context['is_editor'] = False
         context['can_edit'] = False
         print(self.kwargs)
         page_group = None
@@ -35,14 +34,12 @@ class MyTemplateMixin(object):
             page_group = page.group
             context['slug'] = self.kwargs['slug']
             context['breadcrumbs'] = get_breadcrumbs(page.id)
-        if self.request.user.is_superuser or self.request.user.groups.filter(name='editor').exists():
-            context['is_editor'] = True
-            context['can_edit'] = True
         if page_group is None:
             return context
         if self.request.user.is_superuser or \
                 self.request.user == Article.objects.get(slug=self.kwargs['slug']).owner or \
-                self.request.user.groups.filter(id=page_group.id).exists():
+                self.request.user.groups.filter(id=page_group.id).exists() or \
+                self.request.user.groups.filter(name='editor').exists():
                     context['can_edit'] = True
                     context['slug'] = self.kwargs['slug']
         global_content = {}

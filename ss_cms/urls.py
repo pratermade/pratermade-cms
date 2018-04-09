@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path
 from django.conf.urls import url
 from website.views import IndexView, GenericView, ElementsView, ArticleView, ArticleEditView, TocView, PageView, \
-    ImageUpload, ImageBrowserView, ListImagesView
+    ImageUpload, ImageBrowserView, ListImagesView, FileBrowserView
 from django.conf.urls.static import static
 from django.conf import settings
 from django.contrib.auth import views as auth_views
@@ -45,6 +45,7 @@ urlpatterns = [
     url(r'imageupload/(?P<slug>[a-zA-Z0-9\-_]+)/$', ImageUpload.as_view(), name="imageupload"),
     url(r'fileupload/(?P<slug>[a-zA-Z0-9\-_]+)/$', ImageUpload.as_view(), name="fileupload"),
     url(r'listimages/$', ListImagesView.as_view(), name="listimages"),
+    path(r'filebrowser/', FileBrowserView.as_view(), name="filebrowser"),
 ]
 
 if settings.DEBUG:

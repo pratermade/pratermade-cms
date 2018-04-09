@@ -7,7 +7,7 @@ from .forms import ArticleForm
 from django.shortcuts import get_object_or_404, redirect
 from braces.views import UserPassesTestMixin, LoginRequiredMixin
 from django.contrib.auth.models import Group, User
-import pprint, pratermade.settings as Settings
+import pprint, ss_cms.settings as Settings
 import boto3, re
 from django.http import JsonResponse, HttpResponse
 from PIL import Image

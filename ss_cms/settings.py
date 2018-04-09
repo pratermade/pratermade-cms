@@ -45,8 +45,8 @@ INSTALLED_APPS = [
 
 
 
-AWS_STORAGE_BUCKET_NAME = 'ss-cms-project-static'
-AWS_MEDIA_BUCKET_NAME = 'ss-cms-project-media'
+AWS_STORAGE_BUCKET_NAME = 'pratermade-static'
+AWS_MEDIA_BUCKET_NAME = 'pratermade-media'
 AWS_S3_MEDIA_DOMAIN = 's3.amazonaws.com/%s' % AWS_MEDIA_BUCKET_NAME
 AWS_S3_CUSTOM_DOMAIN = 's3.amazonaws.com/%s' % AWS_STORAGE_BUCKET_NAME
 STATICFILES_LOCATION = 'static'
@@ -66,7 +66,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'ss-cms-project.urls'
+ROOT_URLCONF = 'ss_cms.urls'
 
 TEMPLATES = [
     {
@@ -85,7 +85,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'ss-cms-project.wsgi.application'
+WSGI_APPLICATION = 'ss_cms.wsgi.application'
 
 
 # Database
@@ -94,7 +94,7 @@ WSGI_APPLICATION = 'ss-cms-project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'ss-cms-project',
+        'NAME': 'pratermade',
         'USER': 'pratermad_root',
         'PASSWORD': 'Cz8nKZMI8Gtjkxu1X2gtR',
         'HOST': 'pratermad-db-micro-us-east-1.curaifsxzcip.us-east-1.rds.amazonaws.com',

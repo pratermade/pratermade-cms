@@ -17,8 +17,7 @@
                     <!--[if lte IE 8]><link rel="stylesheet" href={% static "assets/css/ie8.css" %}/><![endif]-->
 	</head>
 <body>
-
-		<!-- Wrapper -->
+	<!-- Wrapper -->
 			<div id="wrapper">
 				<!-- Main -->
                 {% block main %}
@@ -35,6 +34,16 @@
 			<script src={% static "assets/js/util.js" %}></script>
 			<!--[if lte IE 8]><script src="assets/js/ie/respond.min.js" %}></script><![endif]-->
 			<script src={% static "assets/js/main.js" %}></script>
+
+    <script>
+        {#$('.sizable').each(function(index){#}
+        {#    var currentImage = $(this).attr('src');#}
+        {#    var largeImage = currentImage.replace('150','1024');#}
+        {#    var medImage = currentImage.replace('150','768');#}
+        {#    var smallImage = currentImage.replace('150','300');#}
+        {#    $(this).attr('srcset',largeImage+' 1024w, '+ medImage + ' 768w, ' + smallImage + ' 300w');#}
+        {#})#}
+    </script>
 
 	</body>
 </html>

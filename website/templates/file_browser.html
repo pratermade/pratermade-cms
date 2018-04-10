@@ -27,7 +27,7 @@
     .container
     {
         width: 100%;
-        max-width: 680px; /* 800 */
+        max-width: 650px; /* 800 */
         text-align: center;
         margin: 0 auto;
     }
@@ -244,6 +244,12 @@
 <body>
 
 
+<div class="example">
+    <div id="fileTreeDemo_2" class="demo">
+
+    </div>
+</div>
+
 <div class="container" role="main">
 
 	<nav role="navigation">
@@ -276,6 +282,7 @@
 <script>(function(e,t,n){var r=e.querySelectorAll("html")[0];r.className=r.className.replace(/(^|\s)no-js(\s|$)/,"$1js$2")})(document,window,0);</script>
 <script type="text/javascript">
 
+
         $(document).ready( function() {
 
             $('#fileTreeDemo_2').fileTree({csrftoken: "{{ csrf_token }}", folderEvent: 'click', expandSpeed: 750, collapseSpeed: 750, multiFolder: false }, function(file) {
@@ -290,7 +297,6 @@
             top.tinymce.activeEditor.windowManager.getParams().oninsert(url);
             top.tinymce.activeEditor.windowManager.close();
         }
-
 
 
 	'use strict';
@@ -475,7 +481,6 @@
 	}( document, window, 0 ));
 
     </script>
-
 
 </body>
 </html>

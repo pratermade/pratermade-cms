@@ -30,8 +30,6 @@ class Article(models.Model):
                                                      "as to allow for easy re-ordering of menu items. A value of 0 "
                                                      "indicates that it is not a menu item.")
 
-
-
     def __str__(self):
         return self.title
 
@@ -49,7 +47,11 @@ class GlobalContent(models.Model):
 
 class Image(models.Model):
     image_name = models.CharField(max_length=32)
+<<<<<<< HEAD
     image_locaton = models.CharField(max_length=1024)
+=======
+    image_location = models.CharField(max_length=1024)
+>>>>>>> b8b3b904d2f40167f57c0a04223a4b6485aff992
     image_key = models.CharField(max_length=32)
 
     def __str__(self):

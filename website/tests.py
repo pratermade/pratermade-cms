@@ -1,7 +1,6 @@
 # modules
 from django.test import TestCase, Client
 from django.contrib.auth.models import User, Group
-from .models import Article, Settings, GlobalContent
 from django.core.management import call_command
 from .models import Article, Settings, GlobalContent, Image
 
@@ -166,4 +165,35 @@ class ModelTests(MyTestCase):
         settings = Settings.objects.all()[0]
         self.assertTrue(isinstance(settings, Settings))
         self.assertEqual(settings.__str__(), 'Settings')
+
+class PageRedirectTest(MyTestCase):
+
+    def test_proper_redirect(self):
+        c = Client()
+        res = c.get('/page/article/')
+        self.assertEqual(res.url, "/article/article/")
+
+
+class ArticleEditTests(MyTestCase):
+
+    def test_article_edit_view(self):
+        c = Client()
+        c.login(username='Ned', password='somethingelse')
+        res = c.get('/editArticle/article/')
+        self.assertEqual(res.status_code, 200)
+
+    def test_good_form_data(self):
+        c = Client()
+        c.login(username='Ned', password='somethingelse')
+        data = {
+            # "title":"Test Title",
+            "content": "This is some test content",
+            "page_type": "article",
+            "group": Group.objects.all()[0],
+            "owner": User.objects.all()[0],
+            "parent": Article.objects.all()[0],
+            "order": "2",
+            }
+        res = c.post('/editArticle/article/', data)
+        print(res.body)
 

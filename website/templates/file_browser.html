@@ -1,9 +1,9 @@
 {% load staticfiles %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="no-js">
 <head>
     <meta charset="UTF-8">
-    <title>Image Browser</title>
+    <title>File Browser</title>
 
     <link rel="shortcut icon" href="{% static 'assets/jquery.fileTree/images/favicon.png' %}">
     <script src="{% static 'assets/jquery.fileTree/jquery.js' %}" type="text/javascript"></script>
@@ -11,13 +11,268 @@
     <script src="{% static 'assets/jquery.fileTree/jqueryFileTree.js' %}" type="text/javascript"></script>
     <link href="{% static 'assets/jquery.fileTree/jqueryFileTree.css' %}" rel="stylesheet" type="text/css" media="screen" />
 
-    <link rel="shortcut icon" href="/static/assets/jquery.fileTree/images/favicon.png">
-    <script src="/static/assets/jquery.fileTree/jquery.js" type="text/javascript"></script>
-    <script src="/static/assets/jquery.fileTree/jquery.easing.js" type="text/javascript"></script>
-    <script src="/static/assets/jquery.fileTree/jqueryFileTree.js" type="text/javascript"></script>
-    <link href="/static/assets/jquery.fileTree/jqueryFileTree.css" rel="stylesheet" type="text/css" media="screen" />
+{#	<link rel="canonical" href="https://css-tricks.com/examples/DragAndDropFileUploading/">#}
+	<meta name="viewport" content="width=device-width,initial-scale=1" />
+	<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:300,300italic,400" />
+
+    <style>
+
+    body
+    {
+        font-family: Roboto, sans-serif;
+        color: #0f3c4b;
+        background-color: #e5edf1;
+    }
+
+    .container
+    {
+        width: 100%;
+        max-width: 680px; /* 800 */
+        text-align: center;
+        margin: 0 auto;
+    }
+
+        .container h1
+        {
+            font-size: 42px;
+            font-weight: 300;
+            color: #0f3c4b;
+            margin-bottom: 40px;
+        }
+        .container h1 a:hover,
+        .container h1 a:focus
+        {
+            color: #39bfd3;
+        }
+
+        .container nav
+        {
+            margin-bottom: 40px;
+        }
+            .container nav a
+            {
+                border-bottom: 2px solid #c8dadf;
+                display: inline-block;
+                padding: 4px 8px;
+                margin: 0 5px;
+            }
+            .container nav a.is-selected
+            {
+                font-weight: 700;
+                color: #39bfd3;
+                border-bottom-color: currentColor;
+            }
+            .container nav a:not( .is-selected ):hover,
+            .container nav a:not( .is-selected ):focus
+            {
+                border-bottom-color: #0f3c4b;
+            }
+
+        .container footer
+        {
+            color: #92b0b3;
+            margin-top: 40px;
+        }
+            .container footer p + p
+            {
+                margin-top: 1em;
+            }
+            .container footer a:hover,
+            .container footer a:focus
+            {
+                color: #39bfd3;
+            }
+
+        .box
+        {
+            font-size: 1.25rem; /* 20 */
+            background-color: #c8dadf;
+            position: relative;
+            padding: 100px 20px;
+        }
+        .box.has-advanced-upload
+        {
+            outline: 2px dashed #92b0b3;
+            outline-offset: -10px;
+
+            -webkit-transition: outline-offset .15s ease-in-out, background-color .15s linear;
+            transition: outline-offset .15s ease-in-out, background-color .15s linear;
+        }
+        .box.is-dragover
+        {
+            outline-offset: -20px;
+            outline-color: #c8dadf;
+            background-color: #fff;
+        }
+            .box__dragndrop,
+            .box__icon
+            {
+                display: none;
+            }
+            .box.has-advanced-upload .box__dragndrop
+            {
+                display: inline;
+            }
+            .box.has-advanced-upload .box__icon
+            {
+                width: 100%;
+                height: 80px;
+                fill: #92b0b3;
+                display: block;
+                margin-bottom: 40px;
+            }
+
+            .box.is-uploading .box__input,
+            .box.is-success .box__input,
+            .box.is-error .box__input
+            {
+                visibility: hidden;
+            }
+
+            .box__uploading,
+            .box__success,
+            .box__error
+            {
+                display: none;
+            }
+            .box.is-uploading .box__uploading,
+            .box.is-success .box__success,
+            .box.is-error .box__error
+            {
+                display: block;
+                position: absolute;
+                top: 50%;
+                right: 0;
+                left: 0;
+
+                -webkit-transform: translateY( -50% );
+                transform: translateY( -50% );
+            }
+            .box__uploading
+            {
+                font-style: italic;
+            }
+            .box__success
+            {
+                -webkit-animation: appear-from-inside .25s ease-in-out;
+                animation: appear-from-inside .25s ease-in-out;
+            }
+                @-webkit-keyframes appear-from-inside
+                {
+                    from	{ -webkit-transform: translateY( -50% ) scale( 0 ); }
+                    75%		{ -webkit-transform: translateY( -50% ) scale( 1.1 ); }
+                    to		{ -webkit-transform: translateY( -50% ) scale( 1 ); }
+                }
+                @keyframes appear-from-inside
+                {
+                    from	{ transform: translateY( -50% ) scale( 0 ); }
+                    75%		{ transform: translateY( -50% ) scale( 1.1 ); }
+                    to		{ transform: translateY( -50% ) scale( 1 ); }
+                }
+
+            .box__restart
+            {
+                font-weight: 700;
+            }
+            .box__restart:focus,
+            .box__restart:hover
+            {
+                color: #39bfd3;
+            }
+
+            .js .box__file
+            {
+                width: 0.1px;
+                height: 0.1px;
+                opacity: 0;
+                overflow: hidden;
+                position: absolute;
+                z-index: -1;
+            }
+            .js .box__file + label
+            {
+                max-width: 80%;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                cursor: pointer;
+                display: inline-block;
+                overflow: hidden;
+            }
+            .js .box__file + label:hover strong,
+            .box__file:focus + label strong,
+            .box__file.has-focus + label strong
+            {
+                color: #39bfd3;
+            }
+            .js .box__file:focus + label,
+            .js .box__file.has-focus + label
+            {
+                outline: 1px dotted #000;
+                outline: -webkit-focus-ring-color auto 5px;
+            }
+                .js .box__file + label *
+                {
+                    /* pointer-events: none; */ /* in case of FastClick lib use */
+                }
+
+            .no-js .box__file + label
+            {
+                display: none;
+            }
+
+            .no-js .box__button
+            {
+                display: block;
+            }
+            .box__button
+            {
+                font-weight: 700;
+                color: #e5edf1;
+                background-color: #39bfd3;
+                display: none;
+                padding: 8px 16px;
+                margin: 40px auto 0;
+            }
+                .box__button:hover,
+                .box__button:focus
+                {
+                    background-color: #0f3c4b;
+                }
+
+</style>
+</head>
+<body>
 
 
+<div class="container" role="main">
+
+	<nav role="navigation">
+{#		<a href="https://css-tricks.com/examples/DragAndDropFileUploading/" class="is-selected">Auto Submit</a>#}
+{#		<a href="https://css-tricks.com/examples/DragAndDropFileUploading/?submit-on-demand">Submit On Demand</a>#}
+	</nav>
+
+	<form method="post" action="https://css-tricks.com/examples/DragAndDropFileUploading//?" enctype="multipart/form-data" novalidate class="box">
+
+
+		<div class="box__input">
+			<svg class="box__icon" xmlns="http://www.w3.org/2000/svg" width="50" height="43" viewBox="0 0 50 43"><path d="M48.4 26.5c-.9 0-1.7.7-1.7 1.7v11.6h-43.3v-11.6c0-.9-.7-1.7-1.7-1.7s-1.7.7-1.7 1.7v13.2c0 .9.7 1.7 1.7 1.7h46.7c.9 0 1.7-.7 1.7-1.7v-13.2c0-1-.7-1.7-1.7-1.7zm-24.5 6.1c.3.3.8.5 1.2.5.4 0 .9-.2 1.2-.5l10-11.6c.7-.7.7-1.7 0-2.4s-1.7-.7-2.4 0l-7.1 8.3v-25.3c0-.9-.7-1.7-1.7-1.7s-1.7.7-1.7 1.7v25.3l-7.1-8.3c-.7-.7-1.7-.7-2.4 0s-.7 1.7 0 2.4l10 11.6z"/></svg>
+			<input type="file" name="files[]" id="file" class="box__file2" data-multiple-caption="{count} files selected" multiple />
+			<label for="file"><strong>Choose a file</strong><span class="box__dragndrop"> or drag it here</span>.</label>
+			<button type="submit" class="box__button2">Upload</button>
+		</div>
+
+
+		<div class="box__uploading">Uploading&hellip;</div>
+		<div class="box__success">Done! <a href="https://css-tricks.com/examples/DragAndDropFileUploading//?" class="box__restart" role="button">Upload more?</a></div>
+		<div class="box__error">Error! <span></span>. <a href="https://css-tricks.com/examples/DragAndDropFileUploading//?" class="box__restart" role="button">Try again!</a></div>
+	</form>
+
+	<footer>
+	</footer>
+
+</div>
+
+    <script>(function(e,t,n){var r=e.querySelectorAll("html")[0];r.className=r.className.replace(/(^|\s)no-js(\s|$)/,"$1js$2")})(document,window,0);</script>
     <script type="text/javascript">
 
         $(document).ready( function() {
@@ -34,172 +289,190 @@
             top.tinymce.activeEditor.windowManager.getParams().oninsert(url);
             top.tinymce.activeEditor.windowManager.close();
         }
+
+
+
+	'use strict';
+
+	( function ( document, window, index )
+	{
+		// feature detection for drag&drop upload
+		var isAdvancedUpload = function()
+			{
+				var div = document.createElement( 'div' );
+				return ( ( 'draggable' in div ) || ( 'ondragstart' in div && 'ondrop' in div ) ) && 'FormData' in window && 'FileReader' in window;
+			}();
+
+
+		// applying the effect for every form
+		var forms = document.querySelectorAll( '.box' );
+		Array.prototype.forEach.call( forms, function( form )
+		{
+			var input		 = form.querySelector( 'input[type="file"]' ),
+				label		 = form.querySelector( 'label' ),
+				errorMsg	 = form.querySelector( '.box__error span' ),
+				restart		 = form.querySelectorAll( '.box__restart' ),
+				droppedFiles = false,
+				showFiles	 = function( files )
+				{
+					label.textContent = files.length > 1 ? ( input.getAttribute( 'data-multiple-caption' ) || '' ).replace( '{count}', files.length ) : files[ 0 ].name;
+				},
+				triggerFormSubmit = function()
+				{
+					var event = document.createEvent( 'HTMLEvents' );
+					event.initEvent( 'submit', true, false );
+					form.dispatchEvent( event );
+				};
+
+			// letting the server side to know we are going to make an Ajax request
+			var ajaxFlag = document.createElement( 'input' );
+			ajaxFlag.setAttribute( 'type', 'hidden' );
+			ajaxFlag.setAttribute( 'name', 'ajax' );
+			ajaxFlag.setAttribute( 'value', 1 );
+			form.appendChild( ajaxFlag );
+
+			// automatically submit the form on file select
+			input.addEventListener( 'change', function( e )
+			{
+				showFiles( e.target.files );
+
+
+				triggerFormSubmit();
+
+
+			});
+
+			// drag&drop files if the feature is available
+			if( isAdvancedUpload )
+			{
+				form.classList.add( 'has-advanced-upload' ); // letting the CSS part to know drag&drop is supported by the browser
+
+				[ 'drag', 'dragstart', 'dragend', 'dragover', 'dragenter', 'dragleave', 'drop' ].forEach( function( event )
+				{
+					form.addEventListener( event, function( e )
+					{
+						// preventing the unwanted behaviours
+						e.preventDefault();
+						e.stopPropagation();
+					});
+				});
+				[ 'dragover', 'dragenter' ].forEach( function( event )
+				{
+					form.addEventListener( event, function()
+					{
+						form.classList.add( 'is-dragover' );
+					});
+				});
+				[ 'dragleave', 'dragend', 'drop' ].forEach( function( event )
+				{
+					form.addEventListener( event, function()
+					{
+						form.classList.remove( 'is-dragover' );
+					});
+				});
+				form.addEventListener( 'drop', function( e )
+				{
+					droppedFiles = e.dataTransfer.files; // the files that were dropped
+					showFiles( droppedFiles );
+
+
+					triggerFormSubmit();
+
+									});
+			}
+
+
+			// if the form was submitted
+			form.addEventListener( 'submit', function( e )
+			{
+				// preventing the duplicate submissions if the current one is in progress
+				if( form.classList.contains( 'is-uploading' ) ) return false;
+
+				form.classList.add( 'is-uploading' );
+				form.classList.remove( 'is-error' );
+
+				if( isAdvancedUpload ) // ajax file upload for modern browsers
+				{
+					e.preventDefault();
+
+					// gathering the form data
+					var ajaxData = new FormData( form );
+					if( droppedFiles )
+					{
+						Array.prototype.forEach.call( droppedFiles, function( file )
+						{
+							ajaxData.append( input.getAttribute( 'name' ), file );
+						});
+					}
+
+					// ajax request
+					var ajax = new XMLHttpRequest();
+					ajax.open( form.getAttribute( 'method' ), form.getAttribute( 'action' ), true );
+
+					ajax.onload = function()
+					{
+						form.classList.remove( 'is-uploading' );
+						if( ajax.status >= 200 && ajax.status < 400 )
+						{
+							var data = JSON.parse( ajax.responseText );
+							form.classList.add( data.success == true ? 'is-success' : 'is-error' );
+							if( !data.success ) errorMsg.textContent = data.error;
+						}
+						else alert( 'Error. Please, contact the webmaster!' );
+					};
+
+					ajax.onerror = function()
+					{
+						form.classList.remove( 'is-uploading' );
+						alert( 'Error. Please, try again!' );
+					};
+
+					ajax.send( ajaxData );
+				}
+				else // fallback Ajax solution upload for older browsers
+				{
+					var iframeName	= 'uploadiframe' + new Date().getTime(),
+						iframe		= document.createElement( 'iframe' );
+
+						$iframe		= $( '<iframe name="' + iframeName + '" style="display: none;"></iframe>' );
+
+					iframe.setAttribute( 'name', iframeName );
+					iframe.style.display = 'none';
+
+					document.body.appendChild( iframe );
+					form.setAttribute( 'target', iframeName );
+
+					iframe.addEventListener( 'load', function()
+					{
+						var data = JSON.parse( iframe.contentDocument.body.innerHTML );
+						form.classList.remove( 'is-uploading' )
+						form.classList.add( data.success == true ? 'is-success' : 'is-error' )
+						form.removeAttribute( 'target' );
+						if( !data.success ) errorMsg.textContent = data.error;
+						iframe.parentNode.removeChild( iframe );
+					});
+				}
+			});
+
+
+			// restart the form if has a state of error/success
+			Array.prototype.forEach.call( restart, function( entry )
+			{
+				entry.addEventListener( 'click', function( e )
+				{
+					e.preventDefault();
+					form.classList.remove( 'is-error', 'is-success' );
+					input.click();
+				});
+			});
+
+			// Firefox focus bug fix for file input
+			input.addEventListener( 'focus', function(){ input.classList.add( 'has-focus' ); });
+			input.addEventListener( 'blur', function(){ input.classList.remove( 'has-focus' ); });
+
+		});
+	}( document, window, 0 ));
+
     </script>
-</head>
-<body>
-
-<div class="example">
-    <div id="fileTreeDemo_2" class="demo">
-{#        <ul class="jqueryFileTree" style="">#}
-{#            <li class="directory collapsed" style="position: static;"><a href="#" rel="../../demo/connectors/">connectors</a>#}
-{#                <ul class="jqueryFileTree" style="display: none;">#}
-{#                    <li class="file ext_asp"><a href="#" rel="../../demo/connectors/jqueryFileTree.asp">jqueryFileTree.asp</a>#}
-{#                    </li>#}
-{#                    <li class="file ext_aspx"><a href="#" rel="../../demo/connectors/jqueryFileTree.aspx">jqueryFileTree.aspx</a>#}
-{#                    </li>#}
-{#                    <li class="file ext_cf"><a href="#"#}
-{#                                               rel="../../demo/connectors/jqueryFileTree.cf">jqueryFileTree.cf</a></li>#}
-{#                    <li class="file ext_js"><a href="#"#}
-{#                                               rel="../../demo/connectors/jqueryFileTree.js">jqueryFileTree.js</a></li>#}
-{#                    <li class="file ext_jsp"><a href="#" rel="../../demo/connectors/jqueryFileTree.jsp">jqueryFileTree.jsp</a>#}
-{#                    </li>#}
-{#                    <li class="file ext_php"><a href="#" rel="../../demo/connectors/jqueryFileTree.php">jqueryFileTree.php</a>#}
-{#                    </li>#}
-{#                    <li class="file ext_pl"><a href="#"#}
-{#                                               rel="../../demo/connectors/jqueryFileTree.pl">jqueryFileTree.pl</a></li>#}
-{#                    <li class="file ext_py"><a href="#"#}
-{#                                               rel="../../demo/connectors/jqueryFileTree.py">jqueryFileTree.py</a></li>#}
-{#                    <li class="file ext_rb"><a href="#"#}
-{#                                               rel="../../demo/connectors/jqueryFileTree.rb">jqueryFileTree.rb</a></li>#}
-{#                    <li class="file ext_lasso"><a href="#" rel="../../demo/connectors/jqueryFileTree_huck.lasso">jqueryFileTree_huck.lasso</a>#}
-{#                    </li>#}
-{#                    <li class="file ext_lasso"><a href="#" rel="../../demo/connectors/jqueryFileTree_sabourdin.lasso">jqueryFileTree_sabourdin.lasso</a>#}
-{#                    </li>#}
-{#                </ul>#}
-{#            </li>#}
-{#            <li class="directory expanded" style="position: static;"><a href="#" rel="../../demo/demo/">demo</a>#}
-{#                <ul class="jqueryFileTree" style="display: block;">#}
-{#                    <li class="directory collapsed"><a href="#" rel="../../demo/demo/documents/">documents</a></li>#}
-{#                    <li class="directory expanded" style="position: static;"><a href="#" rel="../../demo/demo/images/">images</a>#}
-{#                        <ul class="jqueryFileTree" style="display: block;">#}
-{#                            <li class="directory expanded" style="position: static;"><a href="#"#}
-{#                                                                                        rel="../../demo/demo/images/photos/">photos</a>#}
-{#                                <ul class="jqueryFileTree" style="display: block;">#}
-{#                                    <li class="directory collapsed"><a href="#"#}
-{#                                                                       rel="../../demo/demo/images/photos/family/">family</a>#}
-{#                                    </li>#}
-{#                                    <li class="directory expanded" style="position: static;"><a href="#"#}
-{#                                                                                                rel="../../demo/demo/images/photos/friends/">friends</a>#}
-{#                                        <ul class="jqueryFileTree" style="display: block;">#}
-{#                                            <li class="file ext_jpg"><a href="#"#}
-{#                                                                        rel="../../demo/demo/images/photos/friends/becky.jpg">becky.jpg</a>#}
-{#                                            </li>#}
-{#                                            <li class="file ext_jpg"><a href="#"#}
-{#                                                                        rel="../../demo/demo/images/photos/friends/dan.jpg">dan.jpg</a>#}
-{#                                            </li>#}
-{#                                            <li class="file ext_jpg"><a href="#"#}
-{#                                                                        rel="../../demo/demo/images/photos/friends/eddie.jpg">eddie.jpg</a>#}
-{#                                            </li>#}
-{#                                            <li class="file ext_jpg"><a href="#"#}
-{#                                                                        rel="../../demo/demo/images/photos/friends/elliot.jpg">elliot.jpg</a>#}
-{#                                            </li>#}
-{#                                            <li class="file ext_jpg"><a href="#"#}
-{#                                                                        rel="../../demo/demo/images/photos/friends/fenway.jpg">fenway.jpg</a>#}
-{#                                            </li>#}
-{#                                            <li class="file ext_jpg"><a href="#"#}
-{#                                                                        rel="../../demo/demo/images/photos/friends/gus.jpg">gus.jpg</a>#}
-{#                                            </li>#}
-{#                                            <li class="file ext_jpg"><a href="#"#}
-{#                                                                        rel="../../demo/demo/images/photos/friends/jessica.jpg">jessica.jpg</a>#}
-{#                                            </li>#}
-{#                                            <li class="file ext_jpg"><a href="#"#}
-{#                                                                        rel="../../demo/demo/images/photos/friends/rebecca.jpg">rebecca.jpg</a>#}
-{#                                            </li>#}
-{#                                            <li class="file ext_jpg"><a href="#"#}
-{#                                                                        rel="../../demo/demo/images/photos/friends/robbie.jpg">robbie.jpg</a>#}
-{#                                            </li>#}
-{#                                            <li class="file ext_jpg"><a href="#"#}
-{#                                                                        rel="../../demo/demo/images/photos/friends/sven.jpg">sven.jpg</a>#}
-{#                                            </li>#}
-{#                                        </ul>#}
-{#                                    </li>#}
-{#                                </ul>#}
-{#                            </li>#}
-{#                            <li class="file ext_gif"><a href="#" rel="../../demo/demo/images/battletoads.gif">battletoads.gif</a>#}
-{#                            </li>#}
-{#                            <li class="file ext_png"><a href="#" rel="../../demo/demo/images/box.png">box.png</a></li>#}
-{#                            <li class="file ext_png"><a href="#" rel="../../demo/demo/images/drop-shadow.png">drop-shadow.png</a>#}
-{#                            </li>#}
-{#                            <li class="file ext_gif"><a href="#" rel="../../demo/demo/images/left_arrow.gif">left_arrow.gif</a>#}
-{#                            </li>#}
-{#                            <li class="file ext_png"><a href="#"#}
-{#                                                        rel="../../demo/demo/images/my_image.png">my_image.png</a></li>#}
-{#                            <li class="file ext_gif"><a href="#" rel="../../demo/demo/images/right_arrow.gif">right_arrow.gif</a>#}
-{#                            </li>#}
-{#                        </ul>#}
-{#                    </li>#}
-{#                </ul>#}
-{#            </li>#}
-{#            <li class="directory collapsed" style="position: static;"><a href="#" rel="../../demo/images/">images</a>#}
-{#                <ul class="jqueryFileTree" style="display: none;">#}
-{#                    <li class="file ext_png"><a href="#" rel="../../demo/images/application.png">application.png</a>#}
-{#                    </li>#}
-{#                    <li class="file ext_png"><a href="#" rel="../../demo/images/code.png">code.png</a></li>#}
-{#                    <li class="file ext_png"><a href="#" rel="../../demo/images/css.png">css.png</a></li>#}
-{#                    <li class="file ext_png"><a href="#" rel="../../demo/images/db.png">db.png</a></li>#}
-{#                    <li class="file ext_png"><a href="#" rel="../../demo/images/directory.png">directory.png</a></li>#}
-{#                    <li class="file ext_png"><a href="#" rel="../../demo/images/doc.png">doc.png</a></li>#}
-{#                    <li class="file ext_png"><a href="#" rel="../../demo/images/file.png">file.png</a></li>#}
-{#                    <li class="file ext_png"><a href="#" rel="../../demo/images/film.png">film.png</a></li>#}
-{#                    <li class="file ext_png"><a href="#" rel="../../demo/images/flash.png">flash.png</a></li>#}
-{#                    <li class="file ext_png"><a href="#" rel="../../demo/images/folder_open.png">folder_open.png</a>#}
-{#                    </li>#}
-{#                    <li class="file ext_png"><a href="#" rel="../../demo/images/html.png">html.png</a></li>#}
-{#                    <li class="file ext_png"><a href="#" rel="../../demo/images/java.png">java.png</a></li>#}
-{#                    <li class="file ext_png"><a href="#" rel="../../demo/images/linux.png">linux.png</a></li>#}
-{#                    <li class="file ext_png"><a href="#" rel="../../demo/images/music.png">music.png</a></li>#}
-{#                    <li class="file ext_png"><a href="#" rel="../../demo/images/pdf.png">pdf.png</a></li>#}
-{#                    <li class="file ext_png"><a href="#" rel="../../demo/images/php.png">php.png</a></li>#}
-{#                    <li class="file ext_png"><a href="#" rel="../../demo/images/picture.png">picture.png</a></li>#}
-{#                    <li class="file ext_png"><a href="#" rel="../../demo/images/ppt.png">ppt.png</a></li>#}
-{#                    <li class="file ext_png"><a href="#" rel="../../demo/images/psd.png">psd.png</a></li>#}
-{#                    <li class="file ext_png"><a href="#" rel="../../demo/images/ruby.png">ruby.png</a></li>#}
-{#                    <li class="file ext_png"><a href="#" rel="../../demo/images/script.png">script.png</a></li>#}
-{#                    <li class="file ext_gif"><a href="#" rel="../../demo/images/spinner.gif">spinner.gif</a></li>#}
-{#                    <li class="file ext_png"><a href="#" rel="../../demo/images/txt.png">txt.png</a></li>#}
-{#                    <li class="file ext_png"><a href="#" rel="../../demo/images/xls.png">xls.png</a></li>#}
-{#                    <li class="file ext_png"><a href="#" rel="../../demo/images/zip.png">zip.png</a></li>#}
-{#                </ul>#}
-{#            </li>#}
-{#            <li class="file ext_html"><a href="#" rel="../../demo/index.html">index.html</a></li>#}
-{#            <li class="file ext_js"><a href="#" rel="../../demo/jquery.easing.js">jquery.easing.js</a></li>#}
-{#            <li class="file ext_js"><a href="#" rel="../../demo/jquery.js">jquery.js</a></li>#}
-{#            <li class="file ext_css"><a href="#" rel="../../demo/jqueryFileTree.css">jqueryFileTree.css</a></li>#}
-{#            <li class="file ext_js"><a href="#" rel="../../demo/jqueryFileTree.js">jqueryFileTree.js</a></li>#}
-{#        </ul>#}
-    </div>
-</div>
-
-<style>
-    .jqueryFileTree ul li {
-        padding-left: 0px !important;
-    }
-    .image_thumbnail img {
-        float:left;
-        position:relative;
-        width: 14px;
-        margin-right: 3px;
-    }
-    .image_thumbnail:hover {
-        padding-left: 19px;
-        background: #BDF url(/static/assets/jquery.fileTree/images/picture.png) left top no-repeat !important;
-    }
-    .image_thumbnail:hover img {
-        position: relative;
-        float: right;
-        top: -35px;
-        right: -5px;
-        z-index: 999;
-        padding: 4px;
-        background: rgba(187, 221, 255, 0.80);
-        border-radius: 5px;
-        display: block;
-        max-width: 150px;
-        max-height: 110px;
-        width: auto;
-        height: auto;
-    }
-</style>
-This is file_browser.html
 </body>
 </html>

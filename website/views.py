@@ -50,6 +50,16 @@ class MyTemplateMixin(object):
         context['site_settings'] = SiteSettings.objects.all()[0]
         return context
 
+class MyArticleMixin(MyTemplateMixin):
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(MyArticleMixin, self).get_context_data(**kwargs)
+        article = get_object_or_404(Article, slug=self.kwargs['slug'])
+        gcbs = GlobalContent.objects.all()
+        for gcb in gcbs:
+            article.content = article.content.replace("{{ " + gcb.name + " }}", gcb.content)
+        context['article'] = article
+        return context
 
 class IndexView(MyTemplateMixin, TemplateView):
     template_name = "index.html"
@@ -77,20 +87,10 @@ class PageView(RedirectView):
         return super(PageView, self).get_redirect_url(*args, **kwargs)
 
 
-class ArticleView(MyTemplateMixin, TemplateView):
+class ArticleView(MyArticleMixin, TemplateView):
     template_name = "generic.html"
 
-    def get_context_data(self, **kwargs):
-        context = super(ArticleView, self).get_context_data(**kwargs)
-        article = get_object_or_404(Article, slug=self.kwargs['slug'])
-        gcbs = GlobalContent.objects.all()
-        for gcb in gcbs:
-            article.content = article.content.replace("{{ " + gcb.name+ " }}", gcb.content)
-        context['article'] = article
-        return context
-
-
-class ArticleEditView(UserPassesTestMixin, MyTemplateMixin, FormView):
+class ArticleEditView(UserPassesTestMixin, MyArticleMixin, FormView):
     template_name = "edit_generic.html"
     raise_exeption = True
     form_class = ArticleForm
@@ -135,7 +135,7 @@ class ArticleEditView(UserPassesTestMixin, MyTemplateMixin, FormView):
     #     return get_object_or_404(Article, slug=self.kwargs['slug'])
 
 
-class TocView(MyTemplateMixin, TemplateView):
+class TocView(MyArticleMixin, TemplateView):
     template_name = 'toc.html'
 
     def get_context_data(self, **kwargs):

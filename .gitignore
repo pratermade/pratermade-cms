@@ -6,3 +6,5 @@ zappa_settings.json
 
 *.swp
 /ss_cms/settings.py
+/website/migrations/*
+!/website/migrations/__init__.py

@@ -102,7 +102,6 @@ class ArticleEditView(UserPassesTestMixin, MyArticleMixin, FormView):
         return super(ArticleEditView, self).get_context_data(*args, **kwargs)
 
     def form_invalid(self, form):
-        print(form.errors)
         return super(ArticleEditView, self).form_invalid(form)
 
     def form_valid(self, form):
@@ -190,7 +189,6 @@ class ListImagesView(LoginRequiredMixin, View):
             for article in articles:
                 response += '<li class="directory collapsed"><a href="#" rel="{}/">{}</a></li>'.format(article.slug,article.slug)
             response += "</ul>"
-            print(response)
             return HttpResponse(response)
         else:
             """
@@ -214,7 +212,6 @@ class ListImagesView(LoginRequiredMixin, View):
                 thumbnail_url = original_url.replace('original','150')
                 response += '<li class="file2 ext_gif2"><a href="#" thumbnail="{}" rel="{}" class="image_thumbnail"><img src="{}">{}</a></li>'.format(thumbnail_url, original_url, thumbnail_url, filename)
             response += "</ul>"
-            print(response)
             return HttpResponse(response)
 
 

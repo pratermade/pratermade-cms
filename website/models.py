@@ -30,6 +30,7 @@ class Article(models.Model):
                                                      "as to allow for easy re-ordering of menu items. A value of 0 "
                                                      "indicates that it is not a menu item.")
 
+
     def __str__(self):
         return self.title
 

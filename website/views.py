@@ -256,7 +256,7 @@ class ListFilesView(LoginRequiredMixin, View):
             response = '<ul class="jqueryFileTree" style="display: float;">'
             articles = Article.objects.filter(Q(owner=self.request.user) | Q(group__in=groups))
             path = self.request.POST['dir'].split('/')
-            prefix = "{}/images/original/".format(path[0])
+            prefix = "{}/files/".format(path[0])
             if path[1] != '':
                 for directory in path[1:]:
                     prefix += directory + "/"
@@ -268,13 +268,13 @@ class ListFilesView(LoginRequiredMixin, View):
                 filename = obj.key[m.end():]
                 original_url = "https://s3.amazonaws.com/{}/{}".format(Settings.AWS_MEDIA_BUCKET_NAME,obj.key)
                 thumbnail_url = original_url.replace('original','150')
-                response += '<li class="file2 ext_gif2"><a href="#" thumbnail="{}" rel="{}" class="image_thumbnail"><img src="{}">{}</a></li>'.format(thumbnail_url, original_url, thumbnail_url, filename)
+                response += '<li class="file2 ext_gif2"><a href="#" rel="{}" class="image_thumbnail"><img src="{}">{}</a></li>'.format(thumbnail_url, original_url, filename)
             response += "</ul>"
 
             return HttpResponse(response)
 
 
-class ImageUpload(View):
+class ImageUpload(UserPassesTestMixin, View):
 
     def test_func(self, user):
         return has_edit_permission(user, self.kwargs['slug'])
@@ -328,6 +328,27 @@ class ImageUpload(View):
             os.remove(tempdir +'/'+image.name)
         if os.path.isfile(tempdir +'/resized_'+image.name):
             os.remove(tempdir + '/resized_'+image.name)
+
+
+class FileUpload(UserPassesTestMixin, View):
+
+    def test_func(self, user):
+        return has_edit_permission(user, self.kwargs['slug'])
+
+    def post(self, *args, **kwargs):
+
+        s3 = boto3.client('s3')
+        #
+        # Upload original copy
+        #
+
+        file = self.request.FILES['file']
+        filepath = "{}/files/{}".format(self.kwargs['slug'], self.request.FILES['file'].name)
+        res = {"success": True, "error": ""}
+        # res = {'location': 'https://{}/{}/files/{}'.format(Settings.AWS_S3_MEDIA_DOMAIN, self.kwargs['slug'], self.request.FILES['file'].name)}
+        s3.upload_fileobj(file, Settings.AWS_MEDIA_BUCKET_NAME, filepath, ExtraArgs={"ACL": "public-read"})
+        return JsonResponse(res)
+
 
 
 def get_menu():

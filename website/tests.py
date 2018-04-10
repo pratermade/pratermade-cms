@@ -1,7 +1,8 @@
 # modules
 from django.test import TestCase, Client
 from django.contrib.auth.models import User, Group
-from .models import Article, Settings
+from .models import Article, Settings, GlobalContent
+from django.core.management import call_command
 
 # Create your tests here.
 
@@ -28,9 +29,11 @@ class MyTestCase(TestCase):
                                           link='',
                                           parent=None,
                                           order=1)
-        artcle = Article.objects.create(page_type='article',
+        article = Article.objects.create(page_type='article',
                                         title='test article',
-                                        content='test_content',
+                                        content='''test_content <h1>{{ global_content_1 }}</h1> here is some more text
+                                         {{ global_content_2 }} more test content {{ global_content_1 }} the end of the
+                                         test text.''',
                                         header_image=None,
                                         slug='article',
                                         group=group,
@@ -50,6 +53,10 @@ class MyTestCase(TestCase):
                                       order=1)
         settings = Settings.objects.create(site_name='Pratermade', site_tag_line="Tagline here",
                                           www_root="http://127.0.0.1:8900")
+
+        GlobalContent.objects.create(name="global_content_1",content="AcJ4OcHqI4cMxltIMXoYytM7vIa45iKq")
+        GlobalContent.objects.create(name="global_content_2", content="ml0o8I8ELlxQZNAjtptoFlzks1Q47HUA")
+
 
 class IndexTest(MyTestCase):
 
@@ -103,3 +110,33 @@ class PermissionsTests(MyTestCase):
         session = c.login(username='Ned', password='somethingelse')
         res = c.get('/article/article/')
         self.assertTrue(res.context['can_edit'])
+
+class ListImagesTests(MyTestCase):
+
+    #TODO: Find a way to test this better.
+    def test_list_returns_result(self):
+        c = Client()
+        session = c.login(username='Frank', password='something')
+        res = c.get('/listimages/')
+        self.assertEqual(res.status_code, 200)
+
+
+class TableOfContentsTests(MyTestCase):
+
+    def test_for_good_response(self):
+        c = Client()
+        res = c.get('/article/category/')
+        self.assertEqual(res.status_code, 200)
+
+
+class ArticleTests(MyTestCase):
+
+    def test_for_good_response(self):
+        c = Client()
+        res = c.get('/article/article/')
+        self.assertEqual(res.status_code, 200)
+
+    def test_for_global_content_block(self):
+        c = Client()
+        res = c.get('/article/article/')
+        self.assertContains(res,'AcJ4OcHqI4cMxltIMXoYytM7vIa45iKq',count=2)

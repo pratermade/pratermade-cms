@@ -27,7 +27,6 @@ class MyTemplateMixin(object):
         context = super(MyTemplateMixin, self).get_context_data(*args, **kwargs)
         context['menu'] = get_menu()
         context['can_edit'] = False
-        print(self.kwargs)
         page_group = None
         if 'slug' in self.kwargs:
             page = get_object_or_404(Article, slug=self.kwargs['slug'])
@@ -171,8 +170,8 @@ class ListImagesView(LoginRequiredMixin, View):
             response += '<li class="directory collapsed"><a href="#" rel="{}/">{}</a></li>'.format(article.slug,
                                                                                                    article.slug)
         response += "</ul>"
+        print(response)
         return HttpResponse(response)
-
 
     def post(self, user):
         """
@@ -190,6 +189,7 @@ class ListImagesView(LoginRequiredMixin, View):
             for article in articles:
                 response += '<li class="directory collapsed"><a href="#" rel="{}/">{}</a></li>'.format(article.slug,article.slug)
             response += "</ul>"
+            print(response)
             return HttpResponse(response)
         else:
             """
@@ -213,8 +213,9 @@ class ListImagesView(LoginRequiredMixin, View):
                 thumbnail_url = original_url.replace('original','150')
                 response += '<li class="file2 ext_gif2"><a href="#" thumbnail="{}" rel="{}" class="image_thumbnail"><img src="{}">{}</a></li>'.format(thumbnail_url, original_url, thumbnail_url, filename)
             response += "</ul>"
-
+            print(response)
             return HttpResponse(response)
+
 
 class ListFilesView(LoginRequiredMixin, View):
 
@@ -273,8 +274,6 @@ class ListFilesView(LoginRequiredMixin, View):
             response += "</ul>"
 
             return HttpResponse(response)
-
-
 
 
 class ImageUpload(View):
@@ -351,8 +350,6 @@ def get_menu():
             item_info['sub_menu'] = sub_menu
         menu.append(item_info)
     return menu
-
-
 
 
 def get_breadcrumbs(id):

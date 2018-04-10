@@ -89,6 +89,9 @@ class PageView(RedirectView):
 class ArticleView(MyArticleMixin, TemplateView):
     template_name = "generic.html"
 
+class ArticleView(MyArticleMixin, TemplateView):
+    template_name = "generic.html"
+
 class ArticleEditView(UserPassesTestMixin, MyArticleMixin, FormView):
     template_name = "edit_generic.html"
     raise_exeption = True

@@ -148,9 +148,6 @@ class ArticleTests(MyTestCase):
     def test_for_global_content_block(self):
         c = Client()
         res = c.get('/article/article/')
-<<<<<<< HEAD
-        self.assertContains(res,'AcJ4OcHqI4cMxltIMXoYytM7vIa45iKq',count=2)
-=======
         self.assertContains(res,'AcJ4OcHqI4cMxltIMXoYytM7vIa45iKq', count=2)
 
 
@@ -171,4 +168,4 @@ class ModelTests(MyTestCase):
         settings = Settings.objects.all()[0]
         self.assertTrue(isinstance(settings, Settings))
         self.assertEqual(settings.__str__(), 'Settings')
->>>>>>> b8b3b904d2f40167f57c0a04223a4b6485aff992
+

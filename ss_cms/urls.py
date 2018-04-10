@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path
 from django.conf.urls import url
 from website.views import IndexView, GenericView, ElementsView, ArticleView, ArticleEditView, TocView, PageView, \
-    ImageUpload, ImageBrowserView, ListImagesView, FileBrowserView
+    ImageUpload, ImageBrowserView, ListImagesView, FileBrowserView, FileUpload, ListFilesView
 from django.conf.urls.static import static
 from django.conf import settings
 from django.contrib.auth import views as auth_views
@@ -43,9 +43,10 @@ urlpatterns = [
     url(r'toc/(?P<slug>[a-zA-Z0-9\-_]+)/$', TocView.as_view(), name="toc"),
     url(r'page/(?P<slug>[a-zA-Z0-9\-_]+)/$', PageView.as_view(), name="page"),
     url(r'imageupload/(?P<slug>[a-zA-Z0-9\-_]+)/$', ImageUpload.as_view(), name="imageupload"),
-    url(r'fileupload/(?P<slug>[a-zA-Z0-9\-_]+)/$', ImageUpload.as_view(), name="fileupload"),
+    url(r'fileupload/(?P<slug>[a-zA-Z0-9\-_]+)/$', FileUpload.as_view(), name="fileupload"),
     url(r'listimages/$', ListImagesView.as_view(), name="listimages"),
-    path(r'filebrowser/', FileBrowserView.as_view(), name="filebrowser"),
+    url(r'filebrowser/(?P<slug>[a-zA-Z0-9\-_]+)/$', FileBrowserView.as_view(), name="filebrowser"),
+    url(r'listfiles/$', ListFilesView.as_view(), name="listfiles"),
 ]
 
 if settings.DEBUG:

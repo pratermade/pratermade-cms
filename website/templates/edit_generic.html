@@ -52,11 +52,11 @@ function myFilePicker(callback, value, meta) {
     console.log(meta);
 
     if (meta.filetype == "image"){
-        var url = {% url 'imagebrowser' %};
+        var url = "{% url 'imagebrowser' %}";
         var title = "Image Browser";
     }
     else{
-        var url = {% url 'filebrowser' %};
+        var url = "{% url 'filebrowser' slug %}";
         var title = "File Browser";
     }
     tinymce.activeEditor.windowManager.open({

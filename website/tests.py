@@ -1,7 +1,16 @@
 # modules
 from django.test import TestCase, Client
 from django.contrib.auth.models import User, Group
+<<<<<<< HEAD
 from .models import Article, Settings, GlobalContent, Image
+=======
+<<<<<<< HEAD
+from .models import Article, Settings, GlobalContent
+from django.core.management import call_command
+=======
+from .models import Article, Settings, GlobalContent, Image
+>>>>>>> b8b3b904d2f40167f57c0a04223a4b6485aff992
+>>>>>>> master
 
 # Create your tests here.
 
@@ -163,3 +172,4 @@ class ModelTests(MyTestCase):
         settings = Settings.objects.all()[0]
         self.assertTrue(isinstance(settings, Settings))
         self.assertEqual(settings.__str__(), 'Settings')
+

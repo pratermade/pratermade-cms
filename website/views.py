@@ -82,7 +82,11 @@ class ArticleView(MyTemplateMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(ArticleView, self).get_context_data(**kwargs)
-        context['article'] = get_object_or_404(Article, slug=self.kwargs['slug'])
+        article = get_object_or_404(Article, slug=self.kwargs['slug'])
+        gcbs = GlobalContent.objects.all()
+        for gcb in gcbs:
+            article.content = article.content.replace("{{ " + gcb.name+ " }}", gcb.content)
+        context['article'] = article
         return context
 
 

@@ -1,8 +1,12 @@
 # modules
 from django.test import TestCase, Client
 from django.contrib.auth.models import User, Group
+<<<<<<< HEAD
 from .models import Article, Settings, GlobalContent
 from django.core.management import call_command
+=======
+from .models import Article, Settings, GlobalContent, Image
+>>>>>>> b8b3b904d2f40167f57c0a04223a4b6485aff992
 
 # Create your tests here.
 
@@ -128,6 +132,11 @@ class TableOfContentsTests(MyTestCase):
         res = c.get('/article/category/')
         self.assertEqual(res.status_code, 200)
 
+    def test_for_global_content_block(self):
+        c = Client()
+        res = c.get('/article/article/')
+        self.assertContains(res,'AcJ4OcHqI4cMxltIMXoYytM7vIa45iKq', count=2)
+
 
 class ArticleTests(MyTestCase):
 
@@ -139,4 +148,27 @@ class ArticleTests(MyTestCase):
     def test_for_global_content_block(self):
         c = Client()
         res = c.get('/article/article/')
+<<<<<<< HEAD
         self.assertContains(res,'AcJ4OcHqI4cMxltIMXoYytM7vIa45iKq',count=2)
+=======
+        self.assertContains(res,'AcJ4OcHqI4cMxltIMXoYytM7vIa45iKq', count=2)
+
+
+class ModelTests(MyTestCase):
+
+    def test_global_content_str(self):
+        gc = GlobalContent.objects.create(name="test_content_4", content="NBgL78AQbobCHAZnyYwt0xZbPuBMaxlc")
+        self.assertTrue(isinstance(gc, GlobalContent))
+        self.assertEqual(gc.__str__(), 'test_content_4')
+
+    def test_image_str(self):
+        image = Image.objects.create(image_name="test_image", image_location="/somewhere/",
+                                     image_key="tiwo24et3t0Q1qJUc4CiPxSqmpgNg5Yc")
+        self.assertTrue(isinstance(image, Image))
+        self.assertEqual(image.__str__(), 'test_image')
+
+    def test_settings_str(self):
+        settings = Settings.objects.all()[0]
+        self.assertTrue(isinstance(settings, Settings))
+        self.assertEqual(settings.__str__(), 'Settings')
+>>>>>>> b8b3b904d2f40167f57c0a04223a4b6485aff992

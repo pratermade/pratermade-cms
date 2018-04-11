@@ -480,7 +480,7 @@
                 console.log($('#tab2').attr('aria-selected'));
             });
 
-            $('#fileTree_1').fileTree({script: '/listfiles/', csrftoken: "{{ csrf_token }}", folderEvent: 'click', expandSpeed: 750, collapseSpeed: 750, multiFolder: false }, function(file) {
+            $("#fileTree_1").fileTree({script: '/listfiles/', csrftoken: "{{ csrf_token }}", folderEvent: 'click', expandSpeed: 750, collapseSpeed: 750, multiFolder: false }, function(file) {
                 mySubmit(file);
             });
 

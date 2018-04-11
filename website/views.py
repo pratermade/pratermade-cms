@@ -266,55 +266,12 @@ class ListFilesView(LoginRequiredMixin, View):
                 m = re.search(prefix, obj.key)
                 filename = obj.key[m.end():]
                 extension = filename.split('.')[1]
+                print('listing files')
                 original_url = "https://s3.amazonaws.com/{}/{}".format(Settings.AWS_MEDIA_BUCKET_NAME,obj.key)
-                thumbnail_url = original_url.replace('original','150')
                 response += '<li class="file ext_{}"><a href="#" rel="{}">{}</a></li>'.format(extension, original_url,
                                                                                               filename)
             response += "</ul>"
 
-            return HttpResponse(response)
-
-
-    def post(self, user):
-        """
-        This view returns the directory structure for everything under the 'dir' specified in the post request
-        :return: HTML for the AJAX request
-        """
-
-        if self.request.POST['dir'] == '/':
-            """
-            This is a root request. First find all the views that they have access to and return them as folders.
-            """
-            groups = self.request.user.groups.all()
-            response = '<ul class="jqueryFileTree" style="display: float;">'
-            articles = Article.objects.filter(Q(owner=self.request.user) | Q(group__in=groups))
-            for article in articles:
-                response += '<li class="directory collapsed"><a href="#" rel="{}/">{}</a></li>'.format(article.slug,article.slug)
-            response += "</ul>"
-            return HttpResponse(response)
-        else:
-            """
-            This is a folder request. Lest list the contents of this directory
-            """
-            groups = self.request.user.groups.all()
-            response = '<ul class="jqueryFileTree" style="display: float;">'
-            articles = Article.objects.filter(Q(owner=self.request.user) | Q(group__in=groups))
-            path = self.request.POST['dir'].split('/')
-            prefix = "{}/images/original/".format(path[0])
-            if path[1] != '':
-                for directory in path[1:]:
-                    prefix += directory + "/"
-            s3 = boto3.resource("s3")
-            my_bucket = s3.Bucket(Settings.AWS_MEDIA_BUCKET_NAME)
-            for obj in my_bucket.objects.filter(Prefix=prefix):
-                # remove prefix from key
-                m = re.search(prefix, obj.key)
-                filename = obj.key[m.end():]
-                original_url = "https://s3.amazonaws.com/{}/{}".format(Settings.AWS_MEDIA_BUCKET_NAME,obj.key)
-                thumbnail_url = original_url.replace('original','150')
-                response += '<li class="file2 ext_gif2"><a href="#" rel="{}" class="image_thumbnail"><img src="{}">{}</a></li>'.format(
-                    thumbnail_url, original_url, filename)
-            response += "</ul>"
             return HttpResponse(response)
 
 

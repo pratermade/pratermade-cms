@@ -214,6 +214,48 @@ class ListImagesView(LoginRequiredMixin, View):
             response += "</ul>"
             return HttpResponse(response)
 
+    def pick_icon(self, ext):
+        icons = {
+            "avi":"film.jpg",
+            "bmp":"picture.png",
+            "css": "css.png",
+            "doc":"doc.png",
+            "exe":"application.png",
+            "htm":"html.png",
+            "html":"html.png",
+            "jpg": "picture.png",
+            "jpeg": "picture.png",
+            "js":"script.png",
+            "log": "txt.png",
+            "m4p": "music.png",
+            "mov": "film.png",
+            "mp3": "music.png",
+            "mp4": "film.png",
+            "mpg": "film.png",
+            "mpeg": "film.png",
+            "ogg": "music.png",
+            "pdf": "pdf.png",
+            "php": "php.png",
+            "png": "picture.png",
+            "ppt": "ppt.png",
+            "psd": "psd.png",
+            "py": "script.png",
+            "sql": "db.png",
+            "tif": "picture.png",
+            "tiff": "picture.png",
+            "txt":"txt.png",
+            "wav": "music.png",
+            "wmv": "film.png",
+            "xls": "xls.png",
+            "xml": "code.png",
+            "zip": "zip.png",
+        }
+        if ext not in icons:
+            return "txt.png"
+        else:
+            return icons[ext]
+
+
 
 class ListFilesView(LoginRequiredMixin, View):
 

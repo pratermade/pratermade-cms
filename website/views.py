@@ -208,11 +208,10 @@ class ListImagesView(LoginRequiredMixin, View):
                 # remove prefix from key
                 m = re.search(prefix, obj.key)
                 filename = obj.key[m.end():]
-                extension = filename.split('.')[1]
                 original_url = "https://s3.amazonaws.com/{}/{}".format(Settings.AWS_MEDIA_BUCKET_NAME,obj.key)
                 thumbnail_url = original_url.replace('original','150')
-                response += '<li class="file ext_{}"><a href="#" rel="{}">{}</a></li>'.format(extension, original_url,
-                                                                                              filename)
+                response += '<li class="file2 ext_gif2"><a href="#" rel="{}" class="image_thumbnail"><img src="{}">{}</a></li>'.format(
+                    thumbnail_url, original_url, filename)
             response += "</ul>"
             return HttpResponse(response)
 
@@ -268,9 +267,11 @@ class ListFilesView(LoginRequiredMixin, View):
                 # remove prefix from key
                 m = re.search(prefix, obj.key)
                 filename = obj.key[m.end():]
+                extension = filename.split('.')[1]
                 original_url = "https://s3.amazonaws.com/{}/{}".format(Settings.AWS_MEDIA_BUCKET_NAME,obj.key)
                 thumbnail_url = original_url.replace('original','150')
-                response += '<li class="file2 ext_gif2"><a href="#" rel="{}" class="image_thumbnail"><img src="{}">{}</a></li>'.format(thumbnail_url, original_url, filename)
+                response += '<li class="file ext_{}"><a href="#" rel="{}">{}</a></li>'.format(extension, original_url,
+                                                                                              filename)
             response += "</ul>"
 
             return HttpResponse(response)

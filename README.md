@@ -1,6 +1,8 @@
 # SS-CMS
 ## (Simple Serverless CMS)
 
+![SS-CMS Logo](https://github.com/pratermade/ss-cms/blob/master/SSCMS-Logo.png?raw=true "Logo")
+
 https://github.com/pratermade/ss-cms/issues
 
 TODO: https://github.com/pratermade/ss-cms/blob/master/Todo.md

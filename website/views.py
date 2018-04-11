@@ -307,10 +307,9 @@ class ListPagesView(LoginRequiredMixin, View):
             slug = self.request.POST['dir']
             slug = slug.replace('/','')
             parent = Article.objects.get(slug=slug)
-            parent_url = "/{}/".format(parent.slug)
             response = '''<ul class="jqueryFileTree" style="display: float;">
             <li class="file ext_html parent"><a href="#" rel="/page/{}/">{}</a></li>
-            '''.format(parent_url, parent.title)
+            '''.format(parent.slug, parent.title)
 
             articles = Article.objects.filter(parent=parent)
             for article in articles:

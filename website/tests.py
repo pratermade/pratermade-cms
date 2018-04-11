@@ -3,6 +3,7 @@ from django.test import TestCase, Client
 from django.contrib.auth.models import User, Group
 from django.core.management import call_command
 from .models import Article, Settings, GlobalContent, Image
+from .forms import ArticleForm
 
 
 # Create your tests here.
@@ -12,7 +13,7 @@ class MyTestCase(TestCase):
     def setUp(self):
         group = Group.objects.create(name='editor')
         frank = User.objects.create_user(username='Frank',
-                                         password='something',
+                                         password='sometchhing',
                                          first_name='Frank',
                                          last_name='Person')
         ned = User.objects.create_user(username='Ned',
@@ -126,13 +127,25 @@ class TableOfContentsTests(MyTestCase):
 
     def test_for_good_response(self):
         c = Client()
-        res = c.get('/article/category/')
+        res = c.get('/toc/category/')
         self.assertEqual(res.status_code, 200)
 
     def test_for_global_content_block(self):
         c = Client()
-        res = c.get('/article/article/')
-        self.assertContains(res,'AcJ4OcHqI4cMxltIMXoYytM7vIa45iKq', count=2)
+        res = c.get('/toc/category/')
+        self.assertTrue('global_content_1' in res.context['global_content'])
+
+    def test_for_children(self):
+        c = Client()
+        res = c.get('/toc/category/')
+        article = Article.objects.get(slug="article")
+        self.assertTrue(article in res.context['children'])
+
+    def test_for_no_children(self):
+        c = Client()
+        res = c.get('/toc/article/')
+        article = Article.objects.get(slug="article")
+        self.assertTrue(res.context['children'] is None)
 
 
 class ArticleTests(MyTestCase):
@@ -183,17 +196,47 @@ class ArticleEditTests(MyTestCase):
         self.assertEqual(res.status_code, 200)
 
     def test_good_form_data(self):
-        c = Client()
-        c.login(username='Ned', password='somethingelse')
+        group = Group.objects.get(name="editor")
+        article = Article.objects.get(slug="Article")
         data = {
-            # "title":"Test Title",
+            "title":"Test Title",
             "content": "This is some test content",
             "page_type": "article",
-            "group": Group.objects.all()[0],
-            "owner": User.objects.all()[0],
-            "parent": Article.objects.all()[0],
+            "group": group.id,
+            "parent": article.id,
+            "order": "2",
+            }
+        form = ArticleForm(data=data)
+        self.assertTrue(form.is_valid())
+
+    def test_view_with_good_data(self):
+        c = Client()
+        c.login(username='Ned', password='somethingelse')
+        group = Group.objects.get(name="editor")
+        article = Article.objects.get(slug="Article")
+        data = {
+            "title":"Test Title",
+            "content": "This is some test content",
+            "page_type": "article",
+            "group": group.id,
+            "parent": article.id,
             "order": "2",
             }
         res = c.post('/editArticle/article/', data)
-        print(res.body)
+        self.assertEqual(res.url, "/page/article/")
 
+    def test_view_with_bad_data(self):
+        c = Client()
+        c.login(username='Ned', password='somethingelse')
+        group = Group.objects.get(name="editor")
+        article = Article.objects.get(slug="Article")
+        data = {
+            "title": "",
+            "content": "This is some test content",
+            "page_type": "article",
+            "group": group.id,
+            "parent": article.id,
+            "order": "2",
+        }
+        res = c.post('/editArticle/article/', data)
+        self.assertFormError(res, 'form', 'title', 'This field is required.')

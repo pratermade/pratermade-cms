@@ -277,25 +277,6 @@ class ListFilesView(LoginRequiredMixin, View):
 
 class ListPagesView(LoginRequiredMixin, View):
 
-    # def get(self, user):
-    #     """
-    #     This is a root request. First find all the views that they have access to and return them as folders.
-    #     """
-    #
-    #     response = '<ul class="jqueryFileTree" style="display: float;">'
-    #     articles = Article.objects.filter(parent__isnull=True)
-    #     for article in articles:
-    #         url = "/page/{}".format(article.slug)
-    #         expand = Settings.STATIC_URL + "assets/jquery.fileTree/images/expand.gif"
-    #         response += '''
-    #             <li class="directory collapsed"><a href="#" rel="{}/">
-    #             <img src="{}"></a>
-    #             <a class="file ext_html" href="#" rel="{}/">{}</a></li>
-    #             '''.format(article.slug, expand ,url, article.slug)
-    #     response += "</ul>"
-    #     return HttpResponse(response)
-
-
     def post(self, user):
         """
         This view returns the directory structure for everything under the 'dir' specified in the post request
@@ -315,22 +296,29 @@ class ListPagesView(LoginRequiredMixin, View):
                 expand = Settings.STATIC_URL + "assets/jquery.fileTree/images/expand.gif"
                 response += '''
                                 <li class="directory collapsed"><a href="#" rel="{}/">
-                                <img src="{}"></a>
-                                <a class="file ext_html" href="#" rel="{}/">{}</a></li>
-                                '''.format(article.slug, expand, url, article.slug)
+                                {}</a></li>
+                                '''.format(article.slug, article.title)
             response += "</ul>"
             return HttpResponse(response)
         else:
             """
-            This is a folder request. Lest list the contents of this directory
+            This is a folder request. Just list the contents of this directory
             """
             slug = self.request.POST['dir']
             slug = slug.replace('/','')
-            response = '<ul class="jqueryFileTree" style="display: float;">'
-            articles = Article.objects.filter(parent=Article.objects.get(slug=slug))
+            parent = Article.objects.get(slug=slug)
+            parent_url = "/{}/".format(parent.slug)
+            response = '''<ul class="jqueryFileTree" style="display: float;">
+            <li class="file ext_html parent"><a href="#" rel="/page/{}/">{}</a></li>
+            '''.format(parent_url, parent.title)
+
+            articles = Article.objects.filter(parent=parent)
             for article in articles:
-                url = "/page/{}".format(article.slug)
-                response += '<li class="file ext_html"><a href="#" rel="{}">{}</a></li>'.format(url,
+                if Article.objects.filter(parent=article):
+                    response += '<li class="directory collapsed"><a href="#" rel="{}/">{}</a></li>'.format(article.slug,
+                                                                                              article.title)
+                else:
+                    response += '<li class="file ext_html"><a href="#" rel="/page{}/">{}</a></li>'.format(article.slug,
                                                                                               article.title)
             response += "</ul>"
 

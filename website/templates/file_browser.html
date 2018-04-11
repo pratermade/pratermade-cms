@@ -18,7 +18,7 @@
 	<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:300,300italic,400" />
 
     <style>
-    UL.jqueryFileTree2 {
+    UL.jqueryFileTree {
         font-family: Verdana, sans-serif;
         font-size: 11px;
         line-height: 18px;
@@ -26,7 +26,7 @@
         margin: 0px;
     }
 
-    UL.jqueryFileTree2 LI {
+    UL.jqueryFileTree LI {
         list-style: none;
         padding: 0px;
         padding-left: 20px;
@@ -34,14 +34,14 @@
         white-space: nowrap;
     }
 
-    UL.jqueryFileTree2 A {
+    UL.jqueryFileTree A {
         color: #333;
         text-decoration: none;
         display: block;
         padding: 0px 2px;
     }
 
-    UL.jqueryFileTree2 A:hover {
+    UL.jqueryFileTree A:hover {
         background: #BDF;
     }
     .example {
@@ -65,15 +65,21 @@
     #id_file, .box__button2 {
         margin-bottom: 30px;
     }
-    .jqueryFileTree2 LI.directory { background: url(https://s3.amazonaws.com/wosc-website-static/assets/jquery.fileTree/images/expand.gif) left top no-repeat !important; }
-    .jqueryFileTree2 LI.expanded { background: url(https://s3.amazonaws.com/wosc-website-static/assets/jquery.fileTree/images/contract.gif) left top no-repeat !important; }
-    .jqueryFileTree2 LI.ext_docx { background: url(https://s3.amazonaws.com/wosc-website-static/assets/jquery.fileTree/images/doc.png) left top no-repeat; }
-    .jqueryFileTree2 LI.ext_xlsx { background: url(https://s3.amazonaws.com/wosc-website-static/assets/jquery.fileTree/images/xls.png) left top no-repeat; }
-    .jqueryFileTree2 LI.ext_pptx { background: url(https://s3.amazonaws.com/wosc-website-static/assets/jquery.fileTree/images/ppt.png) left top no-repeat; }
+    .jqueryFileTree LI.expanded>a:first-of-type { font-weight: bold; }
+    .jqueryFileTree LI.directory { background: url(https://s3.amazonaws.com/wosc-website-static/assets/jquery.fileTree/images/expand.gif) left top no-repeat !important; }
+    .jqueryFileTree LI.expanded { background: url(https://s3.amazonaws.com/wosc-website-static/assets/jquery.fileTree/images/contract.gif) left top no-repeat !important; }
+    .jqueryFileTree LI.wait { background: url(https://s3.amazonaws.com/wosc-website-static/assets/jquery.fileTree/images/spinner.gif) left top no-repeat !important; }
+    .jqueryFileTree LI.ext_docx { background: url(https://s3.amazonaws.com/wosc-website-static/assets/jquery.fileTree/images/doc.png) left top no-repeat; }
+    .jqueryFileTree LI.ext_xlsx { background: url(https://s3.amazonaws.com/wosc-website-static/assets/jquery.fileTree/images/xls.png) left top no-repeat; }
+    .jqueryFileTree LI.ext_pptx { background: url(https://s3.amazonaws.com/wosc-website-static/assets/jquery.fileTree/images/ppt.png) left top no-repeat; }
     .ext_link { #background: url(https://s3.amazonaws.com/wosc-website-static/assets/jquery.fileTree/images/application.png) left top no-repeat; }
     .ext_link div, .ext_link a { display:inline-block !important; }
     .ext_link div:after { content: " -- " }
     ul.sub_pages { margin-left: -50px; }
+    li.file.ext_html.parent {
+        font-style: italic;
+        margin-left: -12px !important;
+    }
 
     body
     {

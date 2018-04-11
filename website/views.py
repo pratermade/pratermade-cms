@@ -163,7 +163,7 @@ class ListImagesView(LoginRequiredMixin, View):
         This is a root request. First find all the views that they have access to and return them as folders.
         """
         groups = self.request.user.groups.all()
-        response = '<ul class="jqueryFileTree" style="display: float;">'
+        response = '<ul class="jqueryFileTree">'
         articles = Article.objects.filter(Q(owner=self.request.user) | Q(group__in=groups))
         for article in articles:
             response += '<li class="directory collapsed"><a href="#" rel="{}/">{}</a></li>'.format(article.slug,
@@ -182,7 +182,7 @@ class ListImagesView(LoginRequiredMixin, View):
             This is a root request. First find all the views that they have access to and return them as folders.
             """
             groups = self.request.user.groups.all()
-            response = '<ul class="jqueryFileTree" style="display: float;">'
+            response = '<ul class="jqueryFileTree">'
             articles = Article.objects.filter(Q(owner=self.request.user) | Q(group__in=groups))
             for article in articles:
                 response += '<li class="directory collapsed"><a href="#" rel="{}/">{}</a></li>'.format(article.slug,article.slug)
@@ -193,7 +193,7 @@ class ListImagesView(LoginRequiredMixin, View):
             This is a folder request. Lest list the contents of this directory
             """
             groups = self.request.user.groups.all()
-            response = '<ul class="jqueryFileTree" style="display: float;">'
+            response = '<ul class="jqueryFileTree">'
             articles = Article.objects.filter(Q(owner=self.request.user) | Q(group__in=groups))
             path = self.request.POST['dir'].split('/')
             prefix = "{}/images/original/".format(path[0])
@@ -221,7 +221,7 @@ class ListFilesView(LoginRequiredMixin, View):
         This is a root request. First find all the views that they have access to and return them as folders.
         """
         groups = self.request.user.groups.all()
-        response = '<ul class="jqueryFileTree" style="display: float;">'
+        response = '<ul class="jqueryFileTree">'
         articles = Article.objects.filter(Q(owner=self.request.user) | Q(group__in=groups))
         for article in articles:
             response += '<li class="directory collapsed"><a href="#" rel="{}/">{}</a></li>'.format(article.slug,
@@ -241,7 +241,7 @@ class ListFilesView(LoginRequiredMixin, View):
             This is a root request. First find all the views that they have access to and return them as folders.
             """
             groups = self.request.user.groups.all()
-            response = '<ul class="jqueryFileTree" style="display: float;">'
+            response = '<ul class="jqueryFileTree">'
             articles = Article.objects.filter(Q(owner=self.request.user) | Q(group__in=groups))
             for article in articles:
                 response += '<li class="directory collapsed"><a href="#" rel="{}/">{}</a></li>'.format(article.slug,article.slug)
@@ -252,7 +252,7 @@ class ListFilesView(LoginRequiredMixin, View):
             This is a folder request. Lest list the contents of this directory
             """
             groups = self.request.user.groups.all()
-            response = '<ul class="jqueryFileTree" style="display: float;">'
+            response = '<ul class="jqueryFileTree">'
             articles = Article.objects.filter(Q(owner=self.request.user) | Q(group__in=groups))
             path = self.request.POST['dir'].split('/')
             prefix = "{}/files/".format(path[0])
@@ -288,7 +288,7 @@ class ListPagesView(LoginRequiredMixin, View):
             This is a root request. First find all the views that they have access to and return them as folders.
             """
 
-            response = '<ul class="jqueryFileTree" style="display: float;">'
+            response = '<ul class="jqueryFileTree">'
             articles = Article.objects.filter(parent__isnull=True)
 
             for article in articles:
@@ -307,10 +307,9 @@ class ListPagesView(LoginRequiredMixin, View):
             slug = self.request.POST['dir']
             slug = slug.replace('/','')
             parent = Article.objects.get(slug=slug)
-            parent_url = "/{}/".format(parent.slug)
-            response = '''<ul class="jqueryFileTree" style="display: float;">
+            response = '''<ul class="jqueryFileTree">
             <li class="file ext_html parent"><a href="#" rel="/page/{}/">{}</a></li>
-            '''.format(parent_url, parent.title)
+            '''.format(parent.slug, parent.title)
 
             articles = Article.objects.filter(parent=parent)
             for article in articles:
@@ -318,7 +317,7 @@ class ListPagesView(LoginRequiredMixin, View):
                     response += '<li class="directory collapsed"><a href="#" rel="{}/">{}</a></li>'.format(article.slug,
                                                                                               article.title)
                 else:
-                    response += '<li class="file ext_html"><a href="#" rel="/page{}/">{}</a></li>'.format(article.slug,
+                    response += '<li class="file ext_html"><a href="#" rel="/page/{}/">{}</a></li>'.format(article.slug,
                                                                                               article.title)
             response += "</ul>"
 

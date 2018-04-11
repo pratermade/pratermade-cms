@@ -208,53 +208,13 @@ class ListImagesView(LoginRequiredMixin, View):
                 # remove prefix from key
                 m = re.search(prefix, obj.key)
                 filename = obj.key[m.end():]
+                extension = filename.split('.')[1]
                 original_url = "https://s3.amazonaws.com/{}/{}".format(Settings.AWS_MEDIA_BUCKET_NAME,obj.key)
                 thumbnail_url = original_url.replace('original','150')
-                response += '<li class="file2 ext_gif2"><a href="#" thumbnail="{}" rel="{}" class="image_thumbnail"><img src="{}">{}</a></li>'.format(thumbnail_url, original_url, thumbnail_url, filename)
+                response += '<li class="file ext_{}"><a href="#" rel="{}">{}</a></li>'.format(extension, original_url,
+                                                                                              filename)
             response += "</ul>"
             return HttpResponse(response)
-
-    def pick_icon(self, ext):
-        icons = {
-            "avi":"film.jpg",
-            "bmp":"picture.png",
-            "css": "css.png",
-            "doc":"doc.png",
-            "exe":"application.png",
-            "htm":"html.png",
-            "html":"html.png",
-            "jpg": "picture.png",
-            "jpeg": "picture.png",
-            "js":"script.png",
-            "log": "txt.png",
-            "m4p": "music.png",
-            "mov": "film.png",
-            "mp3": "music.png",
-            "mp4": "film.png",
-            "mpg": "film.png",
-            "mpeg": "film.png",
-            "ogg": "music.png",
-            "pdf": "pdf.png",
-            "php": "php.png",
-            "png": "picture.png",
-            "ppt": "ppt.png",
-            "psd": "psd.png",
-            "py": "script.png",
-            "sql": "db.png",
-            "tif": "picture.png",
-            "tiff": "picture.png",
-            "txt":"txt.png",
-            "wav": "music.png",
-            "wmv": "film.png",
-            "xls": "xls.png",
-            "xml": "code.png",
-            "zip": "zip.png",
-        }
-        if ext not in icons:
-            return "txt.png"
-        else:
-            return icons[ext]
-
 
 
 class ListFilesView(LoginRequiredMixin, View):

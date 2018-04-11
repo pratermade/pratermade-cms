@@ -9,3 +9,6 @@ zappa_settings.json
 /website/migrations/*
 !/website/migrations/__init__.py
 .coverage
+/htmlcov/
+/htmlcov/*
+/.coverage

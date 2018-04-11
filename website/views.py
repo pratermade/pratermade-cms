@@ -131,7 +131,6 @@ class ArticleEditView(UserPassesTestMixin, MyArticleMixin, FormView):
             "order": article.order
         }
         return initial
-    #     return get_object_or_404(Article, slug=self.kwargs['slug'])
 
 
 class TocView(MyArticleMixin, TemplateView):
@@ -170,7 +169,6 @@ class ListImagesView(LoginRequiredMixin, View):
             response += '<li class="directory collapsed"><a href="#" rel="{}/">{}</a></li>'.format(article.slug,
                                                                                                    article.slug)
         response += "</ul>"
-        print(response)
         return HttpResponse(response)
 
     def post(self, user):

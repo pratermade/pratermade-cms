@@ -4,7 +4,7 @@ from django.db.models import Q
 from django.urls import reverse
 from .models import Article, GlobalContent, Settings as SiteSettings
 
-from .forms import ArticleForm
+from .forms import ArticleForm, NewArticleForm
 from django.shortcuts import get_object_or_404, redirect
 from braces.views import UserPassesTestMixin, LoginRequiredMixin
 from django.contrib.auth.models import Group, User
@@ -53,22 +53,24 @@ class MyArticleMixin(MyTemplateMixin):
 
     def get_context_data(self, *args, **kwargs):
         context = super(MyArticleMixin, self).get_context_data(**kwargs)
-        article = get_object_or_404(Article, slug=self.kwargs['slug'])
-        gcbs = GlobalContent.objects.all()
-        for gcb in gcbs:
-            article.content = article.content.replace("{{ " + gcb.name + " }}", gcb.content)
-        context['article'] = article
+        if 'slug' in self.kwargs:
+            article = get_object_or_404(Article, slug=self.kwargs['slug'])
+            gcbs = GlobalContent.objects.all()
+            if article.content is not None:
+                for gcb in gcbs:
+                    article.content = article.content.replace("{{ " + gcb.name + " }}", gcb.content)
+                context['article'] = article
         return context
 
-class IndexView(MyTemplateMixin, TemplateView):
+class IndexView(MyArticleMixin, TemplateView):
     template_name = "index.html"
 
 
-class GenericView(MyTemplateMixin, TemplateView):
+class GenericView(MyArticleMixin, TemplateView):
     template_name = "generic.html"
 
 
-class ElementsView(MyTemplateMixin, TemplateView):
+class ElementsView(MyArticleMixin, TemplateView):
     template_name = "elements.html"
 
 
@@ -96,42 +98,86 @@ class ArticleEditView(UserPassesTestMixin, MyArticleMixin, FormView):
     form_class = ArticleForm
 
     def test_func(self, user):
-        return has_edit_permission(user, self.kwargs['slug'])
+        if 'slug' in self.kwargs:
+            return has_edit_permission(user, self.kwargs['slug'])
+        else:
+            return user.is_superuser
     
     def get_context_data(self, *args, **kwargs):
-        return super(ArticleEditView, self).get_context_data(*args, **kwargs)
+        context = super(ArticleEditView, self).get_context_data(*args, **kwargs)
+        if 'slug' in self.kwargs:
+            siblings = Article.objects.filter(parent=Article.objects.get(slug=self.kwargs['slug']))
+            context['siblings'] = siblings
+        return context
 
     def form_invalid(self, form):
         return super(ArticleEditView, self).form_invalid(form)
 
     def form_valid(self, form):
-        article = Article.objects.get(slug=self.kwargs['slug'])
+        self.success_url = reverse('page', kwargs={'slug': form['slug'].value()})
+        if Article.objects.filter(slug=form['slug'].value()).exists():
+            article = Article.objects.get(slug=self.kwargs['slug'])
+        else:
+            article = Article()
         article.title = form['title'].value()
+        article.slug = form['slug'].value()
         article.content = form['content'].value()
         article.page_type = form['page_type'].value()
         article.group_id = form['group'].value()
         article.parent_id = form['parent'].value()
         article.order = form['order'].value()
+        article.owner_id = form['owner'].value()
+        article.header_image = form['header_image'].value()
+        article.link = form['link'].value()
         article.save()
         return super(ArticleEditView, self).form_valid(form)
 
     def get_initial(self):
-        self.success_url = reverse('page', kwargs={'slug':self.kwargs['slug']})
-        article = Article.objects.get(slug=self.kwargs['slug'])
-        initial = {
-            "page_type": article.page_type,
-            "title": article.title,
-            "content": article.content,
-            "header_image": article.header_image,
-            "slug": article.slug,
-            "group": article.group,
-            "owner": article.owner,
-            "link": article.link,
-            "parent": article.parent,
-            "order": article.order
-        }
+        initial = None
+        if 'slug' in self.kwargs:
+            article = Article.objects.get(slug=self.kwargs['slug'])
+            initial = {
+                "page_type": article.page_type,
+                "title": article.title,
+                "content": article.content,
+                "header_image": article.header_image,
+                "slug": article.slug,
+                "group": article.group,
+                "owner": article.owner,
+                "link": article.link,
+                "parent": article.parent,
+                "order": article.order
+            }
         return initial
 
+
+class NewArticleView(UserPassesTestMixin, MyArticleMixin, FormView):
+    template_name = "new_article.html"
+    raise_exeption = True
+    form_class = NewArticleForm
+
+    def test_func(self, user):
+        return user.is_superuser
+
+
+    def form_invalid(self, form):
+
+        return super(NewArticleView, self).form_invalid(form)
+
+    def form_valid(self, form):
+        self.success_url = reverse('edit_article', kwargs={'slug': form['slug'].value()})
+        article = Article()
+        article.title = form['title'].value()
+        article.slug = form['slug'].value()
+        article.page_type = form['page_type'].value()
+        article.group_id = form['group'].value()
+        article.parent_id = form['parent'].value()
+        article.order = form['order'].value()
+        article.owner_id = form['owner'].value()
+        article.header_image = form['header_image'].value()
+        article.link = form['link'].value()
+        article.save()
+        return super(NewArticleView, self).form_valid(form)
 
 class TocView(MyArticleMixin, TemplateView):
     template_name = 'toc.html'
@@ -158,18 +204,18 @@ class FileBrowserView(MyTemplateMixin, TemplateView):
 
 class ListImagesView(LoginRequiredMixin, View):
 
-    def get(self, user):
-        """
-        This is a root request. First find all the views that they have access to and return them as folders.
-        """
-        groups = self.request.user.groups.all()
-        response = '<ul class="jqueryFileTree">'
-        articles = Article.objects.filter(Q(owner=self.request.user) | Q(group__in=groups))
-        for article in articles:
-            response += '<li class="directory collapsed"><a href="#" rel="{}/">{}</a></li>'.format(article.slug,
-                                                                                                   article.slug)
-        response += "</ul>"
-        return HttpResponse(response)
+    # def get(self, user):
+    #     """
+    #     This is a root request. First find all the views that they have access to and return them as folders.
+    #     """
+    #     groups = self.request.user.groups.all()
+    #     response = '<ul class="jqueryFileTree">'
+    #     articles = Article.objects.filter(Q(owner=self.request.user) | Q(group__in=groups))
+    #     for article in articles:
+    #         response += '<li class="directory collapsed"><a href="#" rel="{}/">{}</a></li>'.format(article.slug,
+    #                                                                                                article.slug)
+    #     response += "</ul>"
+    #     return HttpResponse(response)
 
     def post(self, user):
         """
@@ -177,41 +223,41 @@ class ListImagesView(LoginRequiredMixin, View):
         :return: HTML for the AJAX request
         """
 
-        # if self.request.POST['dir'] == '/':
-        #     """
-        #     This is a root request. First find all the views that they have access to and return them as folders.
-        #     """
-        #     groups = self.request.user.groups.all()
-        #     response = '<ul class="jqueryFileTree">'
-        #     articles = Article.objects.filter(Q(owner=self.request.user) | Q(group__in=groups))
-        #     for article in articles:
-        #         response += '<li class="directory collapsed"><a href="#" rel="{}/">{}</a></li>'.format(article.slug,article.slug)
-        #     response += "</ul>"
-        #     return HttpResponse(response)
-        # else:
-        """
-        This is a folder request. Lest list the contents of this directory
-        """
-        groups = self.request.user.groups.all()
-        response = '<ul class="jqueryFileTree">'
-        articles = Article.objects.filter(Q(owner=self.request.user) | Q(group__in=groups))
-        path = self.request.POST['dir'].split('/')
-        prefix = "{}/images/original/".format(path[0])
-        if path[1] != '':
-            for directory in path[1:]:
-                prefix += directory + "/"
-        s3 = boto3.resource("s3")
-        my_bucket = s3.Bucket(Settings.AWS_MEDIA_BUCKET_NAME)
-        for obj in my_bucket.objects.filter(Prefix=prefix):
-            # remove prefix from key
-            m = re.search(prefix, obj.key)
-            filename = obj.key[m.end():]
-            original_url = "https://s3.amazonaws.com/{}/{}".format(Settings.AWS_MEDIA_BUCKET_NAME,obj.key)
-            thumbnail_url = original_url.replace('original','150')
-            response += '<li class="file2 ext_gif2"><a href="#" rel="{}" class="image_thumbnail"><img src="{}">{}</a></li>'.format(
-                thumbnail_url, original_url, filename)
-        response += "</ul>"
-        return HttpResponse(response)
+        if self.request.POST['dir'] == '/':
+            """
+            This is a root request. First find all the views that they have access to and return them as folders.
+            """
+            groups = self.request.user.groups.all()
+            response = '<ul class="jqueryFileTree">'
+            articles = Article.objects.filter(Q(owner=self.request.user) | Q(group__in=groups))
+            for article in articles:
+                response += '<li class="directory collapsed"><a href="#" rel="{}/">{}</a></li>'.format(article.slug,article.slug)
+            response += "</ul>"
+            return HttpResponse(response)
+        else:
+            """
+            This is a folder request. Lest list the contents of this directory
+            """
+            groups = self.request.user.groups.all()
+            response = '<ul class="jqueryFileTree">'
+            articles = Article.objects.filter(Q(owner=self.request.user) | Q(group__in=groups))
+            path = self.request.POST['dir'].split('/')
+            prefix = "{}/images/original/".format(path[0])
+            if path[1] != '':
+                for directory in path[1:]:
+                    prefix += directory + "/"
+            s3 = boto3.resource("s3")
+            my_bucket = s3.Bucket(Settings.AWS_MEDIA_BUCKET_NAME)
+            for obj in my_bucket.objects.filter(Prefix=prefix):
+                # remove prefix from key
+                m = re.search(prefix, obj.key)
+                filename = obj.key[m.end():]
+                original_url = "https://s3.amazonaws.com/{}/{}".format(Settings.AWS_MEDIA_BUCKET_NAME,obj.key)
+                thumbnail_url = original_url.replace('original','150')
+                response += '<li class="file2 ext_gif2"><a href="#" rel="{}" class="image_thumbnail"><img src="{}">{}</a></li>'.format(
+                    thumbnail_url, original_url, filename)
+            response += "</ul>"
+            return HttpResponse(response)
 
 
 class ListFilesView(LoginRequiredMixin, View):
@@ -327,7 +373,9 @@ class ListPagesView(LoginRequiredMixin, View):
 class ImageUpload(UserPassesTestMixin, View):
 
     def test_func(self, user):
-        return has_edit_permission(user, self.kwargs['slug'])
+        if has_edit_permission(user, self.kwargs['slug']) or user.is_superuser:
+            return True
+        return False
 
     def post(self, *args, **kwargs):
 

@@ -190,13 +190,16 @@ class ArticleEditTests(MyTestCase):
     def test_good_form_data(self):
         group = Group.objects.get(name="editor")
         article = Article.objects.get(slug="Article")
+        owner = User.objects.get(username="Ned")
         data = {
             "title":"Test Title",
+            "slug":"article",
             "content": "This is some test content",
             "page_type": "article",
             "group": group.id,
             "parent": article.id,
             "order": "2",
+            "owner": owner.id
             }
         form = ArticleForm(data=data)
         self.assertTrue(form.is_valid())
@@ -204,22 +207,27 @@ class ArticleEditTests(MyTestCase):
     def test_view_with_good_data(self):
         c = Client()
         c.login(username='Ned', password='somethingelse')
+        user = User.objects.get(username="Ned")
         group = Group.objects.get(name="editor")
         article = Article.objects.get(slug="Article")
         data = {
             "title":"Test Title",
+            "slug": "article",
             "content": "This is some test content",
             "page_type": "article",
             "group": group.id,
             "parent": article.id,
+            "owner": user.id,
             "order": "2",
             }
         res = c.post('/editArticle/article/', data)
+        print()
         self.assertEqual(res.url, "/page/article/")
 
     def test_view_with_bad_data(self):
         c = Client()
         c.login(username='Ned', password='somethingelse')
+        user = User.objects.get(username="Ned")
         group = Group.objects.get(name="editor")
         article = Article.objects.get(slug="Article")
         data = {
@@ -227,6 +235,7 @@ class ArticleEditTests(MyTestCase):
             "content": "This is some test content",
             "page_type": "article",
             "group": group.id,
+            "owner": user.id,
             "parent": article.id,
             "order": "2",
         }
@@ -238,7 +247,7 @@ class ListImageTests(MyTestCase):
     def test_get_imagelist(self):
         c = Client()
         c.login(username='Ned', password='somethingelse')
-        res = c.get('/listimages/')
+        res = c.post('/listimages/', {'dir':'/'})
         self.assertEqual(res.status_code, 200)
 
 class ImageUploadTest(MyTestCase):

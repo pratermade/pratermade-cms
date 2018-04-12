@@ -55,7 +55,7 @@ class MyTestCase(TestCase):
                                       parent=category,
                                       order=1)
         settings = Settings.objects.create(site_name='Pratermade', site_tag_line="Tagline here",
-                                          www_root="http://127.0.0.1:8900")
+                                          www_root="http://127.0.0.1:8900", home_page=article)
 
         GlobalContent.objects.create(name="global_content_1",content="AcJ4OcHqI4cMxltIMXoYytM7vIa45iKq")
         GlobalContent.objects.create(name="global_content_2", content="ml0o8I8ELlxQZNAjtptoFlzks1Q47HUA")

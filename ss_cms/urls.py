@@ -18,7 +18,7 @@ from django.urls import path
 from django.conf.urls import url
 from website.views import IndexView, GenericView, ElementsView, ArticleView, ArticleEditView, TocView, PageView, \
     ImageUpload, ImageBrowserView, ListImagesView, FileBrowserView, FileUpload, ListFilesView, ListPagesView, \
-    NewArticleView
+    NewArticleView, EditSettingsView
 from django.conf.urls.static import static
 from django.conf import settings
 from django.contrib.auth import views as auth_views
@@ -50,6 +50,7 @@ urlpatterns = [
     url(r'filebrowser/(?P<slug>[a-zA-Z0-9\-_]+)/$', FileBrowserView.as_view(), name="filebrowser"),
     url(r'listfiles/$', ListFilesView.as_view(), name="listfiles"),
     url(r'listpages/$', ListPagesView.as_view(), name="listpages"),
+    url(r'settings/$', EditSettingsView.as_view(), name="settings"),
 ]
 
 if settings.DEBUG:

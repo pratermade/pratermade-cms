@@ -17,19 +17,13 @@
 									{% autoescape off %}
 									{{ form.as_p }}
 									{% endautoescape %}<br />
-                                    <button id="submit" type="submit">New</button>
+                                    <button id="submit" type="submit">Save</button>
                                 </form>
 								</section>
 
 
 						</div>
 					</div>
-
-<script>
-    $('#id_title').on('change keyup paste', function(){
-        $('#id_slug').val($('#id_title').val().replace(/ /g,'-').toLowerCase().replace(/[^\w\s-]/g,''))
-    });
-</script>
 
     <style>
 

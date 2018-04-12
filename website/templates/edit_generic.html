@@ -26,6 +26,18 @@
 					</div>
 <script src="{% static "assets/js/tinymce/tinymce.min.js" %}" ></script>
 <script>
+var current_order = '                        <div class="current_order" contenteditable="true" disabled="">CURRENT ORDER:\n' +
+    '                            <ul>\n' +
+    '                                <li><span>10</span> - This</li>\n' +
+    '                                <li><span>20</span> - Will</li>\n' +
+    '                                <li><span>30</span> - Be Every</li>\n' +
+    '                                <li><span>40</span> - Page</li>\n' +
+    '                                <li><span>50</span> - Under</li>\n' +
+    '                                <li><span>60</span> - The Parent</li>\n' +
+    '                            </ul>\n' +
+    '                        </div>';
+$('#id_order').after(current_order);
+
   tinymce.init({
       selector: '.editable',
       branding: false,

@@ -7,8 +7,7 @@
 -->
 <html>
 	<head>
-		<title>{{ article.title }} -- Western Oklahoma State College, Altus, OK 73521</title>
-        <link rel="icon" href="https://www.wosc.edu/img/icons/W_green.png">
+		<title>{{ site_settings.site_name }}-- {{ article.title }} </title>
         <meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<!--[if lte IE 8]><script src={% static "assets/js/ie/html5shiv.js" %}></script><![endif]-->
@@ -38,13 +37,6 @@
 			<script src={% static "assets/js/main.js" %}></script>
 
     <script>
-        {#$('.sizable').each(function(index){#}
-        {#    var currentImage = $(this).attr('src');#}
-        {#    var largeImage = currentImage.replace('150','1024');#}
-        {#    var medImage = currentImage.replace('150','768');#}
-        {#    var smallImage = currentImage.replace('150','300');#}
-        {#    $(this).attr('srcset',largeImage+' 1024w, '+ medImage + ' 768w, ' + smallImage + ' 300w');#}
-        {#})#}
     </script>
 
 	</body>

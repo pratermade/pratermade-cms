@@ -32,3 +32,11 @@ class NewArticleForm(forms.Form):
         attrs={}))
     header_image = forms.ImageField(required=False)
     link = forms.URLField(max_length=1024, widget=forms.TextInput(), required=False)
+
+
+class SettingsForm(forms.Form):
+    site_name = forms.CharField(max_length=32, widget=forms.TextInput(attrs={}))
+    site_tag_line = forms.CharField(max_length=1024, widget=forms.TextInput(attrs={}), required=False)
+    www_root = forms.CharField(max_length=1024, widget=forms.TextInput(attrs={}))
+    home_page = forms.ModelChoiceField(queryset=Article.objects.filter(parent__isnull=True), widget=forms.Select(
+        attrs={}))

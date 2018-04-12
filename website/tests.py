@@ -280,4 +280,10 @@ class ListPagesTest(MyTestCase):
         data = {}
         data['dir'] = '/'
         res = c.post('/listpages/', data)
-        print(res.content)
+        expected = '<ul class="jqueryFileTree">'
+        expected += '''
+                                <li class="directory collapsed"><a href="#" rel="category/">
+                                test article</a></li>
+                                '''
+        expected += "</ul>"
+        self.assertEqual(res.content, expected.encode())

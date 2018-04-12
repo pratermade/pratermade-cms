@@ -6,8 +6,8 @@ from django.db import models
 from django.contrib.auth.models import Group, User
 
 PAGETYPES = (
-    ('link', 'Link'),
     ('article', 'Article'),
+    ('link', 'Link'),
     ('table_of_contents', 'Table Of Contents')
 )
 
@@ -61,6 +61,7 @@ class Settings(models.Model):
     site_tag_line = models.CharField(max_length=1024, blank=True, null=True)
     www_root = models.URLField(max_length=1024, help_text="This is the location where your site is located."
                                                           "http://www.example.com")
+    home_page = models.ForeignKey(Article, on_delete=models.CASCADE)
 
     class Meta:
         verbose_name_plural = "Settings"

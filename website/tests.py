@@ -4,6 +4,7 @@ from django.contrib.auth.models import User, Group
 from django.core.management import call_command
 from .models import Article, Settings, GlobalContent, Image
 from .forms import ArticleForm
+from ss_cms.settings import AWS_MEDIA_BUCKET_NAME, STATIC_URL
 
 
 # Create your tests here.
@@ -39,7 +40,7 @@ class MyTestCase(TestCase):
                                         header_image=None,
                                         slug='article',
                                         group=group,
-                                        owner=None,
+                                        owner=ned,
                                         link='',
                                         parent=category,
                                         order=1)
@@ -112,15 +113,6 @@ class PermissionsTests(MyTestCase):
         session = c.login(username='Ned', password='somethingelse')
         res = c.get('/article/article/')
         self.assertTrue(res.context['can_edit'])
-
-class ListImagesTests(MyTestCase):
-
-    #TODO: Find a way to test this better.
-    def test_list_returns_result(self):
-        c = Client()
-        session = c.login(username='Frank', password='something')
-        res = c.get('/listimages/')
-        self.assertEqual(res.status_code, 200)
 
 
 class TableOfContentsTests(MyTestCase):
@@ -198,13 +190,16 @@ class ArticleEditTests(MyTestCase):
     def test_good_form_data(self):
         group = Group.objects.get(name="editor")
         article = Article.objects.get(slug="Article")
+        owner = User.objects.get(username="Ned")
         data = {
             "title":"Test Title",
+            "slug":"article",
             "content": "This is some test content",
             "page_type": "article",
             "group": group.id,
             "parent": article.id,
             "order": "2",
+            "owner": owner.id
             }
         form = ArticleForm(data=data)
         self.assertTrue(form.is_valid())
@@ -212,22 +207,27 @@ class ArticleEditTests(MyTestCase):
     def test_view_with_good_data(self):
         c = Client()
         c.login(username='Ned', password='somethingelse')
+        user = User.objects.get(username="Ned")
         group = Group.objects.get(name="editor")
         article = Article.objects.get(slug="Article")
         data = {
             "title":"Test Title",
+            "slug": "article",
             "content": "This is some test content",
             "page_type": "article",
             "group": group.id,
             "parent": article.id,
+            "owner": user.id,
             "order": "2",
             }
         res = c.post('/editArticle/article/', data)
+        print()
         self.assertEqual(res.url, "/page/article/")
 
     def test_view_with_bad_data(self):
         c = Client()
         c.login(username='Ned', password='somethingelse')
+        user = User.objects.get(username="Ned")
         group = Group.objects.get(name="editor")
         article = Article.objects.get(slug="Article")
         data = {
@@ -235,8 +235,64 @@ class ArticleEditTests(MyTestCase):
             "content": "This is some test content",
             "page_type": "article",
             "group": group.id,
+            "owner": user.id,
             "parent": article.id,
             "order": "2",
         }
         res = c.post('/editArticle/article/', data)
         self.assertFormError(res, 'form', 'title', 'This field is required.')
+
+class ListImageTests(MyTestCase):
+
+    def test_get_imagelist(self):
+        c = Client()
+        c.login(username='Ned', password='somethingelse')
+        res = c.post('/listimages/', {'dir':'/'})
+        self.assertEqual(res.status_code, 200)
+
+class ImageUploadTest(MyTestCase):
+
+    def test_image_upload(self):
+        c = Client()
+        c.login(username='Ned', password='somethingelse')
+        fp = open("SSCMS-Logo.png", "rb")
+        data = {
+            'slug': 'article',
+            'file': fp
+                }
+        res = c.post('/imageupload/article/',data)
+        fp.close()
+        expected = '{"location": "https://s3.amazonaws.com/'+ AWS_MEDIA_BUCKET_NAME+'/article/images/original/SSCMS-Logo.png"}'
+        self.assertEqual(res.content, expected.encode())
+
+
+class FileUploadTest(MyTestCase):
+
+    def test_image_upload(self):
+        c = Client()
+        c.login(username='Ned', password='somethingelse')
+        fp = open("README.md", "rb")
+        data = {
+            'slug': 'article',
+            'file': fp
+                }
+        res = c.post('/fileupload/article/',data)
+        fp.close()
+        expected = '{"success": true, "error": ""}'
+        self.assertEqual(res.content, expected.encode())
+
+class ListPagesTest(MyTestCase):
+
+    def test_post_root(self):
+        c = Client()
+        c.login(username='Ned', password='somethingelse')
+        data = {}
+        data['dir'] = '/'
+        res = c.post('/listpages/', data)
+        expected = '<ul class="jqueryFileTree">'
+        expected += '''
+                                <li class="directory collapsed"><a href="#" rel="category/">
+                                test article</a></li>
+                                '''
+        expected += "</ul>"
+        self.assertEqual(res.content, expected.encode())

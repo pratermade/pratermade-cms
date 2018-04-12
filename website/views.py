@@ -4,7 +4,7 @@ from django.db.models import Q
 from django.urls import reverse
 from .models import Article, GlobalContent, Settings as SiteSettings
 
-from .forms import ArticleForm, NewArticleForm
+from .forms import ArticleForm, NewArticleForm, SettingsForm
 from django.shortcuts import get_object_or_404, redirect
 from braces.views import UserPassesTestMixin, LoginRequiredMixin
 from django.contrib.auth.models import Group, User
@@ -446,6 +446,37 @@ class FileUpload(UserPassesTestMixin, View):
         # res = {'location': 'https://{}/{}/files/{}'.format(Settings.AWS_S3_MEDIA_DOMAIN, self.kwargs['slug'], self.request.FILES['file'].name)}
         s3.upload_fileobj(file, Settings.AWS_MEDIA_BUCKET_NAME, filepath, ExtraArgs={"ACL": "public-read"})
         return JsonResponse(res)
+
+
+class EditSettingsView(UserPassesTestMixin, MyArticleMixin, FormView):
+    template_name = "settings.html"
+    form_class = SettingsForm
+
+    def test_func(self, user):
+        return user.is_superuser
+
+    def form_valid(self, form):
+        self.success_url = reverse('index')
+        if SiteSettings.objects.all().exists():
+            settings = SiteSettings.objects.all()[0]
+        else:
+            settings = SiteSettings()
+        settings.site_name = form['site_name'].value()
+        settings.site_tag_line = form['site_tag_line'].value()
+        settings.www_root = form['www_root'].value()
+        settings.home_page_id = form['home_page'].value()
+        settings.save()
+        return super(EditSettingsView, self).form_valid(form)
+
+    def get_initial(self):
+        settings = SiteSettings.objects.all()[0]
+        initial = {
+            'site_name':settings.site_name,
+            'site_tag_line': settings.site_tag_line,
+            'www_root': settings.www_root,
+            'home_page': settings.home_page,
+        }
+        return initial
 
 
 

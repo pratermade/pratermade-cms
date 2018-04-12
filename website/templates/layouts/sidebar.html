@@ -66,7 +66,7 @@
                                     {% if slug %}
                                         {% if can_edit %}<li><a href="{% url 'edit_article' slug %}">Edit Article</a></li>{% endif %}
                                         {% endif %}
-                                        <li><a href="/admin/website/article/add/">New Article</a></li>
+                                        <li><a href="{% url 'new_article' %}">New Article</a></li>
                                     </ul>
                                 </nav>
                             {% endif %}

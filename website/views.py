@@ -107,7 +107,7 @@ class ArticleEditView(UserPassesTestMixin, MyArticleMixin, FormView):
         context = super(ArticleEditView, self).get_context_data(*args, **kwargs)
         if 'slug' in self.kwargs:
             siblings = Article.objects.filter(parent=Article.objects.get(slug=self.kwargs['slug']))
-            context['siblings'] = siblings
+            context['siblings'] = siblings.order_by('order')
         return context
 
     def form_invalid(self, form):

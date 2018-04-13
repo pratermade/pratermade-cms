@@ -3,6 +3,12 @@
 .idea/
 *__pycache__/
 zappa_settings.json
-pratermade/settings.py
-
+*.swp
+/ss_cms/settings.py
+/website/migrations/*
+!/website/migrations/__init__.py
+.coverage
+/htmlcov/
+/htmlcov/*
+/.coverage
 

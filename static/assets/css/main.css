@@ -7,10 +7,10 @@
 	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
 */
 
-/* WOSC Theme Variables */
-:root {
-	--green: #005000;
-	--gold: #gold;
+/* Theme Variables */
+:root{
+	--prim-color: #f56a6a; /* #f56a6a */
+	--button-color: #edf1f5; /* transparent */
 }
 
 
@@ -2114,13 +2114,13 @@
 		-ms-transition: color 0.2s ease-in-out, border-bottom-color 0.2s ease-in-out;
 		transition: color 0.2s ease-in-out, border-bottom-color 0.2s ease-in-out;
 		border-bottom: dotted 1px;
-		color: var(--green);
+		color: var(--prim-color);
 		text-decoration: none;
 	}
 
 		a:hover {
-			border-bottom-color: var(--green);
-			color: var(--green) !important;
+			border-bottom-color: var(--prim-color);
+			color: var(--prim-color) !important;
 		}
 
 			a:hover strong {
@@ -2289,7 +2289,7 @@
 	}
 
 	header.major > :last-child {
-		border-bottom: solid 3px var(--green);
+		border-bottom: solid 3px var(--prim-color);
 		display: inline-block;
 		margin: 0 0 2em 0;
 		padding: 0 0.75em 0.5em 0;
@@ -2356,8 +2356,8 @@
 		input[type="url"]:focus,
 		select:focus,
 		textarea:focus {
-			border-color: var(--green);
-			box-shadow: 0 0 0 1px var(--green);
+			border-color: var(--prim-color);
+			box-shadow: 0 0 0 1px var(--prim-color);
 		}
 
 	.select-wrapper {
@@ -2470,8 +2470,8 @@
 
 		input[type="checkbox"]:focus + label:before,
 		input[type="radio"]:focus + label:before {
-			border-color: var(--green);
-			box-shadow: 0 0 0 1px var(--green);
+			border-color: var(--prim-color);
+			box-shadow: 0 0 0 1px var(--prim-color);
 		}
 
 	input[type="checkbox"] + label:before {
@@ -2704,7 +2704,7 @@
 				}
 
 				ul.contact li:before {
-					color: var(--green);
+					color: var(--prim-color);
 					display: inline-block;
 					font-size: 1.5em;
 					height: 1.125em;
@@ -2828,7 +2828,7 @@
 				}
 
 					ul.pagination li > .page.active {
-						background-color: var(--green);
+						background-color: var(--prim-color);
 						color: #ffffff !important;
 					}
 
@@ -2957,11 +2957,11 @@
 		-webkit-transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
 		-ms-transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
 		transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
-		background-color: transparent;
+		background-color: var(--button-color);
 		border-radius: 0.375em;
 		border: 0;
-		box-shadow: inset 0 0 0 2px var(--green);
-		color: var(--green) !important;
+	#box-shadow: inset 0 0 0 2px var(--prim-color);
+		color: var(--prim-color) !important;
 		cursor: pointer;
 		display: inline-block;
 		font-family: "Roboto Slab", serif;
@@ -3034,7 +3034,7 @@
 		input[type="button"].special,
 		button.special,
 		.button.special {
-			background-color: var(--green);
+			background-color: var(--prim-color);
 			box-shadow: none;
 			color: #ffffff !important;
 		}
@@ -3154,7 +3154,7 @@
 			}
 
 				.features article .icon:before {
-					color: var(--green);
+					color: var(--prim-color);
 					font-size: 2.75rem;
 					position: relative;
 					top: 0.05em;
@@ -3490,6 +3490,12 @@
 		width: 100%;
 	}
 
+	#main a:hover {
+		border-bottom: 0 !important;
+		color: blue !important;
+		text-decoration: underline !important;
+	}
+
 		#main > .inner {
 			padding: 0 6em 0.1em 6em ;
 			margin: 0 auto;
@@ -3799,7 +3805,7 @@
 		display: -webkit-flex;
 		display: -ms-flex;
 		display: flex;
-		border-bottom: solid 5px var(--green);
+		border-bottom: solid 5px var(--prim-color);
 		padding: 2.5em 0 1em 0;
 		position: relative;
 	}
@@ -3994,7 +4000,7 @@
 		}
 
 			#menu ul a:hover, #menu ul span:hover {
-				color: var(--green);
+				color: var(--prim-color);
 			}
 
 			#menu ul a.opener, #menu ul span.opener {
@@ -4028,7 +4034,7 @@
 				}
 
 				#menu ul a.opener:hover:before, #menu ul span.opener:hover:before {
-					color: var(--green);
+					color: var(--prim-color);
 				}
 
 				#menu ul a.opener.active + ul, #menu ul span.opener.active + ul {
@@ -4072,11 +4078,99 @@
 
 /* CUSTOM */
 .mce-tinymce button {
-<<<<<<< HEAD
 	box-shadow: inherit !important;
-    color: inherit !important;
-=======
-box-shadow: inherit !important;
-color: inherit !important;
->>>>>>> e8e6ea598c33ace56c7ff100b0a326e4f3792db4
+	color: inherit !important;
+}
+
+/* TABS */
+.tabpanel {
+	margin: 20px;
+	padding: 0;
+}
+
+.tablist {
+	margin: 0 0px;
+	padding: 0;
+	list-style: none;
+}
+
+.tab {
+	margin: .2em 1px 0 0;
+	padding: 10px;
+	height: 1.6em;
+	font-size: 13px;
+	#font-weight: bold;
+	border: 1px solid black;
+	border-bottom: 1px solid #AAA;
+	background: cornsilk;
+	border-top-left-radius: .5em;
+	border-top-right-radius: .5em;
+	float: left;
+	display: inline; /* IE float bug fix */
+}
+
+.panel {
+	clear: both;
+	display: block;
+	margin: 0 0 0 0;
+	padding: 30px;
+	#width: 300px;
+	background: #FFF;
+	border-radius: 10px 50px;
+	border: 1px dotted #bbb
+}
+
+ul.controlList {
+	list-style-type: none;
+}
+
+li[aria-selected='true'] {
+	color: black;
+	background-color: #fff;
+	border-bottom: 1px solid white;
+	outline: 0
+}
+
+li[aria-selected='false'] {
+	cursor: pointer;
+}
+
+li[aria-selected='false']:hover {
+	background: rgb(255, 242, 192)
+}
+
+div[aria-hidden='true'] {
+	display: none;
+}
+
+div[aria-hidden='false'] {
+	display: block;
+}
+
+.focus {
+	margin-top: 0;
+	height: 1.2em;
+}
+
+.hidden {
+	display: none;
+}
+
+.administrator {
+	background: #f0f0f0;
+	padding: 10px;
+	border-radius: 10px
+}
+
+.administrator .major {
+	text-align: center;
+}
+
+.administrator h2 {
+	display: block !important;
+	padding-top: 0.7em !important;
+}
+
+.administrator ul {
+	padding-left: 2em !important;
 }

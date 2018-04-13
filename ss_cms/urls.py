@@ -1,0 +1,57 @@
+"""pratermade URL Configuration
+
+The `urlpatterns` list routes URLs to views. For more information please see:
+    https://docs.djangoproject.com/en/2.0/topics/http/urls/
+Examples:
+Function views
+    1. Add an import:  from my_app import views
+    2. Add a URL to urlpatterns:  path('', views.home, name='home')
+Class-based views
+    1. Add an import:  from other_app.views import Home
+    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
+Including another URLconf
+    1. Import the include() function: from django.urls import include, path
+    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
+"""
+from django.contrib import admin
+from django.urls import path
+from django.conf.urls import url
+from website.views import ArticleView, ArticleEditView, TocView, PageView, \
+    ImageUpload, ImageBrowserView, ListImagesView, FileBrowserView, FileUpload, ListFilesView, ListPagesView, \
+    NewArticleView, EditSettingsView, IndexView
+from django.conf.urls.static import static
+from django.conf import settings
+from django.contrib.auth import views as auth_views
+
+
+# Add this back to re-enable the admin side.
+# path('admin/', admin.site.urls),
+
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('accounts/login/', auth_views.login, name='login'),
+    path('accounts/logout/', auth_views.logout, name='logout'),
+    url(r'accounts/resetpw/',auth_views.password_reset,
+        {'post_reset_redirect' : '/accounts/resetpwdone/'},
+        name="password_reset"),
+    path(r'', PageView.as_view(), name="index"),
+    path(r'home/', IndexView.as_view(), name="home"),
+    path(r'imagebrowser/', ImageBrowserView.as_view(), name="imagebrowser"),
+    url(r'article/(?P<slug>[a-zA-Z0-9\-_]+)/$', ArticleView.as_view(), name="article"),
+    url(r'editArticle/(?P<slug>[a-zA-Z0-9\-_]+)/$', ArticleEditView.as_view(), name="edit_article"),
+    url(r'newArticle/$', NewArticleView.as_view(), name="new_article"),
+    url(r'toc/(?P<slug>[a-zA-Z0-9\-_]+)/$', TocView.as_view(), name="toc"),
+    url(r'page/(?P<slug>[a-zA-Z0-9\-_]+)/$', PageView.as_view(), name="page"),
+    url(r'imageupload/(?P<slug>[a-zA-Z0-9\-_]+)/$', ImageUpload.as_view(), name="imageupload"),
+    url(r'fileupload/(?P<slug>[a-zA-Z0-9\-_]+)/$', FileUpload.as_view(), name="fileupload"),
+    url(r'listimages/$', ListImagesView.as_view(), name="listimages"),
+    url(r'filebrowser/(?P<slug>[a-zA-Z0-9\-_]+)/$', FileBrowserView.as_view(), name="filebrowser"),
+    url(r'listfiles/$', ListFilesView.as_view(), name="listfiles"),
+    url(r'listpages/$', ListPagesView.as_view(), name="listpages"),
+    url(r'settings/$', EditSettingsView.as_view(), name="settings"),
+]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+

@@ -66,7 +66,7 @@ class IndexTest(MyTestCase):
     def test_for_good_index_response(self):
         c = Client()
         res = c.get('/')
-        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.url, '/article/article/')
 
 
 class MenuCreationTest(MyTestCase):

@@ -55,6 +55,8 @@ class MyArticleMixin(MyTemplateMixin):
         context = super(MyArticleMixin, self).get_context_data(**kwargs)
         if 'slug' in self.kwargs:
             article = get_object_or_404(Article, slug=self.kwargs['slug'])
+            siblings = Article.objects.filter(parent=article.parent)
+            context['siblings'] = siblings.order_by('order')
             gcbs = GlobalContent.objects.all()
             if article.content is not None:
                 for gcb in gcbs:
@@ -102,13 +104,6 @@ class ArticleEditView(UserPassesTestMixin, MyArticleMixin, FormView):
             return has_edit_permission(user, self.kwargs['slug'])
         else:
             return user.is_superuser
-    
-    def get_context_data(self, *args, **kwargs):
-        context = super(ArticleEditView, self).get_context_data(*args, **kwargs)
-        if 'slug' in self.kwargs:
-            siblings = Article.objects.filter(parent=Article.objects.get(slug=self.kwargs['slug']))
-            context['siblings'] = siblings.order_by('order')
-        return context
 
     def form_invalid(self, form):
         return super(ArticleEditView, self).form_invalid(form)

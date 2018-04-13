@@ -1,0 +1,56 @@
+{% extends "layouts/homepage.html" %}
+{% load staticfiles %}
+{% block main %}
+<!-- test comment -->
+
+
+					<div id="main">
+						<div class="inner">
+
+							<!-- Header -->
+								{% include "layouts/header.html" %}
+
+							<!-- Content -->
+								<section>
+                                <form action="." method="post">
+                                    {% csrf_token %}
+									{% autoescape off %}
+									{{ form.as_p }}
+									{% endautoescape %}<br />
+                                    <button id="submit" type="submit">New</button>
+                                </form>
+								</section>
+
+
+						</div>
+					</div>
+
+<script>
+    $('#id_title').on('change keyup paste', function(){
+        $('#id_slug').val($('#id_title').val().replace(/ /g,'-').toLowerCase().replace(/[^\w\s-]/g,''))
+    });
+</script>
+
+    <style>
+
+
+/* ### Edit Page Changes ### */
+    #id_content_ifr {
+        min-height: 500px;
+    }
+    .mce-content-body img {
+        max-width: 100%;
+    }
+    section p:nth-child(n+5) {
+        width: 48%;
+        display: inline-block;
+        padding: 0 30px;
+    }
+
+    #submit {
+        float:right;
+    }
+
+</style>
+
+{% endblock %}

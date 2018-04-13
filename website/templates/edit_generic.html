@@ -12,23 +12,141 @@
 
 							<!-- Content -->
 								<section>
-
+                                <form action="." method="post">
+                                    {% csrf_token %}
 									{% autoescape off %}
 									{{ form.as_p }}
-									{% endautoescape %}
-
+									{% endautoescape %}<br />
+                                    <button id="submit" type="submit">Update</button>
+                                </form>
 								</section>
+
 
 						</div>
 					</div>
 
+<style>
+
+/* ### Edit Page Changes ### */
+#id_content_ifr {
+    min-height: 500px;
+}
+.mce-content-body img {
+    max-width: 100%;
+}
+section p:nth-child(n+5) {
+    width: 48%;
+    display: inline-block;
+    padding: 0 30px;
+}
+
+#submit {
+    float:right;
+}
+
+/* Proposed Additions */
+#id_order {
+    position: relative;
+}
+#id_order:hover + .current_order, #id_order:active + .current_order {
+    display: block;
+}
+.current_order {
+    position: absolute;
+    margin: -1px 1em;
+    padding: 10px;
+    min-height: 100px;
+    height: auto;
+    font-size: 90% !important;
+    border: 2px solid #e7e7e7;
+    background: #f5f5f5;
+    color: #494949;
+}
+.current_order > ul {
+    list-style: none;
+    padding-left: 15px !important;
+    margin-bottom:1em !important;
+}
+.current_order > ul > li > span {
+    font-size: 90% !important;
+    font-style: italic;
+}
+</style>
+
+<script src="{% static "assets/js/tinymce/tinymce.min.js" %}" ></script>
 <script>
+var id_order_width = $('#id_order').width();
+console.log(id_order_width);
+var current_order = '' +
+    '<div class="current_order" style="display:none">' +
+    '   <b>CURRENT ORDER</b>:\n' +
+    '   <ul>\n' +
+        {% for sibling in siblings %}
+    '       <li><span>{{ sibling.order }}</span> -- {{ sibling.title }}</li>\n' +
+        {% endfor %}
+    '   </ul>\n' +
+{#    '   <p>\n' +#}
+{#    '       Order is...\n' +#}
+{#    '   </p>\n' +#}
+    '</div>';
+$('#id_order').after(current_order);
+$("#id_order").hover(function(){
+    $('.current_order').css('width',id_order_width);
+    $('.current_order').fadeToggle().delay('1000');
+});
+$("#id_order").focus(function(){
+    $('.current_order').css('width',id_order_width);
+    $('.current_order').fadeToggle();
+});
+
   tinymce.init({
       selector: '.editable',
       branding: false,
       plugins: 'image preview code link fullscreen',
       toolbar: 'undo redo | link image file | preview code fullscreen',
-      images_upload_handler: function (blobInfo, success, failure) {
+      image_dimensions: false,
+      file_picker_types: 'file image media',
+      {#image_class_list: [#}
+      {#    {title: 'sizable', value: 'sizable'},#}
+      {#    {title: 'fixed-size', value: 'fixed'}#}
+      {#],#}
+      images_upload_handler: function(blobInfo, success, failure) {
+          imageUploadHandler(blobInfo, success, failure);
+      },
+      file_upload_handler: function(blobInfo, success, failure) {
+          imageUploadHandler(blobInfo, success, failure);
+      },
+      file_picker_callback: function(callback, value, meta){
+              myFilePicker(callback, value, meta);
+  }
+});
+
+function myFilePicker(callback, value, meta) {
+    console.log(meta);
+
+    if (meta.filetype == "image"){
+        var url = "{% url 'imagebrowser' %}";
+        var title = "Image Browser";
+    }
+    else{
+        var url = "{% url 'filebrowser' slug %}";
+        var title = "File Browser";
+    }
+    tinymce.activeEditor.windowManager.open({
+        title: title,
+        url: url,
+        width: 650,
+        height: 550,
+    }, {
+        oninsert: function (url) {
+            console.log(url);
+            callback(url);
+        }
+    });
+}
+
+function imageUploadHandler (blobInfo, success, failure) {
+          console.log("Something went here");
           var xhr, formData;
           xhr = new XMLHttpRequest();
           xhr.withCredentials = false;
@@ -51,47 +169,7 @@
       formData.append('file', blobInfo.blob(), blobInfo.filename());
       formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
       xhr.send(formData);
-  },
-  file_browser_callback: myFileBrowser
-});
-
-function myFileBrowser (field_name, url, type, win) {
-
-   //alert("Field_Name: " + field_name + "nURL: " + url + "nType: " + type + "nWin: " + win); // debug/testing
-
-    var cmsURL = window.location.pathname;
-    var searchString = window.location.search;
-    if(searchString.length < 1) {
-        searchString = "?";
-    }
-    tinyMCE.activeEditor.windowManager.open({
-        file : cmsURL,
-        title : 'My File Browser',
-        width : 420,  // Your dimensions may differ - toy around with them!
-        height : 400,
-        resizable : "yes",
-        inline : "yes",  // This parameter only has an effect if you use the inlinepopups plugin!
-        close_previous : "no"
-    }, {
-        window : win,
-        input : field_name
-    });
-    return false;
 }
+</script>
 
-  </script>
-
-{#<script> #}
-{#    #}
-{#    #}
-{#console.log("Running...");#}
-{#ClassicEditor.create(document.querySelector('#mainContentEditor'))#}
-{#	.catch( error=> {#}
-{#		console.error(error);#}
-{#	});#}
-{#ClassicEditor.create(document.querySelector('#editor'))#}
-{#        .catch( error=> {#}
-{#                console.error(error);#}
-{#        });#}
-{#</script>#}
 {% endblock %}

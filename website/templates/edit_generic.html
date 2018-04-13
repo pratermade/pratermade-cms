@@ -34,7 +34,12 @@
 .mce-content-body img {
     max-width: 100%;
 }
-.edit_p section p:nth-child(n+5) {
+section p:nth-child(-n+3) {
+    width: 49%;
+    display: inline-block;
+    padding-right: 40px;
+}
+section p:nth-child(n+5) {
     width: 33%;
     display: inline-block;
     padding: 0 30px;
@@ -71,6 +76,13 @@
     font-size: 90% !important;
     font-style: italic;
 }
+.current_page {
+    font-weight: bold;
+    font-size: 110%;
+}
+li.current_page:before {
+    content: "* ";
+}
 </style>
 
 <script src="{% static "assets/js/tinymce/tinymce.min.js" %}" ></script>
@@ -82,7 +94,7 @@ var current_order = '' +
     '   <b>CURRENT ORDER</b>:\n' +
     '   <ul>\n' +
         {% for sibling in siblings %}
-    '       <li><span>{{ sibling.order }}</span> -- {{ sibling.title }}</li>\n' +
+    '       <li{% if sibling.slug in request.path %} class="current_page"{% endif %}><span>{{ sibling.order }}</span> -- {{ sibling.title }}</li>\n' +
         {% endfor %}
     '   </ul>\n' +
 {#    '   <p>\n' +#}

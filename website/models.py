@@ -8,7 +8,8 @@ from django.contrib.auth.models import Group, User
 PAGETYPES = (
     ('article', 'Article'),
     ('link', 'Link'),
-    ('table_of_contents', 'Table Of Contents')
+    ('table_of_contents', 'Table Of Contents'),
+    ('index', 'Index.html'),
 )
 
 class Article(models.Model):

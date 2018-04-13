@@ -68,7 +68,7 @@
                                             <a href="/admin/website/article/">Admin Page</a>
                                         </li>
 
-                                        {% if can_edit %}<li><a href="{% url 'edit_article' slug %}">Edit Article</a></li>{% endif %}
+                                        {% if slug %}<li><a href="{% url 'edit_article' slug %}">Edit Article</a></li>{% endif %}
                                         <li><a href="{% url 'new_article' %}">New Article</a></li>
                                     </ul>
                                 </nav>

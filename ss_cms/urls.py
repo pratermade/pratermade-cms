@@ -18,7 +18,7 @@ from django.urls import path
 from django.conf.urls import url
 from website.views import ArticleView, ArticleEditView, TocView, PageView, \
     ImageUpload, ImageBrowserView, ListImagesView, FileBrowserView, FileUpload, ListFilesView, ListPagesView, \
-    NewArticleView, EditSettingsView, IndexView
+    NewArticleView, EditSettingsView, IndexView, GlobalContentView
 from django.conf.urls.static import static
 from django.conf import settings
 from django.contrib.auth import views as auth_views
@@ -50,6 +50,8 @@ urlpatterns = [
     url(r'listfiles/$', ListFilesView.as_view(), name="listfiles"),
     url(r'listpages/$', ListPagesView.as_view(), name="listpages"),
     url(r'settings/$', EditSettingsView.as_view(), name="settings"),
+    url(r'globalcontent/(?P<id>[0-9]+)/$', GlobalContentView.as_view(), name="globalcontent"),
+    url(r'globalcontent/$', GlobalContentView.as_view(), name="globalcontent"),
 ]
 
 if settings.DEBUG:

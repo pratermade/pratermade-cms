@@ -4,7 +4,7 @@ from django.db.models import Q
 from django.urls import reverse
 from .models import Article, GlobalContent, Settings as SiteSettings
 
-from .forms import ArticleForm, NewArticleForm, SettingsForm
+from .forms import ArticleForm, NewArticleForm, SettingsForm, GlobalContentForm
 from django.shortcuts import get_object_or_404, redirect
 from braces.views import UserPassesTestMixin, LoginRequiredMixin
 from django.contrib.auth.models import Group, User
@@ -35,10 +35,14 @@ class MyTemplateMixin(object):
             context['breadcrumbs'] = get_breadcrumbs(page.id)
             if self.request.user == Article.objects.get(slug=self.kwargs['slug']).owner or \
                 self.request.user == Article.objects.get(slug=self.kwargs['slug']).owner or \
-                self.request.user.groups.filter(id=page_group.id).exists() or \
                 self.request.user.groups.filter(name='editor').exists():
                     context['can_edit'] = True
                     context['slug'] = self.kwargs['slug']
+        if page_group is not None:
+            if self.request.user.groups.filter(id=page_group.id).exists():
+                context['can_edit'] = True
+
+
 
         if self.request.user.is_superuser:
             context['can_edit'] = True
@@ -54,7 +58,7 @@ class MyTemplateMixin(object):
 class MyArticleMixin(MyTemplateMixin):
 
     def get_context_data(self, *args, **kwargs):
-        context = super(MyArticleMixin, self).get_context_data(**kwargs)
+        context = super(MyArticleMixin, self).get_context_data(*args, **kwargs)
         if 'slug' in self.kwargs:
             article = get_object_or_404(Article, slug=self.kwargs['slug'])
             siblings = Article.objects.filter(parent=article.parent)
@@ -70,6 +74,39 @@ class MyArticleMixin(MyTemplateMixin):
 
 class IndexView(MyArticleMixin, TemplateView):
     template_name = "index.html"
+
+
+class GlobalContentView(MyArticleMixin, FormView):
+    template_name = "global_content.html"
+    form_class = GlobalContentForm
+
+    def form_valid(self, form):
+        self.success_url = reverse('globalcontent')
+        if form['id'].value() == '':
+            gcb = GlobalContent()
+        else:
+            gcb = GlobalContent.objects.get(id=form['id'].value())
+        gcb.name = form['name'].value()
+        gcb.content = form['content'].value()
+        gcb.save()
+        return super(GlobalContentView, self).form_valid(form)
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(GlobalContentView, self).get_context_data(*args, **kwargs)
+        gcbs = GlobalContent.objects.all()
+        context['globals'] = gcbs
+        return context
+
+    def get_initial(self):
+        gcb = get_object_or_404(GlobalContent,id=self.kwargs['id'])
+        initial = {
+            'name': gcb.name,
+            'content': gcb.content,
+            'id': gcb.id,
+        }
+        return initial
+
+
 
 #
 # class GenericView(MyArticleMixin, TemplateView):

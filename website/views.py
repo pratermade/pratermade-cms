@@ -87,6 +87,8 @@ class PageView(RedirectView):
             self.url = reverse('article', kwargs={'slug':kwargs['slug']})
         if article.page_type == 'link':
             self.url = Article.objects.get(slug=kwargs['slug']).link
+        if article.page_type == 'article':
+            self.url = reverse('index')
         return super(PageView, self).get_redirect_url(*args, **kwargs)
 
 

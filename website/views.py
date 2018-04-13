@@ -33,14 +33,16 @@ class MyTemplateMixin(object):
             page_group = page.group
             context['slug'] = self.kwargs['slug']
             context['breadcrumbs'] = get_breadcrumbs(page.id)
-        if page_group is None:
-            return context
-        if self.request.user.is_superuser or \
+            if self.request.user == Article.objects.get(slug=self.kwargs['slug']).owner or \
                 self.request.user == Article.objects.get(slug=self.kwargs['slug']).owner or \
                 self.request.user.groups.filter(id=page_group.id).exists() or \
                 self.request.user.groups.filter(name='editor').exists():
                     context['can_edit'] = True
                     context['slug'] = self.kwargs['slug']
+
+        if self.request.user.is_superuser:
+            context['can_edit'] = True
+
         global_content = {}
         contents = GlobalContent.objects.all()
         for content in contents:
@@ -64,32 +66,45 @@ class MyArticleMixin(MyTemplateMixin):
                 context['article'] = article
         return context
 
+
+
 class IndexView(MyArticleMixin, TemplateView):
     template_name = "index.html"
 
-
-class GenericView(MyArticleMixin, TemplateView):
-    template_name = "generic.html"
-
-
-class ElementsView(MyArticleMixin, TemplateView):
-    template_name = "elements.html"
+#
+# class GenericView(MyArticleMixin, TemplateView):
+#     template_name = "generic.html"
+#
+#
+# class ElementsView(MyArticleMixin, TemplateView):
+#     template_name = "elements.html"
 
 
 class PageView(RedirectView):
     permanent = False
 
     def get_redirect_url(self, *args, **kwargs):
-        article = get_object_or_404(Article, slug=kwargs['slug'])
+
+        # If kwargs are empty, assume it is the home_page that we want.
+        if 'slug' in self.kwargs:
+            article = Article.objects.get(slug=self.kwargs['slug'])
+
+        else:
+            article = SiteSettings.objects.all()[0].home_page
+
+        kwargs = {"slug" : article.slug}
         if article.page_type == 'table_of_contents':
-            self.url = reverse('toc', kwargs={'slug': kwargs['slug']})
+            self.url = reverse('toc', kwargs=kwargs)
         if article.page_type == 'article':
-            self.url = reverse('article', kwargs={'slug':kwargs['slug']})
+            self.url = reverse('article', kwargs=kwargs)
         if article.page_type == 'link':
             self.url = Article.objects.get(slug=kwargs['slug']).link
-        if article.page_type == 'article':
-            self.url = reverse('index')
+        if article.page_type == 'index':
+            self.url = reverse('home')
+
         return super(PageView, self).get_redirect_url(*args, **kwargs)
+
+
 
 
 class ArticleView(MyArticleMixin, TemplateView):
@@ -167,14 +182,24 @@ class NewArticleView(UserPassesTestMixin, MyArticleMixin, FormView):
         article.title = form['title'].value()
         article.slug = form['slug'].value()
         article.page_type = form['page_type'].value()
-        article.group_id = form['group'].value()
-        article.parent_id = form['parent'].value()
+        if form['group'].value() != "":
+            article.group_id = form['group'].value()
+        if form['parent'].value() != "":
+            article.parent_id = form['parent'].value()
         article.order = form['order'].value()
         article.owner_id = form['owner'].value()
         article.header_image = form['header_image'].value()
         article.link = form['link'].value()
+        print(article)
         article.save()
         return super(NewArticleView, self).form_valid(form)
+
+    def get_initial(self):
+        initial = {
+            "owner":self.request.user.id,
+            "order":0
+        }
+        return initial
 
 class TocView(MyArticleMixin, TemplateView):
     template_name = 'toc.html'
@@ -521,7 +546,11 @@ def debug_print(info):
 
 def has_edit_permission(user, slug):
     article = get_object_or_404(Article, slug=slug)
-    if user.groups.filter(id=article.group.id).exists() or user == article.owner or user.is_superuser:
+    id = None
+    if article.group is not None:
+        id = article.group.id
+
+    if user.groups.filter(id=id).exists() or user == article.owner or user.is_superuser:
         return True
     else:
         return False

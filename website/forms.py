@@ -40,3 +40,9 @@ class SettingsForm(forms.Form):
     www_root = forms.CharField(max_length=1024, widget=forms.TextInput(attrs={}))
     home_page = forms.ModelChoiceField(queryset=Article.objects.filter(parent__isnull=True), widget=forms.Select(
         attrs={}))
+
+
+class GlobalContentForm(forms.Form):
+    name = forms.CharField(max_length=32, widget=forms.TextInput(attrs={}))
+    content = forms.CharField(widget=forms.Textarea(attrs={'class': 'editable'}))
+    id = forms.CharField(widget=forms.HiddenInput(),required=False)

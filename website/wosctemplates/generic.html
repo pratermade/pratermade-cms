@@ -1,0 +1,65 @@
+{% extends "layouts/2012-container.html" %}
+{% load staticfiles %}
+{% block main %}
+
+<div id="main" style="outline:0!important;padding-bottom:80px" tabindex="-1">
+    <div class="wrapper clearfix">
+        <div class="content-bg-color">
+            <style>
+                a:focus, a:hover {text-decoration: none; } .marketing a {border: none !important } .marketing p {height: 75px; } .featurette-heading {margin-top: 5px } .so .panel-body {padding: 0 15px } .so .col-sm-3 {border: 1px solid #ddd;height: 175px;padding: 10px; }.so .col-sm-3 h4 {margin-top: 30px } #sidebar, header {min-height: 125px !important } ol, ul {margin-bottom: 0px !important }
+            </style>
+            <!-- page content -->
+            <div id="page-content" class="clearfix">
+
+                <!-- floated content -->
+                <div class="floated-content floated-content-wide-ttt">
+
+                    <div class="sub-menu-anchor-link"><a href="https://www.wosc.edu{{ request.path }}#sidebartop"
+                                                         class="button">Side Bar</a></div>
+                    <!--/sub-menu-anchor-link-->
+
+                    <div class="breadcrumbs">
+                    <p class="transparent2"><a href="https://www2.wosc.edu/">HOME</a> &#8596; <a href="https://www.wosc.edu/index.php?page=Student-Services#">---CURRENT STUDENTS---</a>  &#8596;  <span  class="breadcrumbs-currentpage">Student Services</span></p>
+                    </div><!--/breadcrumbs-->
+
+                        {% if article.header_image %}
+                            <img src="{{ article.header_image.url }}">
+                        {% endif %}
+
+                    <h2 class="page-heading">
+                        <span>
+                            {{ article.title }}
+                        </span>
+                    </h2>
+                    <!-- ### BootStrap ### -->
+{#                    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>#}
+{#                    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>#}
+{#                    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">#}
+
+
+
+
+                    <div id="content" tabindex="-1" class="contentanchor">
+                        <span class="maincontents">
+                            {% autoescape off %}
+                                {{ article.content }}
+                            {% endautoescape %}
+                        </span>
+                    </div><!--/end Content -->
+
+
+                </div><!-- /ends contentanchor -->
+            </div><!-- ends floated content -->
+
+            <!-- sidebar -->
+        {% include "layouts/2012-sidebar.html" %}
+            <!-- ENDS sidebar -->
+
+        </div><!------- / page content ------->
+
+    </div><!--/content-bg-color -->
+</div><!--/wrapper -->
+</div><!--/main -->
+
+
+{% endblock %}

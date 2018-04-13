@@ -1,0 +1,23 @@
+
+                                <header id="header">
+									<a href="/" class="logo tk-bebas-neue">
+                                        <h1 class="accessibility">WOSC - {% if not article %}Western Oklahoma State College, a smart start!{% else %}{{ article.title }}{% endif %}</h1>
+                                        <img src="/static/img/W_green.png" alt="WOSC Logo" />
+                                        <div class="western">
+                                            <div>Western</div> <div>Oklahoma</div> <div>State</div> <div>College</div>
+                                        </div>
+                                    </a>
+									<ul class="icons">
+										<li><a href="#" class="icon fa-twitter"><span class="label">Twitter</span></a></li>
+										<li><a href="#" class="icon fa-linkedin"><span class="label">Linked-In</span></a></li>
+										<li><a href="#" class="icon fa-google-plus"><span class="label">Google+</span></a></li>
+                                        <li><a href="#" class="icon fa-youtube"><span class="label">Google+</span></a></li>
+                                        <li><a href="#" class="icon fa-github"><span class="label">GetHub</span></a></li>
+									</ul>
+                                </header>
+                                <div id="breadcrumbs">
+{#                                    <a href="{{ site_settings.www_root }}" class="breadcrumb">HOME</a>#}
+                                    {% for breadcrumb in breadcrumbs %}
+                                        &nbsp;<span>></span>&nbsp;<a href="{% url 'page' breadcrumb.slug %}" class="breadcrumb">{{ breadcrumb.title }}</a>
+                                    {% endfor %}
+                                </div>

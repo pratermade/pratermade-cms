@@ -98,12 +98,14 @@ class GlobalContentView(MyArticleMixin, FormView):
         return context
 
     def get_initial(self):
-        gcb = get_object_or_404(GlobalContent,id=self.kwargs['id'])
-        initial = {
-            'name': gcb.name,
-            'content': gcb.content,
-            'id': gcb.id,
-        }
+        initial = None
+        if 'id' in self.kwargs:
+            gcb = get_object_or_404(GlobalContent,id=self.kwargs['id'])
+            initial = {
+                'name': gcb.name,
+                'content': gcb.content,
+                'id': gcb.id,
+            }
         return initial
 
 

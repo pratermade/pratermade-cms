@@ -45,3 +45,5 @@ class SettingsForm(forms.Form):
 class GlobalContentForm(forms.Form):
     name = forms.CharField(max_length=32, widget=forms.TextInput(attrs={}))
     content = forms.CharField(widget=forms.Textarea(attrs={'class': 'editable'}))
+    id = forms.CharField(widget=forms.HiddenInput(),required=False)
+

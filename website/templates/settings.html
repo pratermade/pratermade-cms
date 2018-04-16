@@ -12,7 +12,7 @@
 
 							<!-- Content -->
 								<section>
-                                <form action="." method="post">
+                                <form action="." method="post" class="setting_p">
                                     {% csrf_token %}
 									{% autoescape off %}
 									{{ form.as_p }}
@@ -35,7 +35,7 @@
     .mce-content-body img {
         max-width: 100%;
     }
-    section p:nth-child(n+5) {
+    section p {
         width: 48%;
         display: inline-block;
         padding: 0 30px;

@@ -95,6 +95,8 @@ class GlobalContentView(MyArticleMixin, FormView):
         context = super(GlobalContentView, self).get_context_data(*args, **kwargs)
         gcbs = GlobalContent.objects.all()
         context['globals'] = gcbs
+        if 'id' in self.kwargs:
+            context['id'] = self.kwargs['id']
         return context
 
     def get_initial(self):

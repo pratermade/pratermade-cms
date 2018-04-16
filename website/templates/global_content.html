@@ -12,17 +12,32 @@
 
 							<!-- Content -->
 								<section>
-                                <form action="." method="post">
-                                    {% csrf_token %}
-									{% autoescape off %}
-									    {{ form.as_p }}
-									{% endautoescape %}<br />
-                                    <button id="submit" type="submit">Submit</button>
-                                </form>
+                                    {% if id %}
+                                        <div>
+                                        <form action="." method="post">
+                                    {% else %}
+                                        <div id="show-form" style="display:none">
+                                        <h2>Create New</h2>
+                                        <form action="." method="post">
+                                    {% endif %}
+                                            {% csrf_token %}
+                                            {% autoescape off %}
+                                                {{ form.as_p }}
+                                            {% endautoescape %}<br />
+                                            <button id="submit" type="submit">Submit</button>
+                                        </form>
+                                        <br />
+                                        <hr />
+                                    </div>
 								</section>
 
                             <h2>
                                 Global Content
+                                {% if id %}
+                                    <button class="btn btn-success new-gcb-page">New</button>
+                                {% else %}
+                                    <button class="btn btn-success new-gcb">New</button>
+                                {% endif %}
                             </h2>
                             <table class="table table-hover footable metro-blue toggle-square-filled toggle-medium" data-sort="true">
                                 <thead>
@@ -30,6 +45,7 @@
                                         <th>ID</th>
                                         <th data-sort-initial="false">Name</th>
                                         <th>Content</th>
+                                        <th>Remove</th>
                                     </tr>
                                 </thead>
                                 <tbody id="gcbs">
@@ -38,6 +54,11 @@
                                             <td>{{ gcb.id }}</td>
                                             <td><a href="{% url 'globalcontent' gcb.id %}">{{ gcb.name }}</a></td>
                                             <td class="truncate">{{ gcb.content|truncatechars:128 }}</td>
+                                            <td style="text-align:center">
+                                                <a href="#" onClick="deleteGlobalContentBlock();" title="Remove {{ gcb.name }}?">
+                                                    <span class="icon fa-trash" style="color:red; font-size: 18px;"></span>
+                                                </a>
+                                            </td>
                                         </tr>
                                     {% endfor %}
                                 </tbody>
@@ -84,18 +105,41 @@
                 $(this).html($.trim($(this).html()))
             });
             $('tbody:empty').parents('#commenttable').hide();
+
+            url = document.location.href;
+            hash = url.split('#');
+            $('#'+hash[1]).hide();
         });
 
 
     $('#id_title').on('change keyup paste', function(){
         $('#id_slug').val($('#id_title').val().replace(/ /g,'-').toLowerCase().replace(/[^\w\s-]/g,''))
     });
+
+    $('.new-gcb').on('click', function(){
+        $('#show-form').toggle();
+    });
+
+    $('.new-gcb-page').on('click', function(){
+        window.location.href = "{% url 'globalcontent' %}";
+    });
+
+
+    function deleteGlobalContentBlock() {
+        // need some help / context
+    }
 </script>
 
     <style>
 
 
 /* ### Edit Page Changes ### */
+    .new-gcb, .new-gcb-page {
+        float:right;
+        padding: 7px 15px;
+        height: auto;
+        line-height: 35px;
+    }
     #id_content_ifr {
         min-height: 500px;
     }

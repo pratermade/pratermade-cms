@@ -17,9 +17,10 @@
 									{% autoescape off %}
 									{{ form.as_p }}
 									{% endautoescape %}<br />
+                                    <a href="{% url "globalcontent" %}" class="button">Manage Global Content</a>
                                     <button id="submit" type="submit">Save</button>
                                 </form>
-                                <a href="{% url "globalcontent" %}">Manage Global Content</a>
+
 								</section>
 
 

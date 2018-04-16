@@ -12,7 +12,7 @@
 
 							<!-- Content -->
 								<section>
-                                <form action="." method="post">
+                                <form action="." method="post" class="edit_p">
                                     {% csrf_token %}
 									{% autoescape off %}
 									{{ form.as_p }}
@@ -34,8 +34,13 @@
 .mce-content-body img {
     max-width: 100%;
 }
+section p:nth-child(-n+3) {
+    width: 49%;
+    display: inline-block;
+    padding-right: 40px;
+}
 section p:nth-child(n+5) {
-    width: 48%;
+    width: 33%;
     display: inline-block;
     padding: 0 30px;
 }
@@ -54,7 +59,7 @@ section p:nth-child(n+5) {
 .current_order {
     position: absolute;
     margin: -1px 1em;
-    padding: 10px;
+    padding: 10px 30px 10px 10px;
     min-height: 100px;
     height: auto;
     font-size: 90% !important;
@@ -71,6 +76,13 @@ section p:nth-child(n+5) {
     font-size: 90% !important;
     font-style: italic;
 }
+.current_page {
+    font-weight: bold;
+    font-size: 110%;
+}
+li.current_page:before {
+    content: "* ";
+}
 </style>
 
 <script src="{% static "assets/js/tinymce/tinymce.min.js" %}" ></script>
@@ -82,7 +94,7 @@ var current_order = '' +
     '   <b>CURRENT ORDER</b>:\n' +
     '   <ul>\n' +
         {% for sibling in siblings %}
-    '       <li><span>{{ sibling.order }}</span> -- {{ sibling.title }}</li>\n' +
+    '       <li{% if sibling.slug in request.path %} class="current_page"{% endif %}><span>{{ sibling.order }}</span> -- {{ sibling.title }}</li>\n' +
         {% endfor %}
     '   </ul>\n' +
 {#    '   <p>\n' +#}
@@ -91,11 +103,11 @@ var current_order = '' +
     '</div>';
 $('#id_order').after(current_order);
 $("#id_order").hover(function(){
-    $('.current_order').css('width',id_order_width);
+    $('.current_order').css('max-width',id_order_width);
     $('.current_order').fadeToggle().delay('1000');
 });
 $("#id_order").focus(function(){
-    $('.current_order').css('width',id_order_width);
+    $('.current_order').css('max-width',id_order_width);
     $('.current_order').fadeToggle();
 });
 

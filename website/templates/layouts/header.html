@@ -14,4 +14,9 @@
 {% for breadcrumb in breadcrumbs %}
 &nbsp;<span>></span>&nbsp;<a href="{% url 'page' breadcrumb.slug %}" class="breadcrumbs">{{ breadcrumb.title }}</a>
 {% endfor %}
+    {% if 'settings' in request.path %}
+        &nbsp;<span>></span>&nbsp;Settings
+    {% elif 'globalcontent' in request.path %}
+        &nbsp;<span>></span>&nbsp;<a href="{% url 'settings' %}" class="breadcrumbs">Settings</a>&nbsp;<span>></span>&nbsp;Global Content Block
+    {% endif %}
 

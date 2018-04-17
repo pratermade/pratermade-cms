@@ -16,13 +16,22 @@ import tempfile
 from storages.backends.s3boto3 import S3Boto3Storage
 import tempfile
 import os
-# Create your views here.
+
+
+# Create your views here
+
+
 
 
 class MyTemplateMixin(object):
     #
     # Parent Class Only
     #
+
+    def get_template_name(self):
+        return SiteSettings.objects.all()[0].theme + '/' + self.template_name
+
+
     def get_context_data(self, *args, **kwargs):
         context = super(MyTemplateMixin, self).get_context_data(*args, **kwargs)
         context['menu'] = get_menu()

@@ -18,7 +18,7 @@ from django.urls import path
 from django.conf.urls import url
 from website.views import ArticleView, ArticleEditView, TocView, PageView, \
     ImageUpload, ImageBrowserView, ListImagesView, FileBrowserView, FileUpload, ListFilesView, ListPagesView, \
-    NewArticleView, EditSettingsView, IndexView, GlobalContentView
+    NewArticleView, EditSettingsView, IndexView, GlobalContentView, DeleteGlobalContentView
 from django.conf.urls.static import static
 from django.conf import settings
 from django.contrib.auth import views as auth_views
@@ -38,20 +38,21 @@ urlpatterns = [
     path(r'', PageView.as_view(), name="index"),
     path(r'home/', IndexView.as_view(), name="home"),
     path(r'imagebrowser/', ImageBrowserView.as_view(), name="imagebrowser"),
-    url(r'article/(?P<slug>[a-zA-Z0-9\-_]+)/$', ArticleView.as_view(), name="article"),
-    url(r'editArticle/(?P<slug>[a-zA-Z0-9\-_]+)/$', ArticleEditView.as_view(), name="edit_article"),
-    url(r'newArticle/$', NewArticleView.as_view(), name="new_article"),
-    url(r'toc/(?P<slug>[a-zA-Z0-9\-_]+)/$', TocView.as_view(), name="toc"),
-    url(r'page/(?P<slug>[a-zA-Z0-9\-_]+)/$', PageView.as_view(), name="page"),
-    url(r'imageupload/(?P<slug>[a-zA-Z0-9\-_]+)/$', ImageUpload.as_view(), name="imageupload"),
-    url(r'fileupload/(?P<slug>[a-zA-Z0-9\-_]+)/$', FileUpload.as_view(), name="fileupload"),
-    url(r'listimages/$', ListImagesView.as_view(), name="listimages"),
-    url(r'filebrowser/(?P<slug>[a-zA-Z0-9\-_]+)/$', FileBrowserView.as_view(), name="filebrowser"),
-    url(r'listfiles/$', ListFilesView.as_view(), name="listfiles"),
-    url(r'listpages/$', ListPagesView.as_view(), name="listpages"),
-    url(r'settings/$', EditSettingsView.as_view(), name="settings"),
-    url(r'globalcontent/(?P<id>[0-9]+)/$', GlobalContentView.as_view(), name="globalcontent"),
-    url(r'globalcontent/$', GlobalContentView.as_view(), name="globalcontent"),
+    url(r'^article/(?P<slug>[a-zA-Z0-9\-_]+)/$', ArticleView.as_view(), name="article"),
+    url(r'^editArticle/(?P<slug>[a-zA-Z0-9\-_]+)/$', ArticleEditView.as_view(), name="edit_article"),
+    url(r'^newArticle/$', NewArticleView.as_view(), name="new_article"),
+    url(r'^toc/(?P<slug>[a-zA-Z0-9\-_]+)/$', TocView.as_view(), name="toc"),
+    url(r'^page/(?P<slug>[a-zA-Z0-9\-_]+)/$', PageView.as_view(), name="page"),
+    url(r'^imageupload/(?P<slug>[a-zA-Z0-9\-_]+)/$', ImageUpload.as_view(), name="imageupload"),
+    url(r'^fileupload/(?P<slug>[a-zA-Z0-9\-_]+)/$', FileUpload.as_view(), name="fileupload"),
+    url(r'^listimages/$', ListImagesView.as_view(), name="listimages"),
+    url(r'^filebrowser/(?P<slug>[a-zA-Z0-9\-_]+)/$', FileBrowserView.as_view(), name="filebrowser"),
+    url(r'^listfiles/$', ListFilesView.as_view(), name="listfiles"),
+    url(r'^listpages/$', ListPagesView.as_view(), name="listpages"),
+    url(r'^settings/$', EditSettingsView.as_view(), name="settings"),
+    url(r'^globalcontent/(?P<id>[0-9]+)/$', GlobalContentView.as_view(), name="globalcontent"),
+    url(r'^globalcontent/$', GlobalContentView.as_view(), name="globalcontent"),
+    url(r'^deleteglobalcontent/(?P<id>[0-9]+)/$', DeleteGlobalContentView.as_view(), name="deleteglobalcontent"),
 ]
 
 if settings.DEBUG:

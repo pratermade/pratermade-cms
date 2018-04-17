@@ -10,3 +10,13 @@
 9. Menu Order GUI
 10. Global Content Manager
 
+
+
+# Optional Template Work
+1. registration/password_reset_form.html
+2. registration/password_reset_subject.txt
+3. registration/password_reset_email.html
+4. registration/password_reset_done.html
+5. registration/password_reset_confirm.html
+6. registration/password_reset_complete.html
+ 

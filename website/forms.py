@@ -1,13 +1,22 @@
 from django import forms
 from .models import PAGETYPES, Article
 from django.contrib.auth.models import Group, User
+import bleach
 
+
+class HTMLField(forms.CharField):
+
+    def clean(self):
+        unclean = super(HTMLField, self).clean()
+        cleaned = bleach.clean(unclean, strip=True)
+        print(cleaned)
+        return cleaned
 
 
 class ArticleForm(forms.Form):
     title = forms.CharField(max_length=1024, widget=forms.TextInput())
     slug = forms.CharField(max_length=32, widget=forms.TextInput(attrs={}))
-    content = forms.CharField(widget=forms.Textarea(attrs={'class': 'editable'}), required=False)
+    content = HTMLField(widget=forms.Textarea(attrs={'class': 'editable'}), required=False)
     page_type = forms.CharField(widget=forms.Select(attrs={}, choices=PAGETYPES))
     group = forms.ModelChoiceField(queryset=Group.objects.all(), widget=forms.Select(
         attrs={}), required=False)
@@ -18,6 +27,7 @@ class ArticleForm(forms.Form):
         attrs={}))
     header_image = forms.ImageField(required=False)
     link = forms.URLField(max_length=1024, widget=forms.TextInput(),required=False)
+
 
 class NewArticleForm(forms.Form):
     title = forms.CharField(max_length=1024, widget=forms.TextInput())

@@ -114,14 +114,11 @@ $("#id_order").focus(function(){
   tinymce.init({
       selector: '.editable',
       branding: false,
-      plugins: 'image preview code link fullscreen',
-      toolbar: 'undo redo | link image file | preview code fullscreen',
+      plugins: 'image code link fullscreen lists',
+      toolbar: ' formatselect | undo redo | bold italic | alignleft aligncenter alignright alignjustify | link image file | numlist bullist outdent indent | removeformat code fullscreen ',
+      menubar: 'edit view insert format',
       image_dimensions: false,
       file_picker_types: 'file image media',
-      {#image_class_list: [#}
-      {#    {title: 'sizable', value: 'sizable'},#}
-      {#    {title: 'fixed-size', value: 'fixed'}#}
-      {#],#}
       images_upload_handler: function(blobInfo, success, failure) {
           imageUploadHandler(blobInfo, success, failure);
       },

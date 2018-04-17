@@ -22,7 +22,14 @@
                                 </form>
 
 								</section>
-
+                            <h3>Current Logged-in User</h3>
+                            <p>
+                                Username: <b>{{ user.username }}</b><br />
+                                User Full name: <b>{{ user.get_full_name }}</b><br />
+                                User Group: <b>{{ user.groups.all.0 }}</b><br />
+                                Email: <b>{{ user.email }}</b><br />
+                                Session Started at: <b>{{ user.last_login }}</b>
+                            </p>
 
 						</div>
 					</div>

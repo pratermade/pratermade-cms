@@ -63,6 +63,7 @@ class Settings(models.Model):
     www_root = models.URLField(max_length=1024, help_text="This is the location where your site is located."
                                                           "http://www.example.com")
     home_page = models.ForeignKey(Article, on_delete=models.CASCADE)
+    theme = models.CharField(max_length=32, blank=True, null=True)
 
     class Meta:
         verbose_name_plural = "Settings"

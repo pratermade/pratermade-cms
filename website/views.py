@@ -55,6 +55,7 @@ class MyTemplateMixin(object):
         context['site_settings'] = SiteSettings.objects.all()[0]
         return context
 
+
 class MyArticleMixin(MyTemplateMixin):
 
     def get_context_data(self, *args, **kwargs):
@@ -71,14 +72,16 @@ class MyArticleMixin(MyTemplateMixin):
         return context
 
 
-
 class IndexView(MyArticleMixin, TemplateView):
     template_name = "index.html"
 
 
-class GlobalContentView(MyArticleMixin, FormView):
+class GlobalContentView(UserPassesTestMixin, MyArticleMixin, FormView):
     template_name = "global_content.html"
     form_class = GlobalContentForm
+
+    def test_func(self, user):
+        return user.is_superuser
 
     def form_valid(self, form):
         self.success_url = reverse('globalcontent')
@@ -110,6 +113,17 @@ class GlobalContentView(MyArticleMixin, FormView):
             }
         return initial
 
+
+class DeleteGlobalContentView(UserPassesTestMixin, RedirectView):
+    def test_func(self, user):
+        return user.is_superuser
+
+    def get_redirect_url(self, *args, **kwargs):
+        gcb = get_object_or_404(GlobalContent, id=self.kwargs['id'])
+        gcb.delete()
+        # gcb.save()
+        self.url = reverse('globalcontent')
+        return super(DeleteGlobalContentView, self).get_redirect_url(*args, **kwargs)
 
 
 #
@@ -241,6 +255,7 @@ class NewArticleView(UserPassesTestMixin, MyArticleMixin, FormView):
             "order":0
         }
         return initial
+
 
 class TocView(MyArticleMixin, TemplateView):
     template_name = 'toc.html'
@@ -542,7 +557,6 @@ class EditSettingsView(UserPassesTestMixin, MyArticleMixin, FormView):
         return initial
 
 
-
 def get_menu():
     menu_items = Article.objects.filter(parent__isnull=True, order__gt=0).order_by('order')
     menu = []
@@ -595,3 +609,6 @@ def has_edit_permission(user, slug):
         return True
     else:
         return False
+
+
+

@@ -1,0 +1,48 @@
+{% extends "massively/layouts/general.html" %}
+{% load staticfiles %}
+{%  block main %}
+				<!-- Main -->
+					<div id="main">
+
+						<!-- Post -->
+							<section class="post">
+								<header class="major">
+
+									<h1>Settings</h1>
+                                </header>
+									<section>
+                                <form action="." method="post" class="setting_p">
+                                    {% csrf_token %}
+									{% autoescape off %}
+									{{ form.as_p }}
+									{% endautoescape %}<br />
+                                    <a href="{% url "globalcontent" %}" class="button">Manage Global Content</a>
+                                    <button id="submit" type="submit">Save</button>
+                                </form>
+
+								</section>
+
+							</section>
+
+					</div>
+        <style>
+
+
+/* ### Edit Page Changes ### */
+    #id_content_ifr {
+        min-height: 500px;
+    }
+    .mce-content-body img {
+        max-width: 100%;
+    }
+    section p {
+        width: 48%;
+        display: inline-block;
+        padding: 0 30px;
+    }
+
+    #submit {
+        float:right;
+    }
+
+{% endblock %}

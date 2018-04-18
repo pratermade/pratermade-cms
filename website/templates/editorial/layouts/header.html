@@ -1,13 +1,9 @@
 
                                 <header id="header">
-									<a hef="{{ site_settings.www_root }}" class="logo"><strong>{{ site_settings.site_name }}</strong> {{ site_settings.site_tag_line }}</a>
-									<ul class="icons">
-										<li><a href="#" class="icon fa-twitter"><span class="label">Twitter</span></a></li>
-										<li><a href="#" class="icon fa-linkedin"><span class="label">Linked-In</span></a></li>
-										<li><a href="#" class="icon fa-google-plus"><span class="label">Google+</span></a></li>
-                                        <li><a href="#" class="icon fa-youtube"><span class="label">Google+</span></a></li>
-                                        <li><a href="#" class="icon fa-github"><span class="label">GetHub</span></a></li>
-									</ul>
+									<a href="{{ site_settings.www_root }}" class="logo"><strong>{{ site_settings.site_name }}</strong> {{ site_settings.site_tag_line }}</a>
+    {% autoescape off %}
+									{{ global_content.social_media }}
+    {% endautoescape %}
                                 </header>
 
 <a href="{{ site_settings.www_root }}" class="breadcrumbs">{{ site_settings.site_name }}</a>

@@ -1,9 +1,19 @@
 from django.db import models
-
+from ss_cms.settings import BASE_DIR
+from os import listdir
 # Create your models here.
 
 
 from django.contrib.auth.models import Group, User
+
+
+def THEMES():
+        files = listdir(BASE_DIR + "/website/templates/")
+        themes = []
+        for file in files:
+            themes.append((file, file))
+        return tuple(themes)
+
 
 PAGETYPES = (
     ('article', 'Article'),
@@ -63,7 +73,7 @@ class Settings(models.Model):
     www_root = models.URLField(max_length=1024, help_text="This is the location where your site is located."
                                                           "http://www.example.com")
     home_page = models.ForeignKey(Article, on_delete=models.CASCADE)
-    theme = models.CharField(max_length=32, blank=True, null=True)
+    theme = models.CharField(choices=THEMES(), max_length=32, blank=True, null=True)
 
     class Meta:
         verbose_name_plural = "Settings"

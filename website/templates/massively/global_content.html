@@ -1,17 +1,17 @@
-{% extends "layouts/homepage.html" %}
+{% extends "massively/layouts/general.html" %}
 {% load staticfiles %}
-{% block main %}
-<!-- test comment -->
-
-
+{%  block main %}
+				<!-- Main -->
 					<div id="main">
-						<div class="inner">
 
-							<!-- Header -->
-								{% include "editorial/layouts/header.html" %}
+						<!-- Post -->
+							<section class="post">
+								<header class="major">
 
-							<!-- Content -->
-								<section>
+									<h1>Manage Global Content</h1>
+                                </header>
+									<section>
+                                <section>
                                     {% if id %}
                                         <div>
                                         <form action="." method="post">
@@ -30,8 +30,7 @@
                                         <hr />
                                     </div>
 								</section>
-
-                            <h2>
+<h2>
                                 Global Content
                                 {% if id %}
                                     <button class="btn btn-success new-gcb-page">Add New</button>
@@ -63,7 +62,10 @@
                                     {% endfor %}
                                 </tbody>
                             </table>
-						</div>
+								</section>
+
+							</section>
+
 					</div>
 
 
@@ -77,88 +79,12 @@
 {#            document.getElementById('#hidden_div').innerHTML = document.getElementById('course-select').options[info].text;#}
 {#        }#}
 {##}
-
-
         $('.footable').footable({
             breakpoints: {
                 phone: 480,
                 tablet: 676
             }
         });
-
-        $(function () {
-            $('table').footable();
-
-            $('.toggle').click(function () {
-                $('.toggle').toggle();
-                $('table').trigger($(this).data('trigger')).trigger('footable_redraw');
-            });
-        });
-{#        $('tr').click(function () {#}
-{#            window.location = $(this).find('a').attr('href');#}
-{#        }).hover(function () {#}
-{#            $(this).toggleClass('hover');#}
-{#        });#}
-
-        $(document).ready(function () {
-{#            $('.course-select-spring').each(function () {#}
-{#                $(this).html($.trim($(this).html()))#}
-{#            });#}
-{#            $('tbody:empty').parents('#commenttable').hide();#}
-
-            url = document.location.href;
-            hash = url.split('#');
-            $('#show-'+hash[1]).toggle();
-        });
-
-
-    $('#id_title').on('change keyup paste', function(){
-        $('#id_slug').val($('#id_title').val().replace(/ /g,'-').toLowerCase().replace(/[^\w\s-]/g,''))
-    });
-
-    $('.new-gcb').on('click', function(){
-        $('#show-form').toggle(800);
-    });
-
-    $('.new-gcb-page').on('click', function(){
-        window.location.href = "{% url 'globalcontent' %}#form";
-    });
-
 </script>
-
-    <style>
-
-
-/* ### Edit Page Changes ### */
-    .new-gcb, .new-gcb-page {
-        float:right;
-        padding: 7px 15px;
-        height: auto;
-        line-height: 35px;
-    }
-    #id_content_ifr {
-        min-height: 500px;
-    }
-    .mce-content-body img {
-        max-width: 100%;
-    }
-    section p:nth-child(-n+2) {
-        width: 48%;
-        display: inline-block;
-        padding-right: 40px;
-    }
-
-    #submit {
-        float:right;
-    }
-
-    .truncate {
-        width:90%;
-        max-width: 400px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-</style>
 
 {% endblock %}

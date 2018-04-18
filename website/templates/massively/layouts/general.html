@@ -12,16 +12,9 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="{% static '/massively/css/main.css' %}" />
 		<noscript><link rel="stylesheet" href="{% static '/massively/css/noscript.css' %}" /></noscript>
+        			<script src="{% static '/massively/js/jquery.min.js' %}"></script>
 	</head>
 	<body class="is-loading">
-<div id="intro">
-						<h1>This is<br />
-						{{ site_settings.site_name }}</h1>
-						<p>{{  site_settings.site_tag_line }}</p>
-						<ul class="actions">
-							<li><a href="#header" class="button icon solo fa-arrow-down scrolly">Continue</a></li>
-						</ul>
-					</div>
 		<!-- Wrapper -->
 			<div id="wrapper" class="fade-in">
                 {% include "massively/layouts/header.html" %}
@@ -40,7 +33,7 @@
 			</div>
 
 		<!-- Scripts -->
-
+			<script src="{% static '/massively/js/jquery.min.js' %}"></script>
 			<script src="{% static '/massively/js/jquery.scrollex.min.js' %}"></script>
 			<script src="{% static '/massively/js/jquery.scrolly.min.js' %}"></script>
 			<script src="{% static '/massively/js/skel.min.js' %}"></script>

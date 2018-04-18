@@ -40,6 +40,8 @@ class SettingsForm(forms.Form):
     www_root = forms.CharField(max_length=1024, widget=forms.TextInput(attrs={}))
     home_page = forms.ModelChoiceField(queryset=Article.objects.filter(parent__isnull=True), widget=forms.Select(
         attrs={}))
+    theme = forms.ModelChoiceField(queryset=Article.objects.filter(parent__isnull=True), widget=forms.Select(
+        attrs={}))
 
 
 class GlobalContentForm(forms.Form):

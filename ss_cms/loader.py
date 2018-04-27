@@ -11,5 +11,5 @@ class Loader(BaseLoader):
         for d in self.engine.dirs:
             self.dirs.append("{}/{}".format(d, theme))
             self.dirs.append(d)
-        print(self.dirs) if self.dirs is not None else print("None")
+
         return self.dirs if self.dirs is not None else self.engine.dirs

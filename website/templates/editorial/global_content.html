@@ -8,7 +8,7 @@
 						<div class="inner">
 
 							<!-- Header -->
-								{% include "layouts/header.html" %}
+								{% include "editorial/layouts/header.html" %}
 
 							<!-- Content -->
 								<section>
@@ -67,16 +67,18 @@
 					</div>
 
 
-    <link href="{% static 'assets/footable/footable.core.css' %}" rel="stylesheet" type="text/css"/>
-    <link href="{% static 'assets/footable/footable.standalone.css' %}" rel="stylesheet" type="text/css"/>
-    <script src="{% static 'assets/footable/footable.js' %}" type="text/javascript"></script>
-    <script src="{% static 'assets/footable/footable.sort.js' %}" type="text/javascript"></script>
+    <link href="{% static 'editorial/footable/footable.core.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'editorial/footable/footable.standalone.css' %}" rel="stylesheet" type="text/css"/>
+    <script src="{% static 'editorial/footable/footable.js' %}" type="text/javascript"></script>
+    <script src="{% static 'editorial/footable/footable.sort.js' %}" type="text/javascript"></script>
     <script type="text/javascript">
 
 {#        function showField(info) {#}
 {#            document.getElementById('#hidden_div').innerHTML = document.getElementById('course-select').options[info].text;#}
 {#        }#}
 {##}
+
+
         $('.footable').footable({
             breakpoints: {
                 phone: 480,
@@ -92,8 +94,6 @@
                 $('table').trigger($(this).data('trigger')).trigger('footable_redraw');
             });
         });
-
-
 {#        $('tr').click(function () {#}
 {#            window.location = $(this).find('a').attr('href');#}
 {#        }).hover(function () {#}

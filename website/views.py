@@ -23,21 +23,30 @@ import os
 
 
 
-class MyTemplateMixin(object):
+class MyArticleMixin(object):
     #
     # Parent Class Only
     #
 
-    def get_template_name(self):
-        return SiteSettings.objects.all()[0].theme + '/' + self.template_name
-
-
     def get_context_data(self, *args, **kwargs):
-        context = super(MyTemplateMixin, self).get_context_data(*args, **kwargs)
+        context = super(MyArticleMixin, self).get_context_data(*args, **kwargs)
         context['menu'] = get_menu()
         context['can_edit'] = False
         page_group = None
         if 'slug' in self.kwargs:
+            article = get_object_or_404(Article, slug=self.kwargs['slug'])
+            if Article.objects.filter(parent=article).exists():
+                children = Article.objects.filter(parent=article)
+            else:
+                children = None
+            context['children'] = children
+            siblings = Article.objects.filter(parent=article.parent)
+            context['siblings'] = siblings.order_by('order')
+            gcbs = GlobalContent.objects.all()
+            if article.content is not None:
+                for gcb in gcbs:
+                    article.content = article.content.replace("{{ " + gcb.name + " }}", gcb.content)
+                context['article'] = article
             page = get_object_or_404(Article, slug=self.kwargs['slug'])
             page_group = page.group
             context['slug'] = self.kwargs['slug']
@@ -55,6 +64,7 @@ class MyTemplateMixin(object):
 
         if self.request.user.is_superuser:
             context['can_edit'] = True
+            context['is_admin'] = True
 
         global_content = {}
         contents = GlobalContent.objects.all()
@@ -62,22 +72,6 @@ class MyTemplateMixin(object):
             global_content[content.name] = content.content
         context['global_content'] = global_content
         context['site_settings'] = SiteSettings.objects.all()[0]
-        return context
-
-
-class MyArticleMixin(MyTemplateMixin):
-
-    def get_context_data(self, *args, **kwargs):
-        context = super(MyArticleMixin, self).get_context_data(*args, **kwargs)
-        if 'slug' in self.kwargs:
-            article = get_object_or_404(Article, slug=self.kwargs['slug'])
-            siblings = Article.objects.filter(parent=article.parent)
-            context['siblings'] = siblings.order_by('order')
-            gcbs = GlobalContent.objects.all()
-            if article.content is not None:
-                for gcb in gcbs:
-                    article.content = article.content.replace("{{ " + gcb.name + " }}", gcb.content)
-                context['article'] = article
         return context
 
 
@@ -135,15 +129,6 @@ class DeleteGlobalContentView(UserPassesTestMixin, RedirectView):
         return super(DeleteGlobalContentView, self).get_redirect_url(*args, **kwargs)
 
 
-#
-# class GenericView(MyArticleMixin, TemplateView):
-#     template_name = "generic.html"
-#
-#
-# class ElementsView(MyArticleMixin, TemplateView):
-#     template_name = "elements.html"
-
-
 class PageView(RedirectView):
     permanent = False
 
@@ -167,8 +152,6 @@ class PageView(RedirectView):
             self.url = reverse('home')
 
         return super(PageView, self).get_redirect_url(*args, **kwargs)
-
-
 
 
 class ArticleView(MyArticleMixin, TemplateView):
@@ -281,28 +264,15 @@ class TocView(MyArticleMixin, TemplateView):
         return context
 
 
-class ImageBrowserView(MyTemplateMixin, TemplateView):
+class ImageBrowserView(MyArticleMixin, TemplateView):
     template_name = "image_browser.html"
 
 
-class FileBrowserView(MyTemplateMixin, TemplateView):
+class FileBrowserView(MyArticleMixin, TemplateView):
     template_name = "file_browser.html"
 
 
 class ListImagesView(LoginRequiredMixin, View):
-
-    # def get(self, user):
-    #     """
-    #     This is a root request. First find all the views that they have access to and return them as folders.
-    #     """
-    #     groups = self.request.user.groups.all()
-    #     response = '<ul class="jqueryFileTree">'
-    #     articles = Article.objects.filter(Q(owner=self.request.user) | Q(group__in=groups))
-    #     for article in articles:
-    #         response += '<li class="directory collapsed"><a href="#" rel="{}/">{}</a></li>'.format(article.slug,
-    #                                                                                                article.slug)
-    #     response += "</ul>"
-    #     return HttpResponse(response)
 
     def post(self, user):
         """
@@ -361,7 +331,6 @@ class ListFilesView(LoginRequiredMixin, View):
                                                                                                    article.slug)
         response += "</ul>"
         return HttpResponse(response)
-
 
     def post(self, user):
         """
@@ -552,6 +521,7 @@ class EditSettingsView(UserPassesTestMixin, MyArticleMixin, FormView):
         settings.site_tag_line = form['site_tag_line'].value()
         settings.www_root = form['www_root'].value()
         settings.home_page_id = form['home_page'].value()
+        settings.theme = form['theme'].value()
         settings.save()
         return super(EditSettingsView, self).form_valid(form)
 
@@ -562,6 +532,7 @@ class EditSettingsView(UserPassesTestMixin, MyArticleMixin, FormView):
             'site_tag_line': settings.site_tag_line,
             'www_root': settings.www_root,
             'home_page': settings.home_page,
+            'theme': settings.theme,
         }
         return initial
 

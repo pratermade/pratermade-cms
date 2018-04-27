@@ -1,11 +1,12 @@
 from django import forms
-from .models import PAGETYPES, Article
+from .models import PAGETYPES, Article, THEMES
 from django.contrib.auth.models import Group, User
 
 
 class ArticleForm(forms.Form):
     title = forms.CharField(max_length=1024, widget=forms.TextInput())
     slug = forms.CharField(max_length=32, widget=forms.TextInput(attrs={}))
+    summary = forms.CharField(widget=forms.Textarea(attrs={'class': 'editable'}), required=False)
     content = forms.CharField(widget=forms.Textarea(attrs={'class': 'editable'}), required=False)
     page_type = forms.CharField(widget=forms.Select(attrs={}, choices=PAGETYPES))
     group = forms.ModelChoiceField(queryset=Group.objects.all(), widget=forms.Select(
@@ -40,8 +41,7 @@ class SettingsForm(forms.Form):
     www_root = forms.CharField(max_length=1024, widget=forms.TextInput(attrs={}))
     home_page = forms.ModelChoiceField(queryset=Article.objects.filter(parent__isnull=True), widget=forms.Select(
         attrs={}))
-    theme = forms.ModelChoiceField(queryset=Article.objects.filter(parent__isnull=True), widget=forms.Select(
-        attrs={}))
+    theme = forms.CharField(widget=forms.Select(choices=THEMES()))
 
 
 class GlobalContentForm(forms.Form):

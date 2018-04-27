@@ -1,9 +1,19 @@
 from django.db import models
-
+from ss_cms.settings import BASE_DIR
+from os import listdir
 # Create your models here.
 
 
 from django.contrib.auth.models import Group, User
+
+
+def THEMES():
+        files = listdir(BASE_DIR + "/website/templates/")
+        themes = []
+        for file in files:
+            themes.append((file, file))
+        return tuple(themes)
+
 
 PAGETYPES = (
     ('article', 'Article'),
@@ -15,6 +25,7 @@ PAGETYPES = (
 class Article(models.Model):
     page_type = models.CharField(choices=PAGETYPES, max_length=32, default='article')
     title = models.CharField(max_length=1024)
+    summary = models.TextField(null=True, blank=True)
     content = models.TextField(null=True, blank=True)
     header_image = models.ImageField(null=True, blank=True)
     slug = models.CharField(max_length=32, unique=True,
@@ -30,6 +41,7 @@ class Article(models.Model):
     order = models.IntegerField(default=0, help_text="For menu order. It is recommended that you use increments of 10 "
                                                      "as to allow for easy re-ordering of menu items. A value of 0 "
                                                      "indicates that it is not a menu item.")
+    post_date = models.DateTimeField(auto_now_add=True)
 
 
     def __str__(self):
@@ -63,7 +75,7 @@ class Settings(models.Model):
     www_root = models.URLField(max_length=1024, help_text="This is the location where your site is located."
                                                           "http://www.example.com")
     home_page = models.ForeignKey(Article, on_delete=models.CASCADE)
-    theme = models.CharField(max_length=32, blank=True, null=True)
+    theme = models.CharField(choices=THEMES(), max_length=32, blank=True, null=True)
 
     class Meta:
         verbose_name_plural = "Settings"

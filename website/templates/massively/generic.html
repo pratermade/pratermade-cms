@@ -1,0 +1,33 @@
+{% extends "massively/layouts/general.html" %}
+{% load staticfiles %}
+{%  block main %}
+				<!-- Main -->
+					<div id="main">
+
+						<!-- Post -->
+							<section class="post">
+								<header class="major">
+
+									<h1>{{ article.title }}</h1>
+									<p>{% autoescape off %}{{ article.summary }}{% endautoescape %}</p>
+                                    <span class="date">April 25, 2017</span>
+								</header>
+                            <div>
+
+								<div class="image main"><img src="{% static "" %}/{{ article.header_image }}" alt="" /></div>
+                            {% if children %}
+                            <aside id="siblings" style="border: 1px;border-color: #eeeeee;border-style:  solid;width: 100%;max-width: 250px;float: right;padding: 10px 10px;margin: 15px;text-align: center;"><h3>{{ article.title }}</h3><ul style="list-style:none; padding-left:0">
+                                {% for child in children %}
+                                <li><a href="{% url "page" child.slug %}">{{ child.title }}</a></li>
+                                {%  endfor %}
+                                </ul></aside>
+                            {% endif %}
+
+                                {% autoescape off %}
+								{{ article.content }}
+                                {% endautoescape %}
+                            </div>
+							</section>
+
+					</div>
+{% endblock %}

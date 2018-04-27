@@ -1,0 +1,44 @@
+{% load staticfiles %}
+<!DOCTYPE HTML>
+<!--
+	Massively by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>{{ site_settings.site_name }}-- {{ article.title }} </title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="{% static '/massively/css/main.css' %}" />
+		<noscript><link rel="stylesheet" href="{% static '/massively/css/noscript.css' %}" /></noscript>
+        			<script src="{% static '/massively/js/jquery.min.js' %}"></script>
+	</head>
+	<body class="is-loading">
+		<!-- Wrapper -->
+			<div id="wrapper" class="fade-in">
+                {% include "massively/layouts/header.html" %}
+
+			<!-- Main -->
+
+                {% block main %}
+				{% endblock %}
+				<!-- Footer -->
+					{% include "massively/layouts/footer.html" %}
+				<!-- Copyright -->
+					<div id="copyright">
+						<ul><li>&copy; Untitled</li><li>Design: <a href="https://html5up.net">HTML5 UP</a></li></ul>
+					</div>
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="{% static '/massively/js/jquery.min.js' %}"></script>
+			<script src="{% static '/massively/js/jquery.scrollex.min.js' %}"></script>
+			<script src="{% static '/massively/js/jquery.scrolly.min.js' %}"></script>
+			<script src="{% static '/massively/js/skel.min.js' %}"></script>
+			<script src="{% static '/massively/js/util.js' %}"></script>
+			<script src="{% static '/massively/js/main.js' %}"></script>
+
+	</body>
+</html>

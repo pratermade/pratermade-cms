@@ -1,12 +1,12 @@
 # TODO List for Beta Release
 1. ~~Add file upload/picker functionality~~
 2. ~~Add Newpage functionality~~
-3. Add several new themes and theme options
+3. Add one new theme and theme options
 4. ~~Global content table.-~~
 5. Create a setup wizard
 6. ~~Menu Order GUI~~
 7. ~~Global Content Manager~~
-
+8. Redo the way the article header image is uploaded to work like the image upload from the wysiwig
 
 
 # Next Release

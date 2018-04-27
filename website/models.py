@@ -25,6 +25,7 @@ PAGETYPES = (
 class Article(models.Model):
     page_type = models.CharField(choices=PAGETYPES, max_length=32, default='article')
     title = models.CharField(max_length=1024)
+    summary = models.TextField(null=True, blank=True)
     content = models.TextField(null=True, blank=True)
     header_image = models.ImageField(null=True, blank=True)
     slug = models.CharField(max_length=32, unique=True,
@@ -40,6 +41,7 @@ class Article(models.Model):
     order = models.IntegerField(default=0, help_text="For menu order. It is recommended that you use increments of 10 "
                                                      "as to allow for easy re-ordering of menu items. A value of 0 "
                                                      "indicates that it is not a menu item.")
+    post_date = models.DateTimeField(auto_now_add=True)
 
 
     def __str__(self):

@@ -12,3 +12,4 @@ zappa_settings.json
 /htmlcov/
 /htmlcov/*
 /.coverage
+/settings.cnf

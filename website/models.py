@@ -18,7 +18,6 @@ def THEMES():
 PAGETYPES = (
     ('article', 'Article'),
     ('link', 'Link'),
-    ('table_of_contents', 'Table Of Contents'),
     ('index','Index')
 )
 

@@ -18,6 +18,10 @@ def THEMES():
 PAGETYPES = (
     ('article', 'Article'),
     ('link', 'Link'),
+<<<<<<< HEAD
+=======
+    ('table_of_contents', 'Table Of Contents'),
+>>>>>>> 5c3f6075c1d0e340ea44b7ac3f523060482ba6fe
     ('index','Index')
 )
 

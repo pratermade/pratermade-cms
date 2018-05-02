@@ -179,6 +179,7 @@ class ArticleEditView(UserPassesTestMixin, MyArticleMixin, FormView):
         else:
             article = Article()
         article.title = form['title'].value()
+        article.summary = form['summary'].value()
         article.slug = form['slug'].value()
         article.content = form['content'].value()
         article.page_type = form['page_type'].value()
@@ -199,6 +200,7 @@ class ArticleEditView(UserPassesTestMixin, MyArticleMixin, FormView):
                 "page_type": article.page_type,
                 "title": article.title,
                 "content": article.content,
+                "summary": article.summary,
                 "header_image": article.header_image,
                 "slug": article.slug,
                 "group": article.group,

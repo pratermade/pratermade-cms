@@ -18,16 +18,12 @@ def THEMES():
 PAGETYPES = (
     ('article', 'Article'),
     ('link', 'Link'),
-<<<<<<< HEAD
-=======
-    ('table_of_contents', 'Table Of Contents'),
->>>>>>> 5c3f6075c1d0e340ea44b7ac3f523060482ba6fe
     ('index','Index')
 )
 
 class Article(models.Model):
     page_type = models.CharField(choices=PAGETYPES, max_length=32, default='article')
-    title = models.CharField(max_length=1024)
+    title = models.CharField(max_length=1024, null=True, blank=True)
     summary = models.TextField(null=True, blank=True)
     content = models.TextField(null=True, blank=True)
     header_image = models.ImageField(null=True, blank=True)

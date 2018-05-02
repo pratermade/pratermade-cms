@@ -12,6 +12,9 @@
 									<header class="main">
 									 <div id="editor">
 										<h1>{{ article.title }}</h1>
+                                         {% autoescape off %}
+                                         <h2>{{ article.summary }}</h2>
+                                         {%  endautoescape %}
 									</div>
 									</header>
                                     {% if article.header_image %}

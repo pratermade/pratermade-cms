@@ -4,7 +4,7 @@ from django.contrib.auth.models import Group, User
 
 
 class ArticleForm(forms.Form):
-    title = forms.CharField(max_length=1024, widget=forms.TextInput())
+    title = forms.CharField(max_length=1024, widget=forms.TextInput(), required=False)
     slug = forms.CharField(max_length=32, widget=forms.TextInput(attrs={}))
     summary = forms.CharField(widget=forms.Textarea(attrs={'class': 'editable'}), required=False)
     content = forms.CharField(widget=forms.Textarea(attrs={'class': 'editable'}), required=False)
@@ -21,7 +21,7 @@ class ArticleForm(forms.Form):
 
 
 class NewArticleForm(forms.Form):
-    title = forms.CharField(max_length=1024, widget=forms.TextInput())
+    title = forms.CharField(max_length=1024, widget=forms.TextInput(), required=False)
     slug = forms.CharField(max_length=32, widget=forms.TextInput(attrs={}))
     page_type = forms.CharField(widget=forms.Select(attrs={}, choices=PAGETYPES))
     group = forms.ModelChoiceField(queryset=Group.objects.all(), widget=forms.Select(

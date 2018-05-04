@@ -562,8 +562,9 @@ def get_menu():
 def get_breadcrumbs(id):
     breadcrumbs = []
     current = Article.objects.get(id=id)
-
-    while current is not None:
+    print(current)
+    print(SiteSettings.objects.all()[0].home_page)
+    while current is not None and current != SiteSettings.objects.all()[0].home_page:
         breadcrumbs.append({'title': current.title, 'slug': current.slug })
         if current.parent is not None:
             current = Article.objects.get(id=current.parent.id)
